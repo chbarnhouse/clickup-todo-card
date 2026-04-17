@@ -14,7 +14,11 @@ export class ClickUpTodoCardEditor extends LitElement {
   @state() private _helpers?: any;
 
   public setConfig(config: ClickUpTodoCardConfig): void {
-    this._config = config;
+    this._config = {
+      type: 'custom:clickup-todo-card',
+      entity: '',
+      ...config,
+    };
     this._loadEntityData();
   }
 

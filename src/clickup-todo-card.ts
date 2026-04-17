@@ -39,7 +39,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
   public static getStubConfig(): Record<string, unknown> {
     return {
-      type: 'clickup-todo-card',
+      type: 'custom:clickup-todo-card',
       entity: '',
       ...DEFAULT_CONFIG,
     };
@@ -48,10 +48,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   public setConfig(config: ClickUpTodoCardConfig): void {
     if (!config) {
       throw new Error('Invalid configuration');
-    }
-
-    if (!config.entity) {
-      throw new Error('Entity is required');
     }
 
     this._config = {
@@ -71,6 +67,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   protected render(): TemplateResult {
     if (!this._config || !this.hass) {
       return html``;
+    }
+
+    if (!this._config.entity) {
+      return html`
+        <ha-card>
+          <div class="warning">Please configure an entity</div>
+        </ha-card>
+      `;
     }
 
     const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
