@@ -43,9 +43,9 @@ export class ClickUpTodoCardEditor extends LitElement {
       return html`<div>No configuration</div>`;
     }
 
-    const entities = Object.keys(this.hass.states).filter(
-      (eid) => eid.startsWith('todo.')
-    );
+    const todoEntities = Object.keys(this.hass.states)
+      .filter((eid) => eid.startsWith('todo.'))
+      .sort();
 
     const statuses = getUniqueStatuses(this._tasks);
     const tags = getUniqueTags(this._tasks);
@@ -58,17 +58,21 @@ export class ClickUpTodoCardEditor extends LitElement {
         <div class="config-section">
           <h3>Basic Settings</h3>
 
-          <ha-selector
-            .hass=${this.hass}
-            .selector=${{
-              entity: {
-                domain: 'todo'
-              }
-            }}
-            .value=${this._config.entity}
-            .label=${'Entity (Required)'}
-            @value-changed=${(ev: any) => this._entityChanged(ev.detail.value)}
-          ></ha-selector>
+          <div class="entity-row">
+            <label for="entity-select">Entity (Required)</label>
+            <select
+              id="entity-select"
+              .value=${this._config.entity || ''}
+              @change=${(ev: any) => this._entityChanged(ev.target.value)}
+            >
+              <option value="">Select an entity...</option>
+              ${todoEntities.map(entity => html`
+                <option value="${entity}" .selected=${entity === this._config.entity}>
+                  ${entity}
+                </option>
+              `)}
+            </select>
+          </div>
 
           <ha-textfield
             .label=${'Title (Optional)'}
@@ -577,6 +581,28 @@ export class ClickUpTodoCardEditor extends LitElement {
         font-size: 12px;
         color: var(--secondary-text-color);
         font-style: italic;
+      }
+
+      .entity-row {
+        margin-bottom: 16px;
+      }
+
+      .entity-row label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--primary-text-color);
+      }
+
+      .entity-row select {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+        background: var(--card-background-color);
+        color: var(--primary-text-color);
+        border: 1px solid var(--divider-color);
+        border-radius: 4px;
       }
 
       ha-entity-picker,
