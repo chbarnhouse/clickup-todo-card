@@ -19,7 +19,7 @@ console.info(
 // Register card with Home Assistant
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'clickup-todo-card',
+  type: 'custom:clickup-todo-card',
   name: 'ClickUp Todo Card',
   description: 'Enhanced todo card with ClickUp custom fields and filters',
   preview: true,
@@ -29,7 +29,11 @@ console.info(
 @customElement('clickup-todo-card')
 export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   @property({ attribute: false }) public hass!: HomeAssistant;
-  @state() private _config!: ClickUpTodoCardConfig;
+  @state() private _config: ClickUpTodoCardConfig = {
+    type: 'custom:clickup-todo-card',
+    entity: '',
+    ...DEFAULT_CONFIG,
+  };
   @state() private _tasks: ClickUpTask[] = [];
 
   public static async getConfigElement() {
@@ -61,6 +65,9 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   protected shouldUpdate(changedProps: Map<string | number | symbol, unknown>): boolean {
+    if (!this._config) {
+      return false;
+    }
     return hasConfigOrEntityChanged(this, changedProps, false);
   }
 

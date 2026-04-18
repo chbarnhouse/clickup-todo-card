@@ -9,7 +9,10 @@ import { getUniqueStatuses, getUniqueTags, getUniqueAssignees, getAvailableCusto
 @customElement('clickup-todo-card-editor')
 export class ClickUpTodoCardEditor extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
-  @state() private _config!: ClickUpTodoCardConfig;
+  @state() private _config: ClickUpTodoCardConfig = {
+    type: 'custom:clickup-todo-card',
+    entity: '',
+  };
   @state() private _tasks: ClickUpTask[] = [];
   @state() private _helpers?: any;
 
@@ -32,8 +35,12 @@ export class ClickUpTodoCardEditor extends LitElement {
   }
 
   protected render(): TemplateResult {
-    if (!this.hass || !this._config) {
-      return html``;
+    if (!this.hass) {
+      return html`<div>Loading...</div>`;
+    }
+
+    if (!this._config) {
+      return html`<div>No configuration</div>`;
     }
 
     const entities = Object.keys(this.hass.states).filter(
