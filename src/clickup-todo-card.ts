@@ -473,6 +473,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderAddDialog(): TemplateResult {
+    const commonStatuses = [
+      { name: 'TO DO', color: '#d3d3d3', type: 'open' },
+      { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
+      { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
+      { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
+      { name: 'BLOCKED', color: '#f50000', type: 'custom' },
+    ];
+
     return html`
       <ha-dialog
         open
@@ -482,43 +490,56 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         <div class="dialog-content">
           <ha-textfield
             dialogInitialFocus
-            label="Summary"
+            label="Task Name"
             id="add-summary"
             required
+            helper="What needs to be done?"
           ></ha-textfield>
 
           <ha-textarea
-            label="Description"
+            label="Description (Optional)"
             id="add-description"
             rows="3"
+            helper="Add additional details"
           ></ha-textarea>
 
-          <ha-textfield
-            label="Start Date"
-            id="add-start-date"
-            type="date"
-          ></ha-textfield>
-
-          <ha-textfield
-            label="Due Date"
-            id="add-due-date"
-            type="date"
-          ></ha-textfield>
+          <ha-select
+            label="Status"
+            id="add-status"
+          >
+            ${commonStatuses.map(status => html`
+              <mwc-list-item value="${status.name}">${status.name}</mwc-list-item>
+            `)}
+          </ha-select>
 
           <ha-select
             label="Priority"
             id="add-priority"
           >
             <mwc-list-item value="">No Priority</mwc-list-item>
-            <mwc-list-item value="1">Urgent</mwc-list-item>
-            <mwc-list-item value="2">High</mwc-list-item>
-            <mwc-list-item value="3">Normal</mwc-list-item>
-            <mwc-list-item value="4">Low</mwc-list-item>
+            <mwc-list-item value="1">🔴 Urgent</mwc-list-item>
+            <mwc-list-item value="2">🟠 High</mwc-list-item>
+            <mwc-list-item value="3">🟡 Normal</mwc-list-item>
+            <mwc-list-item value="4">⚪ Low</mwc-list-item>
           </ha-select>
+
+          <ha-textfield
+            label="Start Date (Optional)"
+            id="add-start-date"
+            type="date"
+            helper="When to start working on this"
+          ></ha-textfield>
+
+          <ha-textfield
+            label="Due Date (Optional)"
+            id="add-due-date"
+            type="date"
+            helper="When this should be completed"
+          ></ha-textfield>
         </div>
 
         <mwc-button slot="primaryAction" @click=${this._submitAddTask}>
-          Add
+          Add Task
         </mwc-button>
         <mwc-button slot="secondaryAction" dialogAction="cancel">
           Cancel
@@ -536,6 +557,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const startDateValue = task.start_date ? new Date(typeof task.start_date === 'number' ? task.start_date : parseInt(task.start_date as string)).toISOString().split('T')[0] : '';
     const dueDateValue = task.due ? new Date(task.due).toISOString().split('T')[0] : '';
 
+    const commonStatuses = [
+      { name: 'TO DO', color: '#d3d3d3', type: 'open' },
+      { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
+      { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
+      { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
+      { name: 'BLOCKED', color: '#f50000', type: 'custom' },
+    ];
+
     return html`
       <ha-dialog
         open
@@ -545,32 +574,30 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         <div class="dialog-content">
           <ha-textfield
             dialogInitialFocus
-            label="Summary"
+            label="Task Name"
             id="edit-summary"
             .value=${task.summary}
             required
+            helper="What needs to be done?"
           ></ha-textfield>
 
           <ha-textarea
-            label="Description"
+            label="Description (Optional)"
             id="edit-description"
             .value=${task.description || ''}
             rows="3"
+            helper="Add additional details"
           ></ha-textarea>
 
-          <ha-textfield
-            label="Start Date"
-            id="edit-start-date"
-            type="date"
-            .value=${startDateValue}
-          ></ha-textfield>
-
-          <ha-textfield
-            label="Due Date"
-            id="edit-due-date"
-            type="date"
-            .value=${dueDateValue}
-          ></ha-textfield>
+          <ha-select
+            label="Status"
+            id="edit-status"
+            .value=${task.clickup_status?.status || 'TO DO'}
+          >
+            ${commonStatuses.map(status => html`
+              <mwc-list-item value="${status.name}">${status.name}</mwc-list-item>
+            `)}
+          </ha-select>
 
           <ha-select
             label="Priority"
@@ -578,11 +605,27 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
             .value=${task.priority?.toString() || ''}
           >
             <mwc-list-item value="">No Priority</mwc-list-item>
-            <mwc-list-item value="1">Urgent</mwc-list-item>
-            <mwc-list-item value="2">High</mwc-list-item>
-            <mwc-list-item value="3">Normal</mwc-list-item>
-            <mwc-list-item value="4">Low</mwc-list-item>
+            <mwc-list-item value="1">🔴 Urgent</mwc-list-item>
+            <mwc-list-item value="2">🟠 High</mwc-list-item>
+            <mwc-list-item value="3">🟡 Normal</mwc-list-item>
+            <mwc-list-item value="4">⚪ Low</mwc-list-item>
           </ha-select>
+
+          <ha-textfield
+            label="Start Date (Optional)"
+            id="edit-start-date"
+            type="date"
+            .value=${startDateValue}
+            helper="When to start working on this"
+          ></ha-textfield>
+
+          <ha-textfield
+            label="Due Date (Optional)"
+            id="edit-due-date"
+            type="date"
+            .value=${dueDateValue}
+            helper="When this should be completed"
+          ></ha-textfield>
 
           <div class="dialog-actions-extra">
             <mwc-button @click=${() => this._deleteTask(task)}>
@@ -592,7 +635,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         </div>
 
         <mwc-button slot="primaryAction" @click=${this._submitEditTask}>
-          Save
+          Save Changes
         </mwc-button>
         <mwc-button slot="secondaryAction" dialogAction="cancel">
           Cancel
@@ -609,11 +652,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
 
     const description = (this.shadowRoot?.querySelector('#add-description') as any)?.value?.trim();
+    const status = (this.shadowRoot?.querySelector('#add-status') as any)?.value;
     const startDate = (this.shadowRoot?.querySelector('#add-start-date') as any)?.value;
     const dueDate = (this.shadowRoot?.querySelector('#add-due-date') as any)?.value;
     const priority = (this.shadowRoot?.querySelector('#add-priority') as any)?.value;
 
     try {
+      // First, create the task via the standard todo service
       const serviceData: any = {
         item: summary,
       };
@@ -626,11 +671,50 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         serviceData.due = dueDate;
       }
 
-      // Note: ClickUp integration may not support setting these via add_item
-      // This depends on the integration's implementation
       await this.hass.callService('todo', 'add_item', serviceData, {
         entity_id: this._config.entity,
       });
+
+      // Wait a bit for the task to be created, then update status and priority via ClickUp service
+      // This is a workaround since todo.add_item doesn't support ClickUp-specific fields
+      if (status || priority || startDate) {
+        setTimeout(async () => {
+          try {
+            // Get the newly created task
+            const stateObj = this.hass.states[this._config.entity] as any;
+            const tasks = stateObj?.attributes?.clickup_tasks || [];
+            const newTask = tasks.find((t: ClickUpTask) => t.summary === summary);
+
+            if (newTask && newTask.clickup_id) {
+              // Update status if provided
+              if (status) {
+                await this.hass.callService('clickup', 'update_task_status', {
+                  task_id: newTask.clickup_id,
+                  status: status,
+                });
+              }
+
+              // Update priority if provided
+              if (priority) {
+                await this.hass.callService('clickup', 'update_task_priority', {
+                  task_id: newTask.clickup_id,
+                  priority: parseInt(priority),
+                });
+              }
+
+              // Update start date if provided
+              if (startDate) {
+                await this.hass.callService('clickup', 'update_task_start_date', {
+                  task_id: newTask.clickup_id,
+                  start_date: new Date(startDate).getTime(),
+                });
+              }
+            }
+          } catch (err) {
+            console.error('Error updating task details:', err);
+          }
+        }, 1000);
+      }
 
       this._showAddDialog = false;
     } catch (err) {
@@ -650,11 +734,15 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
 
     const description = (this.shadowRoot?.querySelector('#edit-description') as any)?.value?.trim();
+    const status = (this.shadowRoot?.querySelector('#edit-status') as any)?.value;
     const startDate = (this.shadowRoot?.querySelector('#edit-start-date') as any)?.value;
     const dueDate = (this.shadowRoot?.querySelector('#edit-due-date') as any)?.value;
     const priority = (this.shadowRoot?.querySelector('#edit-priority') as any)?.value;
 
     try {
+      const taskId = this._editingTask.clickup_id;
+
+      // Update basic fields via todo service
       const serviceData: any = {
         entity_id: this._config.entity,
         item: this._editingTask.uid,
@@ -670,6 +758,40 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       }
 
       await this.hass.callService('todo', 'update_item', serviceData);
+
+      // Update ClickUp-specific fields if they changed
+      if (taskId) {
+        // Update status if changed
+        if (status && status !== this._editingTask.clickup_status?.status) {
+          await this.hass.callService('clickup', 'update_task_status', {
+            task_id: taskId,
+            status: status,
+          });
+        }
+
+        // Update priority if changed
+        const newPriority = priority ? parseInt(priority) : null;
+        if (newPriority !== this._editingTask.priority) {
+          await this.hass.callService('clickup', 'update_task_priority', {
+            task_id: taskId,
+            priority: newPriority,
+          });
+        }
+
+        // Update start date if changed
+        const existingStartDate = this._editingTask.start_date
+          ? new Date(typeof this._editingTask.start_date === 'number'
+              ? this._editingTask.start_date
+              : parseInt(this._editingTask.start_date as string)).toISOString().split('T')[0]
+          : '';
+
+        if (startDate !== existingStartDate) {
+          await this.hass.callService('clickup', 'update_task_start_date', {
+            task_id: taskId,
+            start_date: startDate ? new Date(startDate).getTime() : null,
+          });
+        }
+      }
 
       this._editingTask = null;
     } catch (err) {
