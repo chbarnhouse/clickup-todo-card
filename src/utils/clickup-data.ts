@@ -2,33 +2,55 @@ import { TodoItem, ClickUpTask, ClickUpEntityAttributes, ExtendedHassEntity } fr
 
 /**
  * Parse ClickUp tasks from entity attributes
- * Merges standard TodoItem data with full ClickUp task data
+ * Uses clickup_tasks directly from the ClickUp integration
  */
 export function parseClickUpTasks(entity: ExtendedHassEntity): ClickUpTask[] {
   const attributes = entity.attributes as ClickUpEntityAttributes;
-  const todoItems = attributes.todo_items || [];
   const clickupTasks = attributes.clickup_tasks || [];
 
-  // Merge TodoItem with ClickUp data
-  return todoItems.map((item: TodoItem) => {
-    const clickupData = clickupTasks.find((t: any) => t.id === item.uid) || {};
+  // Map ClickUp tasks directly to ClickUpTask format
+  return clickupTasks.map((task: any) => {
+    // Determine status based on ClickUp status type
+    const status = task.status?.type === 'closed' ? 'completed' : 'needs_action';
 
-    const task: ClickUpTask = {
-      ...item,
-      clickup_id: item.uid,
-      start_date: clickupData.start_date,
-      clickup_status: clickupData.status,
-      priority: clickupData.priority,
-      tags: clickupData.tags || [],
-      assignees: clickupData.assignees || [],
-      custom_fields: clickupData.custom_fields || [],
-      time_estimate: clickupData.time_estimate,
-      points: clickupData.points,
-      list: clickupData.list,
-      space: clickupData.space,
+    // Parse due date if present
+    let due: Date | undefined;
+    if (task.due_date) {
+      const timestamp = parseInt(task.due_date);
+      if (!isNaN(timestamp)) {
+        due = new Date(timestamp);
+      }
+    }
+
+    // Parse start date if present
+    let startDate: number | undefined;
+    if (task.start_date) {
+      const timestamp = parseInt(task.start_date);
+      if (!isNaN(timestamp)) {
+        startDate = timestamp;
+      }
+    }
+
+    const clickupTask: ClickUpTask = {
+      uid: task.id,
+      summary: task.name,
+      status: status,
+      description: task.description || undefined,
+      due: due,
+      clickup_id: task.id,
+      start_date: startDate,
+      clickup_status: task.status,
+      priority: task.priority,
+      tags: task.tags || [],
+      assignees: task.assignees || [],
+      custom_fields: task.custom_fields || [],
+      time_estimate: task.time_estimate,
+      points: task.points,
+      list: task.list,
+      space: task.space,
     };
 
-    return task;
+    return clickupTask;
   });
 }
 

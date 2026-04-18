@@ -6,7 +6,7 @@ import { ClickUpTodoCardConfig, ClickUpTask, ExtendedHassEntity } from './types'
 import { parseClickUpTasks } from './utils/clickup-data';
 import { getUniqueStatuses, getUniqueTags, getUniqueAssignees, getAvailableCustomFields } from './utils/clickup-data';
 
-@customElement('clickup-todo-card-editor')
+// Don't use decorator - will register manually after class definition
 export class ClickUpTodoCardEditor extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config: ClickUpTodoCardConfig = {
@@ -15,6 +15,16 @@ export class ClickUpTodoCardEditor extends LitElement {
   };
   @state() private _tasks: ClickUpTask[] = [];
   @state() private _helpers?: any;
+
+  constructor() {
+    super();
+    console.log('ClickUp Card Editor: Constructor called');
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    console.log('ClickUp Card Editor: Connected to DOM');
+  }
 
   public setConfig(config: ClickUpTodoCardConfig): void {
     this._config = {
@@ -44,10 +54,6 @@ export class ClickUpTodoCardEditor extends LitElement {
         return html`<div>Loading config...</div>`;
       }
 
-      const todoEntities = Object.keys(this.hass.states || {})
-        .filter((eid) => eid.startsWith('todo.'))
-        .sort();
-
       const statuses = this._tasks.length > 0 ? getUniqueStatuses(this._tasks) : [];
       const tags = this._tasks.length > 0 ? getUniqueTags(this._tasks) : [];
       const assignees = this._tasks.length > 0 ? getUniqueAssignees(this._tasks) : [];
@@ -59,36 +65,17 @@ export class ClickUpTodoCardEditor extends LitElement {
         <div class="config-section">
           <h3>Basic Settings</h3>
 
-          <ha-textfield
-            .label=${'Entity (Required)'}
-            .value=${this._config.entity || ''}
-            @input=${(ev: any) => this._entityChanged(ev.target.value)}
-            .placeholder=${'todo.clickup_list_name'}
-          ></ha-textfield>
-
-          ${todoEntities.length > 0 ? html`
-            <div class="entity-hint">
-              <p>Available entities:</p>
-              <ul>
-                ${todoEntities.slice(0, 10).map(entity => html`
-                  <li>
-                    <a href="#" @click=${(ev: Event) => {
-                      ev.preventDefault();
-                      this._entityChanged(entity);
-                    }}>
-                      ${entity}
-                    </a>
-                  </li>
-                `)}
-                ${todoEntities.length > 10 ? html`
-                  <li>...and ${todoEntities.length - 10} more</li>
-                ` : ''}
-              </ul>
-            </div>
-          ` : ''}
+          <ha-selector
+            .hass=${this.hass}
+            .selector=${{ entity: { domain: ['todo'] } }}
+            .value=${this._config.entity}
+            .label=${'Entity (required)'}
+            .required=${true}
+            @value-changed=${(ev: any) => this._entityChanged(ev.detail.value)}
+          ></ha-selector>
 
           <ha-textfield
-            .label=${'Title (Optional)'}
+            label="Title (Optional)"
             .configValue=${'title'}
             .value=${this._config.title || ''}
             @input=${this._valueChanged}
@@ -98,6 +85,22 @@ export class ClickUpTodoCardEditor extends LitElement {
         <!-- Display Options -->
         <div class="config-section">
           <h3>Display Options</h3>
+
+          <ha-formfield .label=${'Hide Header'}>
+            <ha-switch
+              .checked=${this._config.hide_header === true}
+              .configValue=${'hide_header'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
+          <ha-formfield .label=${'Show Task Count Badge'}>
+            <ha-switch
+              .checked=${this._config.show_task_count !== false}
+              .configValue=${'show_task_count'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
 
           <ha-formfield .label=${'Show Start Date'}>
             <ha-switch
@@ -119,6 +122,14 @@ export class ClickUpTodoCardEditor extends LitElement {
             <ha-switch
               .checked=${this._config.show_priority !== false}
               .configValue=${'show_priority'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
+          <ha-formfield .label=${'Show ClickUp Status'}>
+            <ha-switch
+              .checked=${this._config.show_status === true}
+              .configValue=${'show_status'}
               @change=${this._valueChanged}
             ></ha-switch>
           </ha-formfield>
@@ -606,38 +617,58 @@ export class ClickUpTodoCardEditor extends LitElement {
         font-style: italic;
       }
 
-      .entity-hint {
-        margin: -8px 0 16px 0;
-        padding: 12px;
-        background: var(--secondary-background-color);
-        border-radius: 4px;
-        font-size: 13px;
+      .input-group {
+        margin-bottom: 24px;
       }
 
-      .entity-hint p {
-        margin: 0 0 8px 0;
+      .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
         font-weight: 500;
         color: var(--primary-text-color);
       }
 
-      .entity-hint ul {
-        margin: 0;
-        padding-left: 20px;
-        list-style: none;
+      .entity-input {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        background: var(--card-background-color);
+        color: var(--primary-text-color);
+        border: 1px solid var(--divider-color);
+        border-radius: 4px;
+        box-sizing: border-box;
       }
 
-      .entity-hint li {
-        margin-bottom: 4px;
+      .entity-list {
+        margin-top: 12px;
+        padding: 12px;
+        background: var(--secondary-background-color);
+        border-radius: 4px;
+        max-height: 200px;
+        overflow-y: auto;
       }
 
-      .entity-hint a {
-        color: var(--primary-color);
-        text-decoration: none;
+      .entity-list p {
+        margin: 0 0 8px 0;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--secondary-text-color);
+      }
+
+      .entity-item {
+        padding: 8px;
+        margin: 4px 0;
+        background: var(--card-background-color);
+        border-radius: 4px;
         cursor: pointer;
+        font-size: 13px;
+        color: var(--primary-text-color);
       }
 
-      .entity-hint a:hover {
-        text-decoration: underline;
+      .entity-item:hover {
+        background: var(--primary-color);
+        color: var(--text-primary-color);
       }
 
       ha-entity-picker,
@@ -673,6 +704,12 @@ export class ClickUpTodoCardEditor extends LitElement {
       }
     `;
   }
+}
+
+// Explicitly register the custom element as a fallback
+if (!customElements.get('clickup-todo-card-editor')) {
+  customElements.define('clickup-todo-card-editor', ClickUpTodoCardEditor);
+  console.log('ClickUp Todo Card Editor: Manually registered custom element');
 }
 
 declare global {

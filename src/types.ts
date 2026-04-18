@@ -15,9 +15,12 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   title?: string;
 
   // Display options
+  hide_header?: boolean;
+  show_task_count?: boolean;
   show_start_date?: boolean;
   show_due_date?: boolean;
   show_priority?: boolean;
+  show_status?: boolean;
   show_tags?: boolean;
   show_assignees?: boolean;
   show_custom_fields?: boolean;

@@ -43,15 +43,26 @@ export const styles = css`
     text-align: center;
   }
 
+  /* Add Item Row */
+  .add-item-row {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--divider-color);
+  }
+
+  .add-item-row ha-textfield {
+    width: 100%;
+    --mdc-text-field-fill-color: transparent;
+  }
+
   /* Content */
   .card-content {
-    padding: 8px;
+    padding: 0;
     overflow-y: auto;
     flex: 1;
   }
 
   .card-content.compact {
-    padding: 4px;
+    padding: 0;
   }
 
   /* Empty State */
@@ -111,28 +122,31 @@ export const styles = css`
   .tasks {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
   }
 
   .compact .tasks {
-    gap: 4px;
+    gap: 0;
   }
 
   /* Task Item */
   .task-item {
     display: flex;
     gap: 12px;
-    padding: 12px;
-    background: var(--card-background-color);
-    border: 1px solid var(--divider-color);
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--divider-color);
+    border-radius: 0;
+    transition: background-color 0.2s ease;
+  }
+
+  .task-item:last-child {
+    border-bottom: none;
   }
 
   .task-item:hover {
     background: var(--secondary-background-color);
-    border-color: var(--primary-color);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .task-item.completed {
@@ -149,7 +163,7 @@ export const styles = css`
   }
 
   .compact .task-item {
-    padding: 8px;
+    padding: 6px 12px;
     gap: 8px;
   }
 
@@ -168,6 +182,7 @@ export const styles = css`
     display: flex;
     flex-direction: column;
     gap: 8px;
+    cursor: pointer;
   }
 
   .compact .task-main {
@@ -245,44 +260,27 @@ export const styles = css`
     align-items: center;
     gap: 4px;
     font-size: 12px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: var(--secondary-background-color);
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
     color: var(--secondary-text-color);
   }
 
   .date-item ha-icon {
-    --mdc-icon-size: 14px;
+    --mdc-icon-size: 16px;
   }
 
   .date-item.overdue {
-    background: var(--error-color);
-    color: white;
-  }
-
-  .date-item.today {
-    background: var(--warning-color);
-    color: white;
-  }
-
-  .date-item.tomorrow {
-    background: var(--info-color);
-    color: white;
-  }
-
-  .date-item.this-week {
-    background: var(--primary-color);
-    color: white;
-    opacity: 0.8;
+    color: var(--error-color);
   }
 
   .compact .date-item {
     font-size: 11px;
-    padding: 2px 6px;
+    padding: 0;
   }
 
   .compact .date-item ha-icon {
-    --mdc-icon-size: 12px;
+    --mdc-icon-size: 14px;
   }
 
   /* Status Badge */
@@ -391,6 +389,33 @@ export const styles = css`
     gap: 4px;
   }
 
+  /* Dialog Content */
+  .dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 8px 0;
+    min-width: 400px;
+  }
+
+  .dialog-content ha-textfield,
+  .dialog-content ha-textarea,
+  .dialog-content ha-date-input,
+  .dialog-content ha-select {
+    width: 100%;
+  }
+
+  .dialog-actions-extra {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 8px;
+    border-top: 1px solid var(--divider-color);
+  }
+
+  .dialog-actions-extra mwc-button {
+    color: var(--error-color);
+  }
+
   /* Responsive adjustments */
   @media (max-width: 600px) {
     .card-header {
@@ -402,19 +427,16 @@ export const styles = css`
     }
 
     .task-item {
-      padding: 10px;
+      padding: 6px 12px;
       gap: 10px;
     }
 
     .task-summary {
       font-size: 14px;
     }
-  }
 
-  /* Dark mode adjustments */
-  @media (prefers-color-scheme: dark) {
-    .task-item:hover {
-      box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+    .dialog-content {
+      min-width: 300px;
     }
   }
 `;

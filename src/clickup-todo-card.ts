@@ -16,17 +16,7 @@ console.info(
   'color: white; font-weight: bold; background: dimgray',
 );
 
-// Register card with Home Assistant
-(window as any).customCards = (window as any).customCards || [];
-(window as any).customCards.push({
-  type: 'custom:clickup-todo-card',
-  name: 'ClickUp Todo Card',
-  description: 'Enhanced todo card with ClickUp custom fields and filters',
-  preview: true,
-  documentationURL: 'https://github.com/chbarnhouse/clickup-todo-card'
-});
-
-@customElement('clickup-todo-card')
+// Don't use decorator - will register manually after class definition
 export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private _config: ClickUpTodoCardConfig = {
@@ -35,6 +25,8 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     ...DEFAULT_CONFIG,
   };
   @state() private _tasks: ClickUpTask[] = [];
+  @state() private _editingTask: ClickUpTask | null = null;
+  @state() private _showAddDialog = false;
 
   public static async getConfigElement() {
     await import('./editor');
@@ -65,67 +57,110 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   protected shouldUpdate(changedProps: Map<string | number | symbol, unknown>): boolean {
-    if (!this._config) {
-      return false;
+    if (!this._config || !this.hass) {
+      return true; // Always update if we don't have config or hass yet
     }
-    return hasConfigOrEntityChanged(this, changedProps, false);
+
+    // Don't use hasConfigOrEntityChanged if we don't have a valid entity
+    if (!this._config.entity) {
+      return true;
+    }
+
+    try {
+      return hasConfigOrEntityChanged(this, changedProps, false);
+    } catch (e) {
+      console.error('Error in shouldUpdate:', e);
+      return true;
+    }
   }
 
   protected render(): TemplateResult {
-    if (!this._config || !this.hass) {
-      return html``;
-    }
+    try {
+      if (!this._config || !this.hass) {
+        return html`<ha-card><div class="warning">Loading...</div></ha-card>`;
+      }
 
-    if (!this._config.entity) {
+      if (!this._config.entity) {
+        return html`
+          <ha-card>
+            <div class="warning">Please configure an entity in the card editor</div>
+          </ha-card>
+        `;
+      }
+
+      const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
+
+      if (!stateObj) {
+        return html`
+          <ha-card>
+            <div class="warning">Entity not found: ${this._config.entity}</div>
+          </ha-card>
+        `;
+      }
+
+      // Parse ClickUp tasks
+      this._tasks = parseClickUpTasks(stateObj);
+
+      // Apply filters
+      const filteredTasks = filterTasks(this._tasks, this._config);
+
+      // Apply sorting
+      const sortedTasks = sortTasks(filteredTasks, this._config);
+
+      // Group if needed
+      const groupBy = this._config.group_by || 'none';
+      const groups = groupTasks(sortedTasks, groupBy, this._config.group_field_id);
+
       return html`
         <ha-card>
-          <div class="warning">Please configure an entity</div>
+          ${this._renderHeader(stateObj)}
+          <div class="card-content ${this._config.compact_mode ? 'compact' : ''}">
+            ${groups.size === 1 && groups.has('all')
+              ? this._renderTaskList(groups.get('all')!)
+              : this._renderGroupedTasks(groups)}
+          </div>
+        </ha-card>
+        ${this._showAddDialog ? this._renderAddDialog() : ''}
+        ${this._editingTask ? this._renderEditDialog() : ''}
+      `;
+    } catch (e) {
+      console.error('Error rendering ClickUp Todo Card:', e);
+      return html`
+        <ha-card>
+          <div class="warning">Error rendering card. Check console for details.</div>
         </ha-card>
       `;
     }
-
-    const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
-
-    if (!stateObj) {
-      return html`
-        <ha-card>
-          <div class="warning">Entity not found: ${this._config.entity}</div>
-        </ha-card>
-      `;
-    }
-
-    // Parse ClickUp tasks
-    this._tasks = parseClickUpTasks(stateObj);
-
-    // Apply filters
-    const filteredTasks = filterTasks(this._tasks, this._config);
-
-    // Apply sorting
-    const sortedTasks = sortTasks(filteredTasks, this._config);
-
-    // Group if needed
-    const groupBy = this._config.group_by || 'none';
-    const groups = groupTasks(sortedTasks, groupBy, this._config.group_field_id);
-
-    return html`
-      <ha-card>
-        ${this._renderHeader(stateObj)}
-        <div class="card-content ${this._config.compact_mode ? 'compact' : ''}">
-          ${groups.size === 1 && groups.has('all')
-            ? this._renderTaskList(groups.get('all')!)
-            : this._renderGroupedTasks(groups)}
-        </div>
-      </ha-card>
-    `;
   }
 
   private _renderHeader(stateObj: ExtendedHassEntity): TemplateResult {
+    if (this._config.hide_header) {
+      return html``;
+    }
+
     const title = this._config.title || stateObj.attributes.friendly_name || 'Tasks';
+    const unavailable = stateObj.state === 'unavailable';
+    const showCount = this._config.show_task_count !== false;
 
     return html`
       <div class="card-header">
         <div class="name">${title}</div>
-        <div class="task-count">${this._tasks.length}</div>
+        ${showCount ? html`<div class="task-count">${this._tasks.length}</div>` : ''}
+      </div>
+      <div class="add-item-row">
+        <ha-textfield
+          .placeholder=${"Add item"}
+          .disabled=${unavailable}
+          @keydown=${this._handleAddKeyPress}
+        >
+          <ha-icon-button
+            slot="trailingIcon"
+            .disabled=${unavailable}
+            @click=${this._addItem}
+          >
+            <ha-icon icon="mdi:plus"></ha-icon>
+          </ha-icon-button>
+        </ha-textfield>
       </div>
     `;
   }
@@ -176,7 +211,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           ></ha-checkbox>
         </div>
 
-        <div class="task-main">
+        <div class="task-main" @click=${() => this._openEditDialog(task)}>
           <div class="task-header">
             <span class="task-summary">${task.summary}</span>
             ${this._renderPriority(task)}
@@ -244,7 +279,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderStatus(task: ClickUpTask): TemplateResult {
-    if (!task.clickup_status) {
+    if (!this._config.show_status || !task.clickup_status) {
       return html``;
     }
 
@@ -343,10 +378,283 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
   }
 
+  private async _addItem(): Promise<void> {
+    const input = this.shadowRoot?.querySelector('ha-textfield') as any;
+    if (!input || !input.value?.trim()) {
+      // If input is empty, just show the dialog
+      this._showAddDialog = true;
+      return;
+    }
+
+    const summary = input.value.trim();
+
+    try {
+      await this.hass.callService('todo', 'add_item', {
+        item: summary,
+      }, {
+        entity_id: this._config.entity,
+      });
+
+      input.value = '';
+      input.blur();
+    } catch (err) {
+      console.error('Error adding item:', err);
+    }
+  }
+
+  private _handleAddKeyPress(e: KeyboardEvent): void {
+    if (e.key === 'Enter') {
+      this._addItem();
+    }
+  }
+
+  private _openAddDialog(): void {
+    this._showAddDialog = true;
+  }
+
+  private _openEditDialog(task: ClickUpTask): void {
+    this._editingTask = task;
+  }
+
+  private _renderAddDialog(): TemplateResult {
+    return html`
+      <ha-dialog
+        open
+        @closed=${() => this._showAddDialog = false}
+        .heading=${'Add Task'}
+      >
+        <div class="dialog-content">
+          <ha-textfield
+            dialogInitialFocus
+            .label=${'Summary'}
+            .id=${'add-summary'}
+            required
+          ></ha-textfield>
+
+          <ha-textarea
+            .label=${'Description'}
+            .id=${'add-description'}
+            rows="3"
+          ></ha-textarea>
+
+          <ha-date-input
+            .label=${'Start Date'}
+            .id=${'add-start-date'}
+          ></ha-date-input>
+
+          <ha-date-input
+            .label=${'Due Date'}
+            .id=${'add-due-date'}
+          ></ha-date-input>
+
+          <ha-select
+            .label=${'Priority'}
+            .id=${'add-priority'}
+          >
+            <mwc-list-item value="">No Priority</mwc-list-item>
+            <mwc-list-item value="1">Urgent</mwc-list-item>
+            <mwc-list-item value="2">High</mwc-list-item>
+            <mwc-list-item value="3">Normal</mwc-list-item>
+            <mwc-list-item value="4">Low</mwc-list-item>
+          </ha-select>
+        </div>
+
+        <mwc-button slot="primaryAction" @click=${this._submitAddTask}>
+          Add
+        </mwc-button>
+        <mwc-button slot="secondaryAction" dialogAction="cancel">
+          Cancel
+        </mwc-button>
+      </ha-dialog>
+    `;
+  }
+
+  private _renderEditDialog(): TemplateResult {
+    if (!this._editingTask) {
+      return html``;
+    }
+
+    const task = this._editingTask;
+    const startDateValue = task.start_date ? new Date(typeof task.start_date === 'number' ? task.start_date : parseInt(task.start_date as string)).toISOString().split('T')[0] : '';
+    const dueDateValue = task.due ? new Date(task.due).toISOString().split('T')[0] : '';
+
+    return html`
+      <ha-dialog
+        open
+        @closed=${() => this._editingTask = null}
+        .heading=${'Edit Task'}
+      >
+        <div class="dialog-content">
+          <ha-textfield
+            dialogInitialFocus
+            .label=${'Summary'}
+            .id=${'edit-summary'}
+            .value=${task.summary}
+            required
+          ></ha-textfield>
+
+          <ha-textarea
+            .label=${'Description'}
+            .id=${'edit-description'}
+            .value=${task.description || ''}
+            rows="3"
+          ></ha-textarea>
+
+          <ha-date-input
+            .label=${'Start Date'}
+            .id=${'edit-start-date'}
+            .value=${startDateValue}
+          ></ha-date-input>
+
+          <ha-date-input
+            .label=${'Due Date'}
+            .id=${'edit-due-date'}
+            .value=${dueDateValue}
+          ></ha-date-input>
+
+          <ha-select
+            .label=${'Priority'}
+            .id=${'edit-priority'}
+            .value=${task.priority?.toString() || ''}
+          >
+            <mwc-list-item value="">No Priority</mwc-list-item>
+            <mwc-list-item value="1">Urgent</mwc-list-item>
+            <mwc-list-item value="2">High</mwc-list-item>
+            <mwc-list-item value="3">Normal</mwc-list-item>
+            <mwc-list-item value="4">Low</mwc-list-item>
+          </ha-select>
+
+          <div class="dialog-actions-extra">
+            <mwc-button @click=${() => this._deleteTask(task)}>
+              Delete Task
+            </mwc-button>
+          </div>
+        </div>
+
+        <mwc-button slot="primaryAction" @click=${this._submitEditTask}>
+          Save
+        </mwc-button>
+        <mwc-button slot="secondaryAction" dialogAction="cancel">
+          Cancel
+        </mwc-button>
+      </ha-dialog>
+    `;
+  }
+
+  private async _submitAddTask(): Promise<void> {
+    const summary = (this.shadowRoot?.querySelector('#add-summary') as any)?.value?.trim();
+
+    if (!summary) {
+      return;
+    }
+
+    const description = (this.shadowRoot?.querySelector('#add-description') as any)?.value?.trim();
+    const startDate = (this.shadowRoot?.querySelector('#add-start-date') as any)?.value;
+    const dueDate = (this.shadowRoot?.querySelector('#add-due-date') as any)?.value;
+    const priority = (this.shadowRoot?.querySelector('#add-priority') as any)?.value;
+
+    try {
+      const serviceData: any = {
+        item: summary,
+      };
+
+      if (description) {
+        serviceData.description = description;
+      }
+
+      if (dueDate) {
+        serviceData.due = dueDate;
+      }
+
+      // Note: ClickUp integration may not support setting these via add_item
+      // This depends on the integration's implementation
+      await this.hass.callService('todo', 'add_item', serviceData, {
+        entity_id: this._config.entity,
+      });
+
+      this._showAddDialog = false;
+    } catch (err) {
+      console.error('Error adding task:', err);
+    }
+  }
+
+  private async _submitEditTask(): Promise<void> {
+    if (!this._editingTask) {
+      return;
+    }
+
+    const summary = (this.shadowRoot?.querySelector('#edit-summary') as any)?.value?.trim();
+
+    if (!summary) {
+      return;
+    }
+
+    const description = (this.shadowRoot?.querySelector('#edit-description') as any)?.value?.trim();
+    const startDate = (this.shadowRoot?.querySelector('#edit-start-date') as any)?.value;
+    const dueDate = (this.shadowRoot?.querySelector('#edit-due-date') as any)?.value;
+    const priority = (this.shadowRoot?.querySelector('#edit-priority') as any)?.value;
+
+    try {
+      const serviceData: any = {
+        entity_id: this._config.entity,
+        item: this._editingTask.uid,
+        rename: summary,
+      };
+
+      if (description !== undefined) {
+        serviceData.description = description || null;
+      }
+
+      if (dueDate) {
+        serviceData.due = dueDate;
+      }
+
+      await this.hass.callService('todo', 'update_item', serviceData);
+
+      this._editingTask = null;
+    } catch (err) {
+      console.error('Error updating task:', err);
+    }
+  }
+
+  private async _deleteTask(task: ClickUpTask): Promise<void> {
+    if (!confirm(`Delete task "${task.summary}"?`)) {
+      return;
+    }
+
+    try {
+      await this.hass.callService('todo', 'remove_item', {
+        entity_id: this._config.entity,
+        item: task.uid,
+      });
+
+      this._editingTask = null;
+    } catch (err) {
+      console.error('Error deleting task:', err);
+    }
+  }
+
   static get styles(): CSSResultGroup {
     return styles;
   }
 }
+
+// Explicitly register the custom element
+if (!customElements.get('clickup-todo-card')) {
+  customElements.define('clickup-todo-card', ClickUpTodoCard);
+  console.log('ClickUp Todo Card: Manually registered custom element');
+}
+
+// Register card with Home Assistant AFTER custom element is defined
+(window as any).customCards = (window as any).customCards || [];
+(window as any).customCards.push({
+  type: 'clickup-todo-card',  // No 'custom:' prefix - HA adds it automatically
+  name: 'ClickUp Todo Card',
+  description: 'Enhanced todo card with ClickUp custom fields and filters',
+  preview: true,
+  documentationURL: 'https://github.com/chbarnhouse/clickup-todo-card'
+});
+console.log('ClickUp Todo Card: Registered in customCards array');
 
 declare global {
   interface HTMLElementTagNameMap {

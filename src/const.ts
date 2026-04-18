@@ -1,4 +1,4 @@
-export const CARD_VERSION = '1.0.0';
+export const CARD_VERSION = '1.0.19';
 
 export const CARD_NAME = 'ClickUp Todo Card';
 
@@ -19,11 +19,11 @@ export const PRIORITY_ICONS = {
 };
 
 export const PRIORITY_COLORS = {
-  1: '#f50000',  // Urgent - Red
-  2: '#ffcc00',  // High - Yellow
-  3: '#6fddff',  // Normal - Blue
-  4: '#d8d8d8',  // Low - Gray
-  null: '#d8d8d8'  // No Priority - Gray
+  1: 'var(--error-color)',  // Urgent - Red
+  2: 'var(--warning-color)',  // High - Orange/Yellow
+  3: 'var(--info-color)',  // Normal - Blue
+  4: 'var(--disabled-text-color)',  // Low - Gray
+  null: 'var(--disabled-text-color)'  // No Priority - Gray
 };
 
 export const STATUS_TYPE_COLORS = {
@@ -33,11 +33,14 @@ export const STATUS_TYPE_COLORS = {
 };
 
 export const DEFAULT_CONFIG = {
-  show_start_date: true,
+  hide_header: false,
+  show_task_count: true,
+  show_start_date: false,
   show_due_date: true,
-  show_priority: true,
-  show_tags: true,
-  show_assignees: true,
+  show_priority: false,
+  show_status: false,
+  show_tags: false,
+  show_assignees: false,
   show_custom_fields: false,
   compact_mode: false,
   sort_by: 'due_date' as const,
