@@ -27,6 +27,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   @state() private _tasks: ClickUpTask[] = [];
   @state() private _editingTask: ClickUpTask | null = null;
   @state() private _showAddDialog = false;
+  @state() private _statusDropdownTask: string | null = null;
 
   public static async getConfigElement() {
     await import('./editor');
@@ -157,17 +158,18 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
   private _renderFloatingAddButton(stateObj: ExtendedHassEntity): TemplateResult {
     const unavailable = stateObj.state === 'unavailable';
-    const buttonText = this._config.add_button_text || 'Add Task';
+    const buttonText = this._config.add_button_text !== undefined ? this._config.add_button_text : 'Add Task';
     const position = this._config.add_button_position || 'bottom-right';
+    const iconOnly = !buttonText;
 
     return html`
       <button
-        class="floating-add-button ${position}"
+        class="floating-add-button ${position} ${iconOnly ? 'icon-only' : ''}"
         ?disabled=${unavailable}
         @click=${this._openAddDialog}
       >
         <ha-icon icon="mdi:plus"></ha-icon>
-        <span>${buttonText}</span>
+        ${buttonText ? html`<span>${buttonText}</span>` : ''}
       </button>
     `;
   }
@@ -209,16 +211,25 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const overdue = isOverdue(task);
     const completed = task.status === 'completed';
     const showStatus = this._config.show_status && task.clickup_status;
+    const isDropdownOpen = this._statusDropdownTask === task.uid;
 
     return html`
       <div class="task-item ${completed ? 'completed' : ''} ${overdue ? 'overdue' : ''}">
         ${showStatus ? html`
-          <div class="task-status-wrapper">
+          <div class="task-status-wrapper" @click=${(e: Event) => {
+            e.stopPropagation();
+            this._toggleStatusDropdown(task.uid);
+          }}>
             ${this._renderStatus(task)}
             <ha-checkbox
               .checked=${completed}
-              @change=${() => this._toggleTask(task)}
+              @change=${(e: Event) => {
+                e.stopPropagation();
+                this._toggleTask(task);
+              }}
+              @click=${(e: Event) => e.stopPropagation()}
             ></ha-checkbox>
+            ${isDropdownOpen ? this._renderStatusDropdown(task) : ''}
           </div>
         ` : html`
           <div class="task-checkbox">
@@ -392,6 +403,50 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       });
     } catch (err) {
       console.error('Error toggling task:', err);
+    }
+  }
+
+  private _toggleStatusDropdown(taskId: string): void {
+    this._statusDropdownTask = this._statusDropdownTask === taskId ? null : taskId;
+  }
+
+  private _renderStatusDropdown(task: ClickUpTask): TemplateResult {
+    // Common ClickUp statuses - this could be made dynamic by fetching from entity attributes
+    const commonStatuses = [
+      { name: 'TO DO', color: '#d3d3d3', type: 'open' },
+      { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
+      { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
+      { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
+      { name: 'BLOCKED', color: '#f50000', type: 'custom' },
+    ];
+
+    return html`
+      <div class="status-dropdown" @click=${(e: Event) => e.stopPropagation()}>
+        ${commonStatuses.map(status => html`
+          <div
+            class="status-option"
+            style="--status-color: ${status.color}"
+            @click=${() => this._changeTaskStatus(task, status.name)}
+          >
+            <span class="status-badge">${status.name}</span>
+          </div>
+        `)}
+      </div>
+    `;
+  }
+
+  private async _changeTaskStatus(task: ClickUpTask, newStatus: string): Promise<void> {
+    try {
+      // Close dropdown
+      this._statusDropdownTask = null;
+
+      // Call ClickUp integration service to update status
+      await this.hass.callService('clickup', 'update_task_status', {
+        task_id: task.clickup_id,
+        status: newStatus,
+      });
+    } catch (err) {
+      console.error('Error changing task status:', err);
     }
   }
 

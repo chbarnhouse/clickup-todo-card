@@ -36,11 +36,15 @@ export const styles = css`
   .card-header .task-count {
     background: var(--primary-color);
     color: var(--text-primary-color);
-    border-radius: 12px;
-    padding: 2px 8px;
+    border-radius: 20px;
+    padding: 4px 12px;
     font-size: 12px;
     font-weight: 600;
-    min-width: 20px;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
   }
 
@@ -79,6 +83,18 @@ export const styles = css`
 
   .floating-add-button ha-icon {
     --mdc-icon-size: 20px;
+  }
+
+  .floating-add-button.icon-only {
+    padding: 12px;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    justify-content: center;
+  }
+
+  .floating-add-button.icon-only ha-icon {
+    --mdc-icon-size: 24px;
   }
 
   /* Positioning classes */
@@ -257,17 +273,56 @@ export const styles = css`
     display: flex;
     align-items: center;
     position: relative;
+    cursor: pointer;
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 36px;
+    padding-left: 40px;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     position: relative;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 6px;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
     z-index: 1;
+  }
+
+  /* Status Dropdown */
+  .status-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    background: var(--card-background-color);
+    border: 1px solid var(--divider-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    min-width: 150px;
+    overflow: hidden;
+  }
+
+  .status-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .status-option:hover {
+    background: var(--secondary-background-color);
+  }
+
+  .status-option .status-badge {
+    display: block;
+    width: 100%;
   }
 
   /* Task Main Content */

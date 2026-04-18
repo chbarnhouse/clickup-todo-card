@@ -190,7 +190,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Button Position'}
             .configValue=${'add_button_position'}
             .value=${this._config.add_button_position || 'bottom-right'}
-            @selected=${this._valueChanged}
+            @value-changed=${this._selectChanged}
             @closed=${(e: Event) => e.stopPropagation()}
           >
             <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
@@ -228,7 +228,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort By'}
             .configValue=${'sort_by'}
             .value=${this._config.sort_by || 'due_date'}
-            @selected=${this._valueChanged}
+            @value-changed=${this._selectChanged}
             @closed=${(e: Event) => e.stopPropagation()}
           >
             <mwc-list-item value="due_date">Due Date</mwc-list-item>
@@ -242,7 +242,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort Order'}
             .configValue=${'sort_order'}
             .value=${this._config.sort_order || 'asc'}
-            @selected=${this._valueChanged}
+            @value-changed=${this._selectChanged}
             @closed=${(e: Event) => e.stopPropagation()}
           >
             <mwc-list-item value="asc">Ascending</mwc-list-item>
@@ -258,7 +258,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Group By'}
             .configValue=${'group_by'}
             .value=${this._config.group_by || 'none'}
-            @selected=${this._valueChanged}
+            @value-changed=${this._selectChanged}
             @closed=${(e: Event) => e.stopPropagation()}
           >
             <mwc-list-item value="none">None</mwc-list-item>
@@ -274,7 +274,7 @@ export class ClickUpTodoCardEditor extends LitElement {
               .label=${'Custom Field for Grouping'}
               .configValue=${'group_field_id'}
               .value=${this._config.group_field_id || ''}
-              @selected=${this._valueChanged}
+              @value-changed=${this._selectChanged}
               @closed=${(e: Event) => e.stopPropagation()}
             >
               ${customFields.map(field => html`
@@ -431,6 +431,28 @@ export class ClickUpTodoCardEditor extends LitElement {
     if (configValue === 'entity') {
       setTimeout(() => this._loadEntityData(), 100);
     }
+
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private _selectChanged(ev: any): void {
+    if (!this._config || !this.hass) return;
+
+    const target = ev.target;
+    const configValue = target.configValue;
+
+    if (!configValue) return;
+
+    // For ha-select, get value from event detail
+    const value = ev.detail?.value !== undefined ? ev.detail.value : target.value;
+
+    // Handle empty strings for optional fields
+    const finalValue = value === '' ? undefined : value;
+
+    const newConfig = {
+      ...this._config,
+      [configValue]: finalValue,
+    };
 
     fireEvent(this, 'config-changed', { config: newConfig });
   }
