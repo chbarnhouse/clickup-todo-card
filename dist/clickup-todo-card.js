@@ -307,19 +307,19 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 40px;
-    padding-right: 12px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-left: 48px;
+    padding-right: 16px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     position: relative;
-    min-height: 32px;
+    min-height: 36px;
     display: flex;
     align-items: center;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 8px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -359,11 +359,11 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
   .status-option .status-badge {
     display: block;
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 16px;
     margin: 0;
     border-radius: 0;
     box-shadow: none;
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .status-option:first-child .status-badge {
@@ -372,6 +372,10 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
 
   .status-option:last-child .status-badge {
     border-radius: 0 0 12px 12px;
+  }
+
+  .status-option:only-child .status-badge {
+    border-radius: 12px;
   }
 
   /* Task Main Content */
@@ -488,8 +492,8 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
     align-items: center;
     font-size: 11px;
     font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 12px;
+    padding: 6px 14px;
+    border-radius: 999px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
@@ -594,9 +598,9 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
   .dialog-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 8px 0;
-    min-width: 400px;
+    gap: 20px;
+    padding: 16px 0;
+    min-width: 420px;
   }
 
   .dialog-content ha-textfield,
@@ -606,10 +610,21 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
     width: 100%;
   }
 
+  .dialog-content ha-textfield,
+  .dialog-content ha-textarea {
+    --mdc-theme-primary: var(--primary-color);
+  }
+
+  .dialog-content ha-select {
+    --mdc-theme-primary: var(--primary-color);
+    margin-top: 4px;
+  }
+
   .dialog-actions-extra {
     display: flex;
     justify-content: flex-start;
-    padding-top: 8px;
+    padding-top: 12px;
+    margin-top: 8px;
     border-top: 1px solid var(--divider-color);
   }
 
@@ -640,7 +655,7 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
       min-width: 300px;
     }
   }
-`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.23  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class At extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}static async getConfigElement(){return await Promise.resolve().then(function(){return St}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return B`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return B`
+`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.24  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class At extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}static async getConfigElement(){return await Promise.resolve().then(function(){return St}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return B`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return B`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
@@ -671,7 +686,7 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
       </div>
     `}_renderFloatingAddButton(t){const e="unavailable"===t.state,i=void 0!==this._config.add_button_text?this._config.add_button_text:"Add Task",s=this._config.add_button_position||"bottom-right",o=!1!==this._config.add_button_overlay;return B`
       <button
-        class="floating-add-button ${s} ${!i?"icon-only":""} ${o?"overlay":"non-overlay"}"
+        class="floating-add-button ${s} ${""===i?"icon-only":""} ${o?"overlay":"non-overlay"}"
         ?disabled=${e}
         @click=${this._openAddDialog}
       >
@@ -1264,7 +1279,7 @@ function t(t,e,i,s){var o,a=arguments.length,r=a<3?e:null===s?s=Object.getOwnPro
             Error loading editor. Please check the console for details.
           </div>
         </div>
-      `}}_valueChanged(t){if(!this._config||!this.hass)return;const e=t.target,i=e.configValue;if(!i)return;let s;if(void 0!==e.checked)s=e.checked;else{if(void 0===e.value)return;s=e.value}""===s&&(s=void 0);const o={...this._config,[i]:s};"entity"===i&&setTimeout(()=>this._loadEntityData(),100),ft(this,"config-changed",{config:o})}_selectChanged(t){if(!this._config||!this.hass)return;const e=t.target,i=e.configValue;if(!i)return;const s=void 0!==t.detail?.value?t.detail.value:e.value,o=""===s?void 0:s,a={...this._config,[i]:o};ft(this,"config-changed",{config:a})}_entityChanged(t){if(!this._config||t===this._config.entity)return;const e={...this._config,entity:t};this._config=e,this._loadEntityData(),ft(this,"config-changed",{config:e})}_isFieldVisible(t){return!(!this._config.visible_custom_fields||0===this._config.visible_custom_fields.length)&&this._config.visible_custom_fields.includes(t)}_customFieldChanged(t){const e=t.target,i=e.value,s=e.checked,o=this._config.visible_custom_fields||[];let a;a=s?[...o,i]:o.filter(t=>t!==i);const r={...this._config,visible_custom_fields:a.length>0?a:void 0};ft(this,"config-changed",{config:r})}_isStatusFiltered(t){return this._config.filters?.status?.includes(t)||!1}_statusFilterChanged(t){const e=t.target,i=e.value,s=e.checked,o=this._config.filters||{},a=o.status||[];let r;r=s?[...a,i]:a.filter(t=>t!==i);const n={...this._config,filters:{...o,status:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_isPriorityFiltered(t){return this._config.filters?.priority?.includes(t)||!1}_priorityFilterChanged(t){const e=t.target,i=e.value,s="null"===i?null:parseInt(i),o=e.checked,a=this._config.filters||{},r=a.priority||[];let n;n=o?[...r,s]:r.filter(t=>t!==s);const l={...this._config,filters:{...a,priority:n.length>0?n:void 0}};ft(this,"config-changed",{config:l})}_isTagFiltered(t){return this._config.filters?.tags?.includes(t)||!1}_tagFilterChanged(t){const e=t.target,i=e.value,s=e.checked,o=this._config.filters||{},a=o.tags||[];let r;r=s?[...a,i]:a.filter(t=>t!==i);const n={...this._config,filters:{...o,tags:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_isAssigneeFiltered(t){return this._config.filters?.assignees?.includes(t)||!1}_assigneeFilterChanged(t){const e=t.target,i=e.value,s=e.checked,o=this._config.filters||{},a=o.assignees||[];let r;r=s?[...a,i]:a.filter(t=>t!==i);const n={...this._config,filters:{...o,assignees:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_dateRangeChanged(t,e){const i=this._config.filters||{},s={...i.due_date_range||{},[t]:e||void 0},o=s.start||s.end,a={...this._config,filters:{...i,due_date_range:o?s:void 0}};ft(this,"config-changed",{config:a})}static get styles(){return r`
+      `}}_valueChanged(t){if(!this._config||!this.hass)return;const e=t.target,i=e.configValue;if(!i)return;let s;if(void 0!==e.checked)s=e.checked;else{if(void 0===e.value)return;s=e.value}""===s&&"add_button_text"!==i&&(s=void 0);const o={...this._config,[i]:s};"entity"===i&&setTimeout(()=>this._loadEntityData(),100),ft(this,"config-changed",{config:o})}_selectChanged(t){if(!this._config||!this.hass)return;t.stopPropagation();const e=t.target,i=e.configValue;if(!i)return;let s=t.detail?.value;if(void 0===s&&(s=e.value),void 0===s)return;const o=""===s?void 0:s,a={...this._config,[i]:o};ft(this,"config-changed",{config:a}),this.requestUpdate()}_entityChanged(t){if(!this._config||t===this._config.entity)return;const e={...this._config,entity:t};this._config=e,this._loadEntityData(),ft(this,"config-changed",{config:e})}_isFieldVisible(t){return!(!this._config.visible_custom_fields||0===this._config.visible_custom_fields.length)&&this._config.visible_custom_fields.includes(t)}_customFieldChanged(t){const e=t.target,i=e.value,s=e.checked,o=this._config.visible_custom_fields||[];let a;a=s?[...o,i]:o.filter(t=>t!==i);const r={...this._config,visible_custom_fields:a.length>0?a:void 0};ft(this,"config-changed",{config:r})}_isStatusFiltered(t){return this._config.filters?.status?.includes(t)||!1}_statusFilterChanged(t){const e=t.target,i=e.value,s=e.checked,o=this._config.filters||{},a=o.status||[];let r;r=s?[...a,i]:a.filter(t=>t!==i);const n={...this._config,filters:{...o,status:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_isPriorityFiltered(t){return this._config.filters?.priority?.includes(t)||!1}_priorityFilterChanged(t){const e=t.target,i=e.value,s="null"===i?null:parseInt(i),o=e.checked,a=this._config.filters||{},r=a.priority||[];let n;n=o?[...r,s]:r.filter(t=>t!==s);const l={...this._config,filters:{...a,priority:n.length>0?n:void 0}};ft(this,"config-changed",{config:l})}_isTagFiltered(t){return this._config.filters?.tags?.includes(t)||!1}_tagFilterChanged(t){const e=t.target,i=e.value,s=e.checked,o=this._config.filters||{},a=o.tags||[];let r;r=s?[...a,i]:a.filter(t=>t!==i);const n={...this._config,filters:{...o,tags:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_isAssigneeFiltered(t){return this._config.filters?.assignees?.includes(t)||!1}_assigneeFilterChanged(t){const e=t.target,i=e.value,s=e.checked,o=this._config.filters||{},a=o.assignees||[];let r;r=s?[...a,i]:a.filter(t=>t!==i);const n={...this._config,filters:{...o,assignees:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_dateRangeChanged(t,e){const i=this._config.filters||{},s={...i.due_date_range||{},[t]:e||void 0},o=s.start||s.end,a={...this._config,filters:{...i,due_date_range:o?s:void 0}};ft(this,"config-changed",{config:a})}static get styles(){return r`
       .card-config {
         padding: 16px;
       }

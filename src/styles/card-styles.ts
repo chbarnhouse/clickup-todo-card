@@ -309,19 +309,19 @@ export const styles = css`
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 40px;
-    padding-right: 12px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-left: 48px;
+    padding-right: 16px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     position: relative;
-    min-height: 32px;
+    min-height: 36px;
     display: flex;
     align-items: center;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 8px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -361,11 +361,11 @@ export const styles = css`
   .status-option .status-badge {
     display: block;
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 16px;
     margin: 0;
     border-radius: 0;
     box-shadow: none;
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .status-option:first-child .status-badge {
@@ -374,6 +374,10 @@ export const styles = css`
 
   .status-option:last-child .status-badge {
     border-radius: 0 0 12px 12px;
+  }
+
+  .status-option:only-child .status-badge {
+    border-radius: 12px;
   }
 
   /* Task Main Content */
@@ -490,8 +494,8 @@ export const styles = css`
     align-items: center;
     font-size: 11px;
     font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 12px;
+    padding: 6px 14px;
+    border-radius: 999px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
@@ -596,9 +600,9 @@ export const styles = css`
   .dialog-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 8px 0;
-    min-width: 400px;
+    gap: 20px;
+    padding: 16px 0;
+    min-width: 420px;
   }
 
   .dialog-content ha-textfield,
@@ -608,10 +612,21 @@ export const styles = css`
     width: 100%;
   }
 
+  .dialog-content ha-textfield,
+  .dialog-content ha-textarea {
+    --mdc-theme-primary: var(--primary-color);
+  }
+
+  .dialog-content ha-select {
+    --mdc-theme-primary: var(--primary-color);
+    margin-top: 4px;
+  }
+
   .dialog-actions-extra {
     display: flex;
     justify-content: flex-start;
-    padding-top: 8px;
+    padding-top: 12px;
+    margin-top: 8px;
     border-top: 1px solid var(--divider-color);
   }
 

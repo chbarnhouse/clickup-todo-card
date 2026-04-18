@@ -168,10 +168,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
   private _renderFloatingAddButton(stateObj: ExtendedHassEntity): TemplateResult {
     const unavailable = stateObj.state === 'unavailable';
-    const buttonText = this._config.add_button_text !== undefined ? this._config.add_button_text : 'Add Task';
+    // If add_button_text is explicitly set (even to empty string), use it; otherwise default to 'Add Task'
+    const buttonText = this._config.add_button_text !== undefined
+      ? this._config.add_button_text
+      : 'Add Task';
     const position = this._config.add_button_position || 'bottom-right';
     const overlay = this._config.add_button_overlay !== false;
-    const iconOnly = !buttonText;
+    const iconOnly = buttonText === '';
 
     return html`
       <button

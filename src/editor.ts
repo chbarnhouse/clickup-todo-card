@@ -426,7 +426,8 @@ export class ClickUpTodoCardEditor extends LitElement {
     }
 
     // Handle empty strings for optional fields
-    if (value === '') {
+    // Special case: add_button_text should allow empty string
+    if (value === '' && configValue !== 'add_button_text') {
       value = undefined;
     }
 
@@ -446,13 +447,20 @@ export class ClickUpTodoCardEditor extends LitElement {
   private _selectChanged(ev: any): void {
     if (!this._config || !this.hass) return;
 
+    ev.stopPropagation();
+
     const target = ev.target;
     const configValue = target.configValue;
 
     if (!configValue) return;
 
-    // For ha-select, get value from event detail
-    const value = ev.detail?.value !== undefined ? ev.detail.value : target.value;
+    // Try multiple ways to get the value from ha-select
+    let value = ev.detail?.value;
+    if (value === undefined) {
+      value = target.value;
+    }
+
+    if (value === undefined) return;
 
     // Handle empty strings for optional fields
     const finalValue = value === '' ? undefined : value;
@@ -463,6 +471,7 @@ export class ClickUpTodoCardEditor extends LitElement {
     };
 
     fireEvent(this, 'config-changed', { config: newConfig });
+    this.requestUpdate();
   }
 
   private _entityChanged(entity: string): void {
