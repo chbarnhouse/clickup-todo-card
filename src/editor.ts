@@ -180,9 +180,9 @@ export class ClickUpTodoCardEditor extends LitElement {
           <h3>Add Button</h3>
 
           <ha-textfield
-            label="Button Text"
+            label="Button Text (leave empty for icon only)"
             .configValue=${'add_button_text'}
-            .value=${this._config.add_button_text || 'Add Task'}
+            .value=${this._config.add_button_text !== undefined ? this._config.add_button_text : 'Add Task'}
             @input=${this._valueChanged}
           ></ha-textfield>
 
@@ -200,6 +200,14 @@ export class ClickUpTodoCardEditor extends LitElement {
             <mwc-list-item value="top-center">Top Center</mwc-list-item>
             <mwc-list-item value="top-right">Top Right</mwc-list-item>
           </ha-select>
+
+          <ha-formfield .label=${'Overlay Button (float over content)'}>
+            <ha-switch
+              .checked=${this._config.add_button_overlay !== false}
+              .configValue=${'add_button_overlay'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
         </div>
 
         <!-- Visible Custom Fields -->

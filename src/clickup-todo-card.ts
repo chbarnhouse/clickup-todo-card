@@ -112,15 +112,22 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       const groupBy = this._config.group_by || 'none';
       const groups = groupTasks(sortedTasks, groupBy, this._config.group_field_id);
 
+      const overlay = this._config.add_button_overlay !== false;
+      const position = this._config.add_button_position || 'bottom-right';
+      const showButtonBefore = !overlay && position.startsWith('top');
+      const showButtonAfter = !overlay && position.startsWith('bottom');
+
       return html`
         <ha-card>
           ${this._renderHeader(stateObj)}
+          ${showButtonBefore ? html`<div class="button-container">${this._renderFloatingAddButton(stateObj)}</div>` : ''}
           <div class="card-content ${this._config.compact_mode ? 'compact' : ''}">
             ${groups.size === 1 && groups.has('all')
               ? this._renderTaskList(groups.get('all')!)
               : this._renderGroupedTasks(groups)}
           </div>
-          ${this._renderFloatingAddButton(stateObj)}
+          ${showButtonAfter ? html`<div class="button-container">${this._renderFloatingAddButton(stateObj)}</div>` : ''}
+          ${overlay ? this._renderFloatingAddButton(stateObj) : ''}
         </ha-card>
         ${this._showAddDialog ? this._renderAddDialog() : ''}
         ${this._editingTask ? this._renderEditDialog() : ''}
@@ -148,10 +155,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const taskCount = this._tasks.length;
+    const isSingleDigit = taskCount < 10;
+
     return html`
       <div class="card-header">
         ${showTitle ? html`<div class="name">${title}</div>` : ''}
-        ${showCount ? html`<div class="task-count">${this._tasks.length}</div>` : ''}
+        ${showCount ? html`<div class="task-count ${isSingleDigit ? 'single-digit' : ''}">${taskCount}</div>` : ''}
       </div>
     `;
   }
@@ -160,11 +170,12 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const unavailable = stateObj.state === 'unavailable';
     const buttonText = this._config.add_button_text !== undefined ? this._config.add_button_text : 'Add Task';
     const position = this._config.add_button_position || 'bottom-right';
+    const overlay = this._config.add_button_overlay !== false;
     const iconOnly = !buttonText;
 
     return html`
       <button
-        class="floating-add-button ${position} ${iconOnly ? 'icon-only' : ''}"
+        class="floating-add-button ${position} ${iconOnly ? 'icon-only' : ''} ${overlay ? 'overlay' : 'non-overlay'}"
         ?disabled=${unavailable}
         @click=${this._openAddDialog}
       >

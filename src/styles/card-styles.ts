@@ -48,6 +48,34 @@ export const styles = css`
     text-align: center;
   }
 
+  .card-header .task-count.single-digit {
+    border-radius: 50%;
+    width: 28px;
+    padding: 0;
+  }
+
+  /* Button Container (for non-overlay mode) */
+  .button-container {
+    padding: 12px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .button-container .floating-add-button.bottom-left,
+  .button-container .floating-add-button.top-left {
+    margin-right: auto;
+  }
+
+  .button-container .floating-add-button.bottom-right,
+  .button-container .floating-add-button.top-right {
+    margin-left: auto;
+  }
+
+  .button-container .floating-add-button {
+    position: relative;
+  }
+
   /* Floating Add Button */
   .floating-add-button {
     position: absolute;
@@ -65,6 +93,10 @@ export const styles = css`
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
     z-index: 1;
+  }
+
+  .floating-add-button.non-overlay {
+    position: static;
   }
 
   .floating-add-button:hover:not(:disabled) {
@@ -300,29 +332,48 @@ export const styles = css`
     position: absolute;
     top: 100%;
     left: 0;
-    margin-top: 4px;
+    margin-top: 8px;
     background: var(--card-background-color);
     border: 1px solid var(--divider-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 10;
-    min-width: 150px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+    min-width: 180px;
     overflow: hidden;
   }
 
   .status-option {
-    padding: 8px 12px;
+    padding: 0;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.15s ease;
+    border-bottom: 1px solid var(--divider-color);
+  }
+
+  .status-option:last-child {
+    border-bottom: none;
   }
 
   .status-option:hover {
     background: var(--secondary-background-color);
+    transform: translateX(4px);
   }
 
   .status-option .status-badge {
     display: block;
     width: 100%;
+    padding: 12px 16px;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 12px;
+  }
+
+  .status-option:first-child .status-badge {
+    border-radius: 12px 12px 0 0;
+  }
+
+  .status-option:last-child .status-badge {
+    border-radius: 0 0 12px 12px;
   }
 
   /* Task Main Content */
