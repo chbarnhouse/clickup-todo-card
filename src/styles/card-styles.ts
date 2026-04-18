@@ -47,11 +47,14 @@ export const styles = css`
   .add-item-row {
     padding: 8px 16px;
     border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: center;
   }
 
-  .add-item-row ha-textfield {
-    width: 100%;
-    --mdc-text-field-fill-color: transparent;
+  .add-item-row ha-icon-button {
+    --mdc-icon-button-size: 40px;
+    --mdc-icon-size: 24px;
+    color: var(--primary-color);
   }
 
   /* Content */
@@ -287,18 +290,20 @@ export const styles = css`
   .status-badge {
     display: inline-flex;
     align-items: center;
-    font-size: 12px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
     background: var(--status-color, var(--primary-color));
     color: white;
-    text-transform: capitalize;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .compact .status-badge {
-    font-size: 11px;
-    padding: 2px 6px;
+    font-size: 10px;
+    padding: 3px 8px;
   }
 
   /* Tags */

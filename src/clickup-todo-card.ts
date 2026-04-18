@@ -141,26 +141,22 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const title = this._config.title || stateObj.attributes.friendly_name || 'Tasks';
     const unavailable = stateObj.state === 'unavailable';
     const showCount = this._config.show_task_count !== false;
+    const showTitle = this._config.hide_title !== true;
 
     return html`
-      <div class="card-header">
-        <div class="name">${title}</div>
-        ${showCount ? html`<div class="task-count">${this._tasks.length}</div>` : ''}
-      </div>
+      ${showTitle || showCount ? html`
+        <div class="card-header">
+          ${showTitle ? html`<div class="name">${title}</div>` : ''}
+          ${showCount ? html`<div class="task-count">${this._tasks.length}</div>` : ''}
+        </div>
+      ` : ''}
       <div class="add-item-row">
-        <ha-textfield
-          .placeholder=${"Add item"}
+        <ha-icon-button
           .disabled=${unavailable}
-          @keydown=${this._handleAddKeyPress}
+          @click=${this._openAddDialog}
         >
-          <ha-icon-button
-            slot="trailingIcon"
-            .disabled=${unavailable}
-            @click=${this._addItem}
-          >
-            <ha-icon icon="mdi:plus"></ha-icon>
-          </ha-icon-button>
-        </ha-textfield>
+          <ha-icon icon="mdi:plus"></ha-icon>
+        </ha-icon-button>
       </div>
     `;
   }
@@ -378,36 +374,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
   }
 
-  private async _addItem(): Promise<void> {
-    const input = this.shadowRoot?.querySelector('ha-textfield') as any;
-    if (!input || !input.value?.trim()) {
-      // If input is empty, just show the dialog
-      this._showAddDialog = true;
-      return;
-    }
-
-    const summary = input.value.trim();
-
-    try {
-      await this.hass.callService('todo', 'add_item', {
-        item: summary,
-      }, {
-        entity_id: this._config.entity,
-      });
-
-      input.value = '';
-      input.blur();
-    } catch (err) {
-      console.error('Error adding item:', err);
-    }
-  }
-
-  private _handleAddKeyPress(e: KeyboardEvent): void {
-    if (e.key === 'Enter') {
-      this._addItem();
-    }
-  }
-
   private _openAddDialog(): void {
     this._showAddDialog = true;
   }
@@ -426,30 +392,32 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         <div class="dialog-content">
           <ha-textfield
             dialogInitialFocus
-            .label=${'Summary'}
-            .id=${'add-summary'}
+            label="Summary"
+            id="add-summary"
             required
           ></ha-textfield>
 
           <ha-textarea
-            .label=${'Description'}
-            .id=${'add-description'}
+            label="Description"
+            id="add-description"
             rows="3"
           ></ha-textarea>
 
-          <ha-date-input
-            .label=${'Start Date'}
-            .id=${'add-start-date'}
-          ></ha-date-input>
+          <ha-textfield
+            label="Start Date"
+            id="add-start-date"
+            type="date"
+          ></ha-textfield>
 
-          <ha-date-input
-            .label=${'Due Date'}
-            .id=${'add-due-date'}
-          ></ha-date-input>
+          <ha-textfield
+            label="Due Date"
+            id="add-due-date"
+            type="date"
+          ></ha-textfield>
 
           <ha-select
-            .label=${'Priority'}
-            .id=${'add-priority'}
+            label="Priority"
+            id="add-priority"
           >
             <mwc-list-item value="">No Priority</mwc-list-item>
             <mwc-list-item value="1">Urgent</mwc-list-item>
@@ -487,34 +455,36 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         <div class="dialog-content">
           <ha-textfield
             dialogInitialFocus
-            .label=${'Summary'}
-            .id=${'edit-summary'}
+            label="Summary"
+            id="edit-summary"
             .value=${task.summary}
             required
           ></ha-textfield>
 
           <ha-textarea
-            .label=${'Description'}
-            .id=${'edit-description'}
+            label="Description"
+            id="edit-description"
             .value=${task.description || ''}
             rows="3"
           ></ha-textarea>
 
-          <ha-date-input
-            .label=${'Start Date'}
-            .id=${'edit-start-date'}
+          <ha-textfield
+            label="Start Date"
+            id="edit-start-date"
+            type="date"
             .value=${startDateValue}
-          ></ha-date-input>
+          ></ha-textfield>
 
-          <ha-date-input
-            .label=${'Due Date'}
-            .id=${'edit-due-date'}
+          <ha-textfield
+            label="Due Date"
+            id="edit-due-date"
+            type="date"
             .value=${dueDateValue}
-          ></ha-date-input>
+          ></ha-textfield>
 
           <ha-select
-            .label=${'Priority'}
-            .id=${'edit-priority'}
+            label="Priority"
+            id="edit-priority"
             .value=${task.priority?.toString() || ''}
           >
             <mwc-list-item value="">No Priority</mwc-list-item>

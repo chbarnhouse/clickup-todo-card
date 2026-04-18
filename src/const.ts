@@ -1,4 +1,4 @@
-export const CARD_VERSION = '1.0.19';
+export const CARD_VERSION = '1.0.20';
 
 export const CARD_NAME = 'ClickUp Todo Card';
 
@@ -34,6 +34,7 @@ export const STATUS_TYPE_COLORS = {
 
 export const DEFAULT_CONFIG = {
   hide_header: false,
+  hide_title: false,
   show_task_count: true,
   show_start_date: false,
   show_due_date: true,

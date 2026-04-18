@@ -94,6 +94,14 @@ export class ClickUpTodoCardEditor extends LitElement {
             ></ha-switch>
           </ha-formfield>
 
+          <ha-formfield .label=${'Hide Title'}>
+            <ha-switch
+              .checked=${this._config.hide_title === true}
+              .configValue=${'hide_title'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
           <ha-formfield .label=${'Show Task Count Badge'}>
             <ha-switch
               .checked=${this._config.show_task_count !== false}
@@ -230,6 +238,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             <mwc-list-item value="status">Status</mwc-list-item>
             <mwc-list-item value="priority">Priority</mwc-list-item>
             <mwc-list-item value="assignee">Assignee</mwc-list-item>
+            <mwc-list-item value="list">List</mwc-list-item>
             <mwc-list-item value="custom_field">Custom Field</mwc-list-item>
           </ha-select>
 

@@ -16,6 +16,7 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
 
   // Display options
   hide_header?: boolean;
+  hide_title?: boolean;
   show_task_count?: boolean;
   show_start_date?: boolean;
   show_due_date?: boolean;
@@ -44,7 +45,7 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   sort_order?: 'asc' | 'desc';
 
   // Grouping
-  group_by?: 'none' | 'status' | 'priority' | 'assignee' | 'custom_field';
+  group_by?: 'none' | 'status' | 'priority' | 'assignee' | 'list' | 'custom_field';
   group_field_id?: string;
 }
 

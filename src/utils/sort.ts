@@ -141,6 +141,10 @@ export function groupTasks(
         }
         break;
 
+      case 'list':
+        groupKey = task.list?.name || 'No List';
+        break;
+
       case 'custom_field':
         if (groupFieldId && task.custom_fields) {
           const field = task.custom_fields.find(f => f.id === groupFieldId);
