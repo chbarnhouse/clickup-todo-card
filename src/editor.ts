@@ -58,15 +58,17 @@ export class ClickUpTodoCardEditor extends LitElement {
         <div class="config-section">
           <h3>Basic Settings</h3>
 
-          <ha-entity-picker
+          <ha-selector
             .hass=${this.hass}
+            .selector=${{
+              entity: {
+                domain: 'todo'
+              }
+            }}
             .value=${this._config.entity}
-            .includeDomains=${['todo']}
             .label=${'Entity (Required)'}
-            .configValue=${'entity'}
-            @value-changed=${this._valueChanged}
-            allow-custom-entity
-          ></ha-entity-picker>
+            @value-changed=${(ev: any) => this._entityChanged(ev.detail.value)}
+          ></ha-selector>
 
           <ha-textfield
             .label=${'Title (Optional)'}
@@ -356,6 +358,21 @@ export class ClickUpTodoCardEditor extends LitElement {
       setTimeout(() => this._loadEntityData(), 100);
     }
 
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private _entityChanged(entity: string): void {
+    if (!this._config || entity === this._config.entity) {
+      return;
+    }
+
+    const newConfig = {
+      ...this._config,
+      entity,
+    };
+
+    this._config = newConfig;
+    this._loadEntityData();
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 
