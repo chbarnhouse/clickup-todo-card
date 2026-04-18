@@ -59,21 +59,33 @@ export class ClickUpTodoCardEditor extends LitElement {
         <div class="config-section">
           <h3>Basic Settings</h3>
 
-          <div class="entity-row">
-            <label for="entity-select">Entity (Required)</label>
-            <select
-              id="entity-select"
-              .value=${this._config.entity || ''}
-              @change=${(ev: any) => this._entityChanged(ev.target.value)}
-            >
-              <option value="">Select an entity...</option>
-              ${todoEntities.map(entity => html`
-                <option value="${entity}" .selected=${entity === this._config.entity}>
-                  ${entity}
-                </option>
-              `)}
-            </select>
-          </div>
+          <ha-textfield
+            .label=${'Entity (Required)'}
+            .value=${this._config.entity || ''}
+            @input=${(ev: any) => this._entityChanged(ev.target.value)}
+            .placeholder=${'todo.clickup_list_name'}
+          ></ha-textfield>
+
+          ${todoEntities.length > 0 ? html`
+            <div class="entity-hint">
+              <p>Available entities:</p>
+              <ul>
+                ${todoEntities.slice(0, 10).map(entity => html`
+                  <li>
+                    <a href="#" @click=${(ev: Event) => {
+                      ev.preventDefault();
+                      this._entityChanged(entity);
+                    }}>
+                      ${entity}
+                    </a>
+                  </li>
+                `)}
+                ${todoEntities.length > 10 ? html`
+                  <li>...and ${todoEntities.length - 10} more</li>
+                ` : ''}
+              </ul>
+            </div>
+          ` : ''}
 
           <ha-textfield
             .label=${'Title (Optional)'}
@@ -594,26 +606,38 @@ export class ClickUpTodoCardEditor extends LitElement {
         font-style: italic;
       }
 
-      .entity-row {
-        margin-bottom: 16px;
+      .entity-hint {
+        margin: -8px 0 16px 0;
+        padding: 12px;
+        background: var(--secondary-background-color);
+        border-radius: 4px;
+        font-size: 13px;
       }
 
-      .entity-row label {
-        display: block;
-        margin-bottom: 4px;
-        font-size: 14px;
+      .entity-hint p {
+        margin: 0 0 8px 0;
         font-weight: 500;
         color: var(--primary-text-color);
       }
 
-      .entity-row select {
-        width: 100%;
-        padding: 8px;
-        font-size: 14px;
-        background: var(--card-background-color);
-        color: var(--primary-text-color);
-        border: 1px solid var(--divider-color);
-        border-radius: 4px;
+      .entity-hint ul {
+        margin: 0;
+        padding-left: 20px;
+        list-style: none;
+      }
+
+      .entity-hint li {
+        margin-bottom: 4px;
+      }
+
+      .entity-hint a {
+        color: var(--primary-color);
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .entity-hint a:hover {
+        text-decoration: underline;
       }
 
       ha-entity-picker,
