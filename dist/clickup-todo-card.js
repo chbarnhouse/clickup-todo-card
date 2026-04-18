@@ -307,22 +307,29 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 36px;
-    padding-right: 10px;
+    padding-left: 32px;
+    padding-right: 26px;
     padding-top: 4px;
     padding-bottom: 4px;
     position: relative;
     min-height: 28px;
     display: flex;
     align-items: center;
+    gap: 6px;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 6px;
+    left: 4px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
+  }
+
+  .status-chevron {
+    --mdc-icon-size: 16px;
+    margin-left: auto;
+    opacity: 0.8;
   }
 
   /* Status Dropdown */
@@ -638,7 +645,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
       min-width: 300px;
     }
   }
-`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.27  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class At extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Ct}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return B`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return B`
+`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.28  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class At extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Ct}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return B`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return B`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
@@ -759,6 +766,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
     `:B``}_renderStatus(t){if(!t.clickup_status)return B``;const e=t.clickup_status.color||"var(--primary-color)";return B`
       <span class="status-badge" style="--status-color: ${e}">
         ${t.clickup_status.status}
+        <ha-icon icon="mdi:chevron-down" class="status-chevron"></ha-icon>
       </span>
     `}_renderTags(t){return this._config.show_tags&&t.tags&&0!==t.tags.length?B`
       <div class="task-tags">
@@ -1078,8 +1086,8 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             .label=${"Button Position"}
             .configValue=${"add_button_position"}
             .value=${this._config.add_button_position||"bottom-right"}
-            @value-changed=${this._selectChanged}
-            @closed=${t=>t.stopPropagation()}
+            @selected=${this._selectChanged}
+            @click=${t=>t.stopPropagation()}
           >
             <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
             <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
@@ -1124,8 +1132,8 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             .label=${"Sort By"}
             .configValue=${"sort_by"}
             .value=${this._config.sort_by||"due_date"}
-            @value-changed=${this._selectChanged}
-            @closed=${t=>t.stopPropagation()}
+            @selected=${this._selectChanged}
+            @click=${t=>t.stopPropagation()}
           >
             <mwc-list-item value="due_date">Due Date</mwc-list-item>
             <mwc-list-item value="start_date">Start Date</mwc-list-item>
@@ -1138,8 +1146,8 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             .label=${"Sort Order"}
             .configValue=${"sort_order"}
             .value=${this._config.sort_order||"asc"}
-            @value-changed=${this._selectChanged}
-            @closed=${t=>t.stopPropagation()}
+            @selected=${this._selectChanged}
+            @click=${t=>t.stopPropagation()}
           >
             <mwc-list-item value="asc">Ascending</mwc-list-item>
             <mwc-list-item value="desc">Descending</mwc-list-item>
@@ -1154,8 +1162,8 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             .label=${"Group By"}
             .configValue=${"group_by"}
             .value=${this._config.group_by||"none"}
-            @value-changed=${this._selectChanged}
-            @closed=${t=>t.stopPropagation()}
+            @selected=${this._selectChanged}
+            @click=${t=>t.stopPropagation()}
           >
             <mwc-list-item value="none">None</mwc-list-item>
             <mwc-list-item value="status">Status</mwc-list-item>
@@ -1170,8 +1178,8 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
               .label=${"Custom Field for Grouping"}
               .configValue=${"group_field_id"}
               .value=${this._config.group_field_id||""}
-              @value-changed=${this._selectChanged}
-              @closed=${t=>t.stopPropagation()}
+              @selected=${this._selectChanged}
+              @click=${t=>t.stopPropagation()}
             >
               ${s.map(t=>B`
                 <mwc-list-item value="${t.value}">${t.label}</mwc-list-item>

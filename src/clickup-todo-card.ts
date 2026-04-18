@@ -335,6 +335,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     return html`
       <span class="status-badge" style="--status-color: ${statusColor}">
         ${task.clickup_status.status}
+        <ha-icon icon="mdi:chevron-down" class="status-chevron"></ha-icon>
       </span>
     `;
   }

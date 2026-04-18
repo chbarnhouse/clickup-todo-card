@@ -309,22 +309,29 @@ export const styles = css`
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 36px;
-    padding-right: 10px;
+    padding-left: 32px;
+    padding-right: 26px;
     padding-top: 4px;
     padding-bottom: 4px;
     position: relative;
     min-height: 28px;
     display: flex;
     align-items: center;
+    gap: 6px;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 6px;
+    left: 4px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
+  }
+
+  .status-chevron {
+    --mdc-icon-size: 16px;
+    margin-left: auto;
+    opacity: 0.8;
   }
 
   /* Status Dropdown */

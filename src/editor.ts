@@ -190,8 +190,8 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Button Position'}
             .configValue=${'add_button_position'}
             .value=${this._config.add_button_position || 'bottom-right'}
-            @value-changed=${this._selectChanged}
-            @closed=${(e: Event) => e.stopPropagation()}
+            @selected=${this._selectChanged}
+            @click=${(e: Event) => e.stopPropagation()}
           >
             <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
             <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
@@ -236,8 +236,8 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort By'}
             .configValue=${'sort_by'}
             .value=${this._config.sort_by || 'due_date'}
-            @value-changed=${this._selectChanged}
-            @closed=${(e: Event) => e.stopPropagation()}
+            @selected=${this._selectChanged}
+            @click=${(e: Event) => e.stopPropagation()}
           >
             <mwc-list-item value="due_date">Due Date</mwc-list-item>
             <mwc-list-item value="start_date">Start Date</mwc-list-item>
@@ -250,8 +250,8 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort Order'}
             .configValue=${'sort_order'}
             .value=${this._config.sort_order || 'asc'}
-            @value-changed=${this._selectChanged}
-            @closed=${(e: Event) => e.stopPropagation()}
+            @selected=${this._selectChanged}
+            @click=${(e: Event) => e.stopPropagation()}
           >
             <mwc-list-item value="asc">Ascending</mwc-list-item>
             <mwc-list-item value="desc">Descending</mwc-list-item>
@@ -266,8 +266,8 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Group By'}
             .configValue=${'group_by'}
             .value=${this._config.group_by || 'none'}
-            @value-changed=${this._selectChanged}
-            @closed=${(e: Event) => e.stopPropagation()}
+            @selected=${this._selectChanged}
+            @click=${(e: Event) => e.stopPropagation()}
           >
             <mwc-list-item value="none">None</mwc-list-item>
             <mwc-list-item value="status">Status</mwc-list-item>
@@ -282,8 +282,8 @@ export class ClickUpTodoCardEditor extends LitElement {
               .label=${'Custom Field for Grouping'}
               .configValue=${'group_field_id'}
               .value=${this._config.group_field_id || ''}
-              @value-changed=${this._selectChanged}
-              @closed=${(e: Event) => e.stopPropagation()}
+              @selected=${this._selectChanged}
+              @click=${(e: Event) => e.stopPropagation()}
             >
               ${customFields.map(field => html`
                 <mwc-list-item value="${field.value}">${field.label}</mwc-list-item>
