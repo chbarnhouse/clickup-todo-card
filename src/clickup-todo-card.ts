@@ -29,6 +29,11 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   @state() private _showAddDialog = false;
   @state() private _statusDropdownTask: string | null = null;
 
+  // Public config getter required by hasConfigOrEntityChanged helper
+  public get config(): ClickUpTodoCardConfig {
+    return this._config;
+  }
+
   public static async getConfigElement() {
     await import('./editor');
     return document.createElement('clickup-todo-card-editor');
