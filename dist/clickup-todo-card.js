@@ -645,7 +645,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
       min-width: 300px;
     }
   }
-`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.28  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class At extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Ct}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return B`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return B`
+`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.29  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class At extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Ct}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return B`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return B`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
@@ -1086,8 +1086,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             .label=${"Button Position"}
             .configValue=${"add_button_position"}
             .value=${this._config.add_button_position||"bottom-right"}
-            @selected=${this._selectChanged}
-            @click=${t=>t.stopPropagation()}
+            @closed=${this._selectChanged}
           >
             <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
             <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
@@ -1132,8 +1131,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             .label=${"Sort By"}
             .configValue=${"sort_by"}
             .value=${this._config.sort_by||"due_date"}
-            @selected=${this._selectChanged}
-            @click=${t=>t.stopPropagation()}
+            @closed=${this._selectChanged}
           >
             <mwc-list-item value="due_date">Due Date</mwc-list-item>
             <mwc-list-item value="start_date">Start Date</mwc-list-item>
@@ -1146,8 +1144,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             .label=${"Sort Order"}
             .configValue=${"sort_order"}
             .value=${this._config.sort_order||"asc"}
-            @selected=${this._selectChanged}
-            @click=${t=>t.stopPropagation()}
+            @closed=${this._selectChanged}
           >
             <mwc-list-item value="asc">Ascending</mwc-list-item>
             <mwc-list-item value="desc">Descending</mwc-list-item>
@@ -1162,8 +1159,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             .label=${"Group By"}
             .configValue=${"group_by"}
             .value=${this._config.group_by||"none"}
-            @selected=${this._selectChanged}
-            @click=${t=>t.stopPropagation()}
+            @closed=${this._selectChanged}
           >
             <mwc-list-item value="none">None</mwc-list-item>
             <mwc-list-item value="status">Status</mwc-list-item>
@@ -1178,8 +1174,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
               .label=${"Custom Field for Grouping"}
               .configValue=${"group_field_id"}
               .value=${this._config.group_field_id||""}
-              @selected=${this._selectChanged}
-              @click=${t=>t.stopPropagation()}
+              @closed=${this._selectChanged}
             >
               ${s.map(t=>B`
                 <mwc-list-item value="${t.value}">${t.label}</mwc-list-item>
@@ -1297,7 +1292,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
             Error loading editor. Please check the console for details.
           </div>
         </div>
-      `}}_valueChanged(t){if(!this._config||!this.hass)return;const e=t.target,i=e.configValue;if(!i)return;let s;if(void 0!==e.checked)s=e.checked;else{if(void 0===e.value)return;s=e.value}""===s&&"add_button_text"!==i&&(s=void 0);const a={...this._config,[i]:s};"entity"===i&&setTimeout(()=>this._loadEntityData(),100),ft(this,"config-changed",{config:a})}_selectChanged(t){if(!this._config||!this.hass)return;t.stopPropagation();const e=t.target,i=e.configValue;if(!i)return;let s=t.detail?.value;if(null==s&&(s=e.value),null==s){const t=e.selected;t&&(s=t.value||t.getAttribute("value"))}if(void 0===s)return;const a=""===s?void 0:s,o={...this._config,[i]:a};ft(this,"config-changed",{config:o}),this.requestUpdate(),this._config=o}_entityChanged(t){if(!this._config||t===this._config.entity)return;const e={...this._config,entity:t};this._config=e,this._loadEntityData(),ft(this,"config-changed",{config:e})}_isFieldVisible(t){return!(!this._config.visible_custom_fields||0===this._config.visible_custom_fields.length)&&this._config.visible_custom_fields.includes(t)}_customFieldChanged(t){const e=t.target,i=e.value,s=e.checked,a=this._config.visible_custom_fields||[];let o;o=s?[...a,i]:a.filter(t=>t!==i);const r={...this._config,visible_custom_fields:o.length>0?o:void 0};ft(this,"config-changed",{config:r})}_isStatusFiltered(t){return this._config.filters?.status?.includes(t)||!1}_statusFilterChanged(t){const e=t.target,i=e.value,s=e.checked,a=this._config.filters||{},o=a.status||[];let r;r=s?[...o,i]:o.filter(t=>t!==i);const n={...this._config,filters:{...a,status:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_isPriorityFiltered(t){return this._config.filters?.priority?.includes(t)||!1}_priorityFilterChanged(t){const e=t.target,i=e.value,s="null"===i?null:parseInt(i),a=e.checked,o=this._config.filters||{},r=o.priority||[];let n;n=a?[...r,s]:r.filter(t=>t!==s);const l={...this._config,filters:{...o,priority:n.length>0?n:void 0}};ft(this,"config-changed",{config:l})}_isTagFiltered(t){return this._config.filters?.tags?.includes(t)||!1}_tagFilterChanged(t){const e=t.target,i=e.value,s=e.checked,a=this._config.filters||{},o=a.tags||[];let r;r=s?[...o,i]:o.filter(t=>t!==i);const n={...this._config,filters:{...a,tags:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_isAssigneeFiltered(t){return this._config.filters?.assignees?.includes(t)||!1}_assigneeFilterChanged(t){const e=t.target,i=e.value,s=e.checked,a=this._config.filters||{},o=a.assignees||[];let r;r=s?[...o,i]:o.filter(t=>t!==i);const n={...this._config,filters:{...a,assignees:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_dateRangeChanged(t,e){const i=this._config.filters||{},s={...i.due_date_range||{},[t]:e||void 0},a=s.start||s.end,o={...this._config,filters:{...i,due_date_range:a?s:void 0}};ft(this,"config-changed",{config:o})}static get styles(){return r`
+      `}}_valueChanged(t){if(!this._config||!this.hass)return;const e=t.target,i=e.configValue;if(!i)return;let s;if(void 0!==e.checked)s=e.checked;else{if(void 0===e.value)return;s=e.value}""===s&&"add_button_text"!==i&&(s=void 0);const a={...this._config,[i]:s};"entity"===i&&setTimeout(()=>this._loadEntityData(),100),ft(this,"config-changed",{config:a})}_selectChanged(t){if(!this._config||!this.hass)return;const e=t.target,i=e.configValue;i&&setTimeout(()=>{const t=e.value;if(void 0===t)return;const s=""===t?void 0:t,a={...this._config,[i]:s};ft(this,"config-changed",{config:a}),this.requestUpdate(),this._config=a},0)}_entityChanged(t){if(!this._config||t===this._config.entity)return;const e={...this._config,entity:t};this._config=e,this._loadEntityData(),ft(this,"config-changed",{config:e})}_isFieldVisible(t){return!(!this._config.visible_custom_fields||0===this._config.visible_custom_fields.length)&&this._config.visible_custom_fields.includes(t)}_customFieldChanged(t){const e=t.target,i=e.value,s=e.checked,a=this._config.visible_custom_fields||[];let o;o=s?[...a,i]:a.filter(t=>t!==i);const r={...this._config,visible_custom_fields:o.length>0?o:void 0};ft(this,"config-changed",{config:r})}_isStatusFiltered(t){return this._config.filters?.status?.includes(t)||!1}_statusFilterChanged(t){const e=t.target,i=e.value,s=e.checked,a=this._config.filters||{},o=a.status||[];let r;r=s?[...o,i]:o.filter(t=>t!==i);const n={...this._config,filters:{...a,status:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_isPriorityFiltered(t){return this._config.filters?.priority?.includes(t)||!1}_priorityFilterChanged(t){const e=t.target,i=e.value,s="null"===i?null:parseInt(i),a=e.checked,o=this._config.filters||{},r=o.priority||[];let n;n=a?[...r,s]:r.filter(t=>t!==s);const l={...this._config,filters:{...o,priority:n.length>0?n:void 0}};ft(this,"config-changed",{config:l})}_isTagFiltered(t){return this._config.filters?.tags?.includes(t)||!1}_tagFilterChanged(t){const e=t.target,i=e.value,s=e.checked,a=this._config.filters||{},o=a.tags||[];let r;r=s?[...o,i]:o.filter(t=>t!==i);const n={...this._config,filters:{...a,tags:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_isAssigneeFiltered(t){return this._config.filters?.assignees?.includes(t)||!1}_assigneeFilterChanged(t){const e=t.target,i=e.value,s=e.checked,a=this._config.filters||{},o=a.assignees||[];let r;r=s?[...o,i]:o.filter(t=>t!==i);const n={...this._config,filters:{...a,assignees:r.length>0?r:void 0}};ft(this,"config-changed",{config:n})}_dateRangeChanged(t,e){const i=this._config.filters||{},s={...i.due_date_range||{},[t]:e||void 0},a=s.start||s.end,o={...this._config,filters:{...i,due_date_range:a?s:void 0}};ft(this,"config-changed",{config:o})}static get styles(){return r`
       .card-config {
         padding: 16px;
       }

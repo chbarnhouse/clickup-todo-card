@@ -190,8 +190,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Button Position'}
             .configValue=${'add_button_position'}
             .value=${this._config.add_button_position || 'bottom-right'}
-            @selected=${this._selectChanged}
-            @click=${(e: Event) => e.stopPropagation()}
+            @closed=${this._selectChanged}
           >
             <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
             <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
@@ -236,8 +235,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort By'}
             .configValue=${'sort_by'}
             .value=${this._config.sort_by || 'due_date'}
-            @selected=${this._selectChanged}
-            @click=${(e: Event) => e.stopPropagation()}
+            @closed=${this._selectChanged}
           >
             <mwc-list-item value="due_date">Due Date</mwc-list-item>
             <mwc-list-item value="start_date">Start Date</mwc-list-item>
@@ -250,8 +248,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort Order'}
             .configValue=${'sort_order'}
             .value=${this._config.sort_order || 'asc'}
-            @selected=${this._selectChanged}
-            @click=${(e: Event) => e.stopPropagation()}
+            @closed=${this._selectChanged}
           >
             <mwc-list-item value="asc">Ascending</mwc-list-item>
             <mwc-list-item value="desc">Descending</mwc-list-item>
@@ -266,8 +263,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Group By'}
             .configValue=${'group_by'}
             .value=${this._config.group_by || 'none'}
-            @selected=${this._selectChanged}
-            @click=${(e: Event) => e.stopPropagation()}
+            @closed=${this._selectChanged}
           >
             <mwc-list-item value="none">None</mwc-list-item>
             <mwc-list-item value="status">Status</mwc-list-item>
@@ -282,8 +278,7 @@ export class ClickUpTodoCardEditor extends LitElement {
               .label=${'Custom Field for Grouping'}
               .configValue=${'group_field_id'}
               .value=${this._config.group_field_id || ''}
-              @selected=${this._selectChanged}
-              @click=${(e: Event) => e.stopPropagation()}
+              @closed=${this._selectChanged}
             >
               ${customFields.map(field => html`
                 <mwc-list-item value="${field.value}">${field.label}</mwc-list-item>
@@ -447,44 +442,31 @@ export class ClickUpTodoCardEditor extends LitElement {
   private _selectChanged(ev: any): void {
     if (!this._config || !this.hass) return;
 
-    ev.stopPropagation();
-
     const target = ev.target as any;
     const configValue = target.configValue;
 
     if (!configValue) return;
 
-    // Get value from the event
-    let value = ev.detail?.value;
+    // Use setTimeout to ensure the value is set before we read it
+    setTimeout(() => {
+      const value = target.value;
 
-    // If not in detail, try getting from target
-    if (value === undefined || value === null) {
-      value = target.value;
-    }
+      if (value === undefined) return;
 
-    // If still undefined, try getting from selected item
-    if (value === undefined || value === null) {
-      const selected = target.selected;
-      if (selected) {
-        value = selected.value || selected.getAttribute('value');
-      }
-    }
+      // Handle empty strings for optional fields
+      const finalValue = value === '' ? undefined : value;
 
-    if (value === undefined) return;
+      const newConfig = {
+        ...this._config,
+        [configValue]: finalValue,
+      };
 
-    // Handle empty strings for optional fields
-    const finalValue = value === '' ? undefined : value;
+      fireEvent(this, 'config-changed', { config: newConfig });
 
-    const newConfig = {
-      ...this._config,
-      [configValue]: finalValue,
-    };
-
-    fireEvent(this, 'config-changed', { config: newConfig });
-
-    // Force a complete re-render
-    this.requestUpdate();
-    this._config = newConfig;
+      // Force a complete re-render
+      this.requestUpdate();
+      this._config = newConfig;
+    }, 0);
   }
 
   private _entityChanged(entity: string): void {
