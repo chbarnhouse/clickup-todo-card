@@ -35,22 +35,23 @@ export class ClickUpTodoCardEditor extends LitElement {
   }
 
   protected render(): TemplateResult {
-    if (!this.hass) {
-      return html`<div>Loading...</div>`;
-    }
+    try {
+      if (!this.hass) {
+        return html`<div>Loading hass...</div>`;
+      }
 
-    if (!this._config) {
-      return html`<div>No configuration</div>`;
-    }
+      if (!this._config) {
+        return html`<div>Loading config...</div>`;
+      }
 
-    const todoEntities = Object.keys(this.hass.states)
-      .filter((eid) => eid.startsWith('todo.'))
-      .sort();
+      const todoEntities = Object.keys(this.hass.states || {})
+        .filter((eid) => eid.startsWith('todo.'))
+        .sort();
 
-    const statuses = getUniqueStatuses(this._tasks);
-    const tags = getUniqueTags(this._tasks);
-    const assignees = getUniqueAssignees(this._tasks);
-    const customFields = getAvailableCustomFields(this._tasks);
+      const statuses = this._tasks.length > 0 ? getUniqueStatuses(this._tasks) : [];
+      const tags = this._tasks.length > 0 ? getUniqueTags(this._tasks) : [];
+      const assignees = this._tasks.length > 0 ? getUniqueAssignees(this._tasks) : [];
+      const customFields = this._tasks.length > 0 ? getAvailableCustomFields(this._tasks) : [];
 
     return html`
       <div class="card-config">
@@ -328,6 +329,16 @@ export class ClickUpTodoCardEditor extends LitElement {
         </div>
       </div>
     `;
+    } catch (error) {
+      console.error('Error rendering ClickUp Todo Card editor:', error);
+      return html`
+        <div class="card-config">
+          <div class="warning">
+            Error loading editor. Please check the console for details.
+          </div>
+        </div>
+      `;
+    }
   }
 
   private _valueChanged(ev: any): void {
