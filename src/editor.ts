@@ -175,6 +175,33 @@ export class ClickUpTodoCardEditor extends LitElement {
           </ha-formfield>
         </div>
 
+        <!-- Add Button Settings -->
+        <div class="config-section">
+          <h3>Add Button</h3>
+
+          <ha-textfield
+            label="Button Text"
+            .configValue=${'add_button_text'}
+            .value=${this._config.add_button_text || 'Add Task'}
+            @input=${this._valueChanged}
+          ></ha-textfield>
+
+          <ha-select
+            .label=${'Button Position'}
+            .configValue=${'add_button_position'}
+            .value=${this._config.add_button_position || 'bottom-right'}
+            @selected=${this._valueChanged}
+            @closed=${(e: Event) => e.stopPropagation()}
+          >
+            <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
+            <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
+            <mwc-list-item value="bottom-right">Bottom Right</mwc-list-item>
+            <mwc-list-item value="top-left">Top Left</mwc-list-item>
+            <mwc-list-item value="top-center">Top Center</mwc-list-item>
+            <mwc-list-item value="top-right">Top Right</mwc-list-item>
+          </ha-select>
+        </div>
+
         <!-- Visible Custom Fields -->
         ${this._config.show_custom_fields && customFields.length > 0 ? html`
           <div class="config-section">

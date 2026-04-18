@@ -28,6 +28,10 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   visible_custom_fields?: string[];
   compact_mode?: boolean;
 
+  // Add button options
+  add_button_text?: string;
+  add_button_position?: 'bottom-left' | 'bottom-center' | 'bottom-right' | 'top-left' | 'top-center' | 'top-right';
+
   // Filters
   filters?: {
     status?: string[];

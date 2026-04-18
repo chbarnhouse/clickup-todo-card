@@ -119,6 +119,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
               ? this._renderTaskList(groups.get('all')!)
               : this._renderGroupedTasks(groups)}
           </div>
+          ${this._renderFloatingAddButton(stateObj)}
         </ha-card>
         ${this._showAddDialog ? this._renderAddDialog() : ''}
         ${this._editingTask ? this._renderEditDialog() : ''}
@@ -139,25 +140,35 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
 
     const title = this._config.title || stateObj.attributes.friendly_name || 'Tasks';
-    const unavailable = stateObj.state === 'unavailable';
     const showCount = this._config.show_task_count !== false;
     const showTitle = this._config.hide_title !== true;
 
+    if (!showTitle && !showCount) {
+      return html``;
+    }
+
     return html`
-      ${showTitle || showCount ? html`
-        <div class="card-header">
-          ${showTitle ? html`<div class="name">${title}</div>` : ''}
-          ${showCount ? html`<div class="task-count">${this._tasks.length}</div>` : ''}
-        </div>
-      ` : ''}
-      <div class="add-item-row">
-        <ha-icon-button
-          .disabled=${unavailable}
-          @click=${this._openAddDialog}
-        >
-          <ha-icon icon="mdi:plus"></ha-icon>
-        </ha-icon-button>
+      <div class="card-header">
+        ${showTitle ? html`<div class="name">${title}</div>` : ''}
+        ${showCount ? html`<div class="task-count">${this._tasks.length}</div>` : ''}
       </div>
+    `;
+  }
+
+  private _renderFloatingAddButton(stateObj: ExtendedHassEntity): TemplateResult {
+    const unavailable = stateObj.state === 'unavailable';
+    const buttonText = this._config.add_button_text || 'Add Task';
+    const position = this._config.add_button_position || 'bottom-right';
+
+    return html`
+      <button
+        class="floating-add-button ${position}"
+        ?disabled=${unavailable}
+        @click=${this._openAddDialog}
+      >
+        <ha-icon icon="mdi:plus"></ha-icon>
+        <span>${buttonText}</span>
+      </button>
     `;
   }
 
@@ -197,15 +208,26 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   private _renderTask(task: ClickUpTask): TemplateResult {
     const overdue = isOverdue(task);
     const completed = task.status === 'completed';
+    const showStatus = this._config.show_status && task.clickup_status;
 
     return html`
       <div class="task-item ${completed ? 'completed' : ''} ${overdue ? 'overdue' : ''}">
-        <div class="task-checkbox">
-          <ha-checkbox
-            .checked=${completed}
-            @change=${() => this._toggleTask(task)}
-          ></ha-checkbox>
-        </div>
+        ${showStatus ? html`
+          <div class="task-status-wrapper">
+            ${this._renderStatus(task)}
+            <ha-checkbox
+              .checked=${completed}
+              @change=${() => this._toggleTask(task)}
+            ></ha-checkbox>
+          </div>
+        ` : html`
+          <div class="task-checkbox">
+            <ha-checkbox
+              .checked=${completed}
+              @change=${() => this._toggleTask(task)}
+            ></ha-checkbox>
+          </div>
+        `}
 
         <div class="task-main" @click=${() => this._openEditDialog(task)}>
           <div class="task-header">
@@ -219,7 +241,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
           <div class="task-metadata">
             ${this._renderDates(task)}
-            ${this._renderStatus(task)}
             ${this._renderTags(task)}
             ${this._renderAssignees(task)}
             ${this._renderCustomFields(task)}
@@ -275,7 +296,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderStatus(task: ClickUpTask): TemplateResult {
-    if (!this._config.show_status || !task.clickup_status) {
+    if (!task.clickup_status) {
       return html``;
     }
 

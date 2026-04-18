@@ -9,6 +9,7 @@ export const styles = css`
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
 
   .warning {
@@ -43,18 +44,90 @@ export const styles = css`
     text-align: center;
   }
 
-  /* Add Item Row */
-  .add-item-row {
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--divider-color);
+  /* Floating Add Button */
+  .floating-add-button {
+    position: absolute;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--primary-color);
+    color: var(--text-primary-color);
+    border: none;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    z-index: 1;
   }
 
-  .add-item-row ha-icon-button {
-    --mdc-icon-button-size: 40px;
-    --mdc-icon-size: 24px;
-    color: var(--primary-color);
+  .floating-add-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .floating-add-button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .floating-add-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .floating-add-button ha-icon {
+    --mdc-icon-size: 20px;
+  }
+
+  /* Positioning classes */
+  .floating-add-button.bottom-left {
+    bottom: 16px;
+    left: 16px;
+  }
+
+  .floating-add-button.bottom-center {
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .floating-add-button.bottom-center:hover:not(:disabled) {
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .floating-add-button.bottom-center:active:not(:disabled) {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .floating-add-button.bottom-right {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .floating-add-button.top-left {
+    top: 16px;
+    left: 16px;
+  }
+
+  .floating-add-button.top-center {
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .floating-add-button.top-center:hover:not(:disabled) {
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .floating-add-button.top-center:active:not(:disabled) {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .floating-add-button.top-right {
+    top: 16px;
+    right: 16px;
   }
 
   /* Content */
@@ -176,6 +249,25 @@ export const styles = css`
     display: flex;
     align-items: flex-start;
     padding-top: 2px;
+  }
+
+  /* Task Status Wrapper (status badge with checkbox inside) */
+  .task-status-wrapper {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .task-status-wrapper .status-badge {
+    padding-left: 36px;
+    position: relative;
+  }
+
+  .task-status-wrapper ha-checkbox {
+    position: absolute;
+    left: 6px;
+    z-index: 1;
   }
 
   /* Task Main Content */

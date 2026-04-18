@@ -1,4 +1,4 @@
-export const CARD_VERSION = '1.0.20';
+export const CARD_VERSION = '1.0.21';
 
 export const CARD_NAME = 'ClickUp Todo Card';
 
@@ -44,6 +44,8 @@ export const DEFAULT_CONFIG = {
   show_assignees: false,
   show_custom_fields: false,
   compact_mode: false,
+  add_button_text: 'Add Task',
+  add_button_position: 'bottom-right' as const,
   sort_by: 'due_date' as const,
   sort_order: 'asc' as const,
   group_by: 'none' as const,
