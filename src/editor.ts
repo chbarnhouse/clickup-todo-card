@@ -449,15 +449,25 @@ export class ClickUpTodoCardEditor extends LitElement {
 
     ev.stopPropagation();
 
-    const target = ev.target;
+    const target = ev.target as any;
     const configValue = target.configValue;
 
     if (!configValue) return;
 
-    // Try multiple ways to get the value from ha-select
+    // Get value from the event
     let value = ev.detail?.value;
-    if (value === undefined) {
+
+    // If not in detail, try getting from target
+    if (value === undefined || value === null) {
       value = target.value;
+    }
+
+    // If still undefined, try getting from selected item
+    if (value === undefined || value === null) {
+      const selected = target.selected;
+      if (selected) {
+        value = selected.value || selected.getAttribute('value');
+      }
     }
 
     if (value === undefined) return;
@@ -471,7 +481,10 @@ export class ClickUpTodoCardEditor extends LitElement {
     };
 
     fireEvent(this, 'config-changed', { config: newConfig });
+
+    // Force a complete re-render
     this.requestUpdate();
+    this._config = newConfig;
   }
 
   private _entityChanged(entity: string): void {

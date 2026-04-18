@@ -309,19 +309,19 @@ export const styles = css`
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 48px;
-    padding-right: 16px;
-    padding-top: 7px;
-    padding-bottom: 7px;
+    padding-left: 36px;
+    padding-right: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     position: relative;
-    min-height: 36px;
+    min-height: 28px;
     display: flex;
     align-items: center;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 12px;
+    left: 6px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -332,52 +332,35 @@ export const styles = css`
     position: absolute;
     top: 100%;
     left: 0;
-    margin-top: 8px;
+    margin-top: 4px;
     background: var(--card-background-color);
     border: 1px solid var(--divider-color);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     z-index: 100;
-    min-width: 180px;
+    min-width: 150px;
     overflow: hidden;
   }
 
   .status-option {
     padding: 0;
     cursor: pointer;
-    transition: all 0.15s ease;
-    border-bottom: 1px solid var(--divider-color);
-  }
-
-  .status-option:last-child {
-    border-bottom: none;
+    transition: all 0.1s ease;
   }
 
   .status-option:hover {
-    background: var(--secondary-background-color);
-    transform: translateX(4px);
+    opacity: 0.8;
   }
 
   .status-option .status-badge {
     display: block;
     width: 100%;
-    padding: 10px 16px;
+    padding: 8px 12px;
     margin: 0;
     border-radius: 0;
     box-shadow: none;
-    font-size: 11px;
-  }
-
-  .status-option:first-child .status-badge {
-    border-radius: 12px 12px 0 0;
-  }
-
-  .status-option:last-child .status-badge {
-    border-radius: 0 0 12px 12px;
-  }
-
-  .status-option:only-child .status-badge {
-    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
   }
 
   /* Task Main Content */
