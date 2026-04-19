@@ -190,7 +190,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Button Position'}
             .configValue=${'add_button_position'}
             .value=${this._config.add_button_position || 'bottom-right'}
-            @closed=${this._selectChanged}
+            @selected=${this._handleSelectChange}
           >
             <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
             <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
@@ -235,7 +235,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort By'}
             .configValue=${'sort_by'}
             .value=${this._config.sort_by || 'due_date'}
-            @closed=${this._selectChanged}
+            @selected=${this._handleSelectChange}
           >
             <mwc-list-item value="due_date">Due Date</mwc-list-item>
             <mwc-list-item value="start_date">Start Date</mwc-list-item>
@@ -248,7 +248,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort Order'}
             .configValue=${'sort_order'}
             .value=${this._config.sort_order || 'asc'}
-            @closed=${this._selectChanged}
+            @selected=${this._handleSelectChange}
           >
             <mwc-list-item value="asc">Ascending</mwc-list-item>
             <mwc-list-item value="desc">Descending</mwc-list-item>
@@ -263,7 +263,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Group By'}
             .configValue=${'group_by'}
             .value=${this._config.group_by || 'none'}
-            @closed=${this._selectChanged}
+            @selected=${this._handleSelectChange}
           >
             <mwc-list-item value="none">None</mwc-list-item>
             <mwc-list-item value="status">Status</mwc-list-item>
@@ -278,7 +278,7 @@ export class ClickUpTodoCardEditor extends LitElement {
               .label=${'Custom Field for Grouping'}
               .configValue=${'group_field_id'}
               .value=${this._config.group_field_id || ''}
-              @closed=${this._selectChanged}
+              @selected=${this._handleSelectChange}
             >
               ${customFields.map(field => html`
                 <mwc-list-item value="${field.value}">${field.label}</mwc-list-item>
@@ -501,6 +501,86 @@ export class ClickUpTodoCardEditor extends LitElement {
       this.requestUpdate();
       this._config = newConfig;
     }, 50);
+  }
+
+  private _handleSelectChange(ev: any): void {
+    console.log('=== _handleSelectChange fired ===');
+    console.log('Event:', ev);
+    console.log('Event detail:', ev.detail);
+    console.log('Event target:', ev.target);
+
+    if (!this._config || !this.hass) {
+      console.log('No config or hass');
+      return;
+    }
+
+    const target = ev.target as any;
+    if (!target) {
+      console.log('No target element');
+      return;
+    }
+
+    const configValue = target.configValue;
+    if (!configValue) {
+      console.log('No configValue on target');
+      return;
+    }
+
+    console.log('Config value:', configValue);
+
+    // Try to get the value from multiple sources
+    let value = undefined;
+
+    // Method 1: From event.detail (common in HA components)
+    if (ev.detail && ev.detail.value !== undefined) {
+      value = ev.detail.value;
+      console.log('Got value from event.detail.value:', value);
+    }
+
+    // Method 2: From target.value
+    if (value === undefined && target.value !== undefined && target.value !== null) {
+      value = target.value;
+      console.log('Got value from target.value:', value);
+    }
+
+    // Method 3: From the selected index
+    if (value === undefined && typeof target.selected === 'number') {
+      console.log('Trying to get from selected index:', target.selected);
+      try {
+        const items = target.querySelectorAll ? Array.from(target.querySelectorAll('mwc-list-item')) : [];
+        console.log('Found items:', items.length);
+        const selectedItem = items[target.selected];
+        if (selectedItem) {
+          value = (selectedItem as any).value || selectedItem.getAttribute('value');
+          console.log('Got value from selected item:', value);
+        }
+      } catch (e) {
+        console.error('Error querying list items:', e);
+      }
+    }
+
+    if (value === undefined || value === null) {
+      console.log('Could not determine value from any method');
+      return;
+    }
+
+    console.log('Final value:', value);
+
+    // Handle empty strings for optional fields
+    const finalValue = value === '' ? undefined : value;
+
+    const newConfig = {
+      ...this._config,
+      [configValue]: finalValue,
+    };
+
+    console.log('Updating config with:', { configValue, value: finalValue });
+
+    fireEvent(this, 'config-changed', { config: newConfig });
+    this.requestUpdate();
+    this._config = newConfig;
+
+    console.log('Config updated successfully');
   }
 
   private _entityChanged(entity: string): void {
