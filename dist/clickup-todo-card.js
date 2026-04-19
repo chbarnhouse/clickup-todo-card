@@ -645,7 +645,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
       min-width: 300px;
     }
   }
-`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.40  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class At extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Ct}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return V`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return V`
+`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.41  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class At extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Ct}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return V`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return V`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
@@ -1123,7 +1123,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
 
           <ha-selector
             .hass=${this.hass}
-            .selector=${{select:{options:[{value:"due_date",label:"Due Date"},{value:"start_date",label:"Start Date"},{value:"priority",label:"Priority"},{value:"name",label:"Name"},{value:"status",label:"Status"}]}}}
+            .selector=${{select:{mode:"dropdown",options:[{value:"due_date",label:"Due Date"},{value:"start_date",label:"Start Date"},{value:"priority",label:"Priority"},{value:"name",label:"Name"},{value:"status",label:"Status"}]}}}
             .value=${this._config.sort_by||"due_date"}
             .label=${"Sort By"}
             @value-changed=${t=>this._updateConfig("sort_by",t.detail.value)}
@@ -1131,7 +1131,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
 
           <ha-selector
             .hass=${this.hass}
-            .selector=${{select:{options:[{value:"asc",label:"Ascending"},{value:"desc",label:"Descending"}]}}}
+            .selector=${{select:{mode:"dropdown",options:[{value:"asc",label:"Ascending"},{value:"desc",label:"Descending"}]}}}
             .value=${this._config.sort_order||"asc"}
             .label=${"Sort Order"}
             @value-changed=${t=>this._updateConfig("sort_order",t.detail.value)}

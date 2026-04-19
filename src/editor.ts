@@ -239,6 +239,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .hass=${this.hass}
             .selector=${{
               select: {
+                mode: 'dropdown',
                 options: [
                   { value: 'due_date', label: 'Due Date' },
                   { value: 'start_date', label: 'Start Date' },
@@ -257,6 +258,7 @@ export class ClickUpTodoCardEditor extends LitElement {
             .hass=${this.hass}
             .selector=${{
               select: {
+                mode: 'dropdown',
                 options: [
                   { value: 'asc', label: 'Ascending' },
                   { value: 'desc', label: 'Descending' },
