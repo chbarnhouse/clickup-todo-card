@@ -435,6 +435,9 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
     const entityStatuses = stateObj?.attributes?.available_statuses || [];
 
+    console.log('[ClickUp Card] Available statuses from entity:', entityStatuses);
+    console.log('[ClickUp Card] Entity attributes:', stateObj?.attributes);
+
     let statuses: Array<{ name: string; color: string; type: string }> = [];
 
     if (entityStatuses.length > 0) {
@@ -444,11 +447,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         color: s.color || '#d3d3d3',
         type: s.type
       }));
+      console.log('[ClickUp Card] Using entity statuses:', statuses);
     } else {
       // Fallback to extracting from current tasks
       const taskStatuses = getUniqueStatusesWithColors(this._tasks);
       if (taskStatuses.length > 0) {
         statuses = taskStatuses;
+        console.log('[ClickUp Card] Using task statuses:', statuses);
       } else {
         // Final fallback to common statuses
         statuses = [
@@ -458,6 +463,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
           { name: 'BLOCKED', color: '#f50000', type: 'custom' },
         ];
+        console.log('[ClickUp Card] Using fallback statuses:', statuses);
       }
     }
 
