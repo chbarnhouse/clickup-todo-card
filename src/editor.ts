@@ -232,7 +232,11 @@ export class ClickUpTodoCardEditor extends LitElement {
           <ha-select
             .label=${'Sort By'}
             .value=${this._config.sort_by || 'due_date'}
-            @selected=${(ev: CustomEvent) => this._updateConfig('sort_by', ev.detail.value)}
+            @selected=${(ev: CustomEvent) => {
+              console.log('Sort By @selected event fired:', ev);
+              console.log('Event detail:', ev.detail);
+              this._updateConfig('sort_by', ev.detail.value);
+            }}
           >
             <mwc-list-item value="due_date">Due Date</mwc-list-item>
             <mwc-list-item value="start_date">Start Date</mwc-list-item>
@@ -498,6 +502,7 @@ export class ClickUpTodoCardEditor extends LitElement {
   }
 
   private _updateConfig(key: string, value: any): void {
+    console.log('_updateConfig called:', { key, value, hasConfig: !!this._config });
     if (!this._config) return;
 
     const newConfig = {
@@ -505,8 +510,10 @@ export class ClickUpTodoCardEditor extends LitElement {
       [key]: value === '' ? undefined : value,
     };
 
+    console.log('New config:', newConfig);
     this._config = newConfig;
     fireEvent(this, 'config-changed', { config: newConfig });
+    console.log('Config updated and event fired');
   }
 
   private _entityChanged(entity: string): void {
