@@ -24,6 +24,7 @@ export class ClickUpTodoCardEditor extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     console.log('ClickUp Card Editor: Connected to DOM');
+    console.log('ClickUp Card Editor: _handleSelectChange method exists?', typeof this._handleSelectChange === 'function');
   }
 
   public setConfig(config: ClickUpTodoCardConfig): void {
@@ -190,7 +191,10 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Button Position'}
             .configValue=${'add_button_position'}
             .value=${this._config.add_button_position || 'bottom-right'}
+            @change=${this._handleSelectChange}
             @selected=${this._handleSelectChange}
+            @closed=${this._handleSelectChange}
+            @value-changed=${this._handleSelectChange}
           >
             <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
             <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
@@ -505,6 +509,7 @@ export class ClickUpTodoCardEditor extends LitElement {
 
   private _handleSelectChange(ev: any): void {
     console.log('=== _handleSelectChange fired ===');
+    console.log('Event type:', ev.type);
     console.log('Event:', ev);
     console.log('Event detail:', ev.detail);
     console.log('Event target:', ev.target);
@@ -520,9 +525,14 @@ export class ClickUpTodoCardEditor extends LitElement {
       return;
     }
 
+    console.log('Target:', target);
+    console.log('Target.configValue:', target.configValue);
+    console.log('Target.value:', target.value);
+    console.log('Target.selected:', target.selected);
+
     const configValue = target.configValue;
     if (!configValue) {
-      console.log('No configValue on target');
+      console.log('No configValue on target, cannot proceed');
       return;
     }
 
