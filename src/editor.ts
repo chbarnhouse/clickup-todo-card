@@ -447,11 +447,34 @@ export class ClickUpTodoCardEditor extends LitElement {
 
     if (!configValue) return;
 
-    // Use setTimeout to ensure the value is set before we read it
+    // Use setTimeout to ensure DOM is updated
     setTimeout(() => {
-      const value = target.value;
+      // Try to get value from multiple sources
+      let value = target.value;
 
-      if (value === undefined) return;
+      // If value is still undefined, try getting from selected item
+      if (value === undefined || value === null) {
+        const selectedItem = target.querySelector('[selected]') || target.querySelector('[activated]');
+        if (selectedItem) {
+          value = selectedItem.value || selectedItem.getAttribute('value');
+        }
+      }
+
+      // If still no value, try from the select's selected property
+      if (value === undefined || value === null) {
+        if (target.selected !== undefined && target.selected !== null) {
+          const items = Array.from(target.querySelectorAll('mwc-list-item'));
+          const selectedItem = items[target.selected];
+          if (selectedItem) {
+            value = (selectedItem as any).value || selectedItem.getAttribute('value');
+          }
+        }
+      }
+
+      if (value === undefined) {
+        console.log('Could not determine dropdown value', { target, configValue });
+        return;
+      }
 
       // Handle empty strings for optional fields
       const finalValue = value === '' ? undefined : value;
@@ -466,7 +489,7 @@ export class ClickUpTodoCardEditor extends LitElement {
       // Force a complete re-render
       this.requestUpdate();
       this._config = newConfig;
-    }, 0);
+    }, 50); // Slightly longer timeout to ensure DOM is fully updated
   }
 
   private _entityChanged(entity: string): void {
