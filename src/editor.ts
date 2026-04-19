@@ -187,22 +187,32 @@ export class ClickUpTodoCardEditor extends LitElement {
             @input=${this._valueChanged}
           ></ha-textfield>
 
-          <ha-select
-            .label=${'Button Position'}
-            .configValue=${'add_button_position'}
-            .value=${this._config.add_button_position || 'bottom-right'}
-            @change=${this._handleSelectChange}
-            @selected=${this._handleSelectChange}
-            @closed=${this._handleSelectChange}
-            @value-changed=${this._handleSelectChange}
-          >
-            <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
-            <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
-            <mwc-list-item value="bottom-right">Bottom Right</mwc-list-item>
-            <mwc-list-item value="top-left">Top Left</mwc-list-item>
-            <mwc-list-item value="top-center">Top Center</mwc-list-item>
-            <mwc-list-item value="top-right">Top Right</mwc-list-item>
-          </ha-select>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <label style="font-size: 12px; color: var(--secondary-text-color);">Button Position</label>
+            <select
+              style="padding: 8px; border-radius: 4px; background: var(--card-background-color); border: 1px solid var(--divider-color); color: var(--primary-text-color);"
+              .value=${this._config.add_button_position || 'bottom-right'}
+              @change=${(e: Event) => {
+                console.log('Native select change event fired!');
+                const target = e.target as HTMLSelectElement;
+                console.log('Selected value:', target.value);
+                const newConfig = {
+                  ...this._config,
+                  add_button_position: target.value,
+                };
+                fireEvent(this, 'config-changed', { config: newConfig });
+                this._config = newConfig;
+                this.requestUpdate();
+              }}
+            >
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-center">Bottom Center</option>
+              <option value="bottom-right">Bottom Right</option>
+              <option value="top-left">Top Left</option>
+              <option value="top-center">Top Center</option>
+              <option value="top-right">Top Right</option>
+            </select>
+          </div>
 
           <ha-formfield .label=${'Overlay Button (float over content)'}>
             <ha-switch
