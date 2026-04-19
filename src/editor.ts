@@ -185,18 +185,24 @@ export class ClickUpTodoCardEditor extends LitElement {
             @input=${this._valueChanged}
           ></ha-textfield>
 
-          <ha-select
-            .label=${'Button Position'}
+          <ha-selector
+            .hass=${this.hass}
+            .selector=${{
+              select: {
+                options: [
+                  { value: 'bottom-left', label: 'Bottom Left' },
+                  { value: 'bottom-center', label: 'Bottom Center' },
+                  { value: 'bottom-right', label: 'Bottom Right' },
+                  { value: 'top-left', label: 'Top Left' },
+                  { value: 'top-center', label: 'Top Center' },
+                  { value: 'top-right', label: 'Top Right' },
+                ],
+              },
+            }}
             .value=${this._config.add_button_position || 'bottom-right'}
-            @selected=${(ev: CustomEvent) => this._updateConfig('add_button_position', ev.detail.value)}
-          >
-            <mwc-list-item value="bottom-left">Bottom Left</mwc-list-item>
-            <mwc-list-item value="bottom-center">Bottom Center</mwc-list-item>
-            <mwc-list-item value="bottom-right">Bottom Right</mwc-list-item>
-            <mwc-list-item value="top-left">Top Left</mwc-list-item>
-            <mwc-list-item value="top-center">Top Center</mwc-list-item>
-            <mwc-list-item value="top-right">Top Right</mwc-list-item>
-          </ha-select>
+            .label=${'Button Position'}
+            @value-changed=${(ev: any) => this._updateConfig('add_button_position', ev.detail.value)}
+          ></ha-selector>
 
           <ha-formfield .label=${'Overlay Button (float over content)'}>
             <ha-switch
@@ -229,63 +235,78 @@ export class ClickUpTodoCardEditor extends LitElement {
         <div class="config-section">
           <h3>Sorting</h3>
 
-          <ha-select
-            .label=${'Sort By'}
-            .value=${this._config.sort_by || 'due_date'}
-            @closed=${(ev: Event) => {
-              console.log('Sort By @closed event fired:', ev);
-              const target = ev.target as any;
-              console.log('Target:', target);
-              console.log('Target value:', target.value);
-              if (target.value && target.value !== this._config.sort_by) {
-                this._updateConfig('sort_by', target.value);
-              }
+          <ha-selector
+            .hass=${this.hass}
+            .selector=${{
+              select: {
+                options: [
+                  { value: 'due_date', label: 'Due Date' },
+                  { value: 'start_date', label: 'Start Date' },
+                  { value: 'priority', label: 'Priority' },
+                  { value: 'name', label: 'Name' },
+                  { value: 'status', label: 'Status' },
+                ],
+              },
             }}
-          >
-            <mwc-list-item value="due_date">Due Date</mwc-list-item>
-            <mwc-list-item value="start_date">Start Date</mwc-list-item>
-            <mwc-list-item value="priority">Priority</mwc-list-item>
-            <mwc-list-item value="name">Name</mwc-list-item>
-            <mwc-list-item value="status">Status</mwc-list-item>
-          </ha-select>
+            .value=${this._config.sort_by || 'due_date'}
+            .label=${'Sort By'}
+            @value-changed=${(ev: any) => this._updateConfig('sort_by', ev.detail.value)}
+          ></ha-selector>
 
-          <ha-select
-            .label=${'Sort Order'}
+          <ha-selector
+            .hass=${this.hass}
+            .selector=${{
+              select: {
+                options: [
+                  { value: 'asc', label: 'Ascending' },
+                  { value: 'desc', label: 'Descending' },
+                ],
+              },
+            }}
             .value=${this._config.sort_order || 'asc'}
-            @selected=${(ev: CustomEvent) => this._updateConfig('sort_order', ev.detail.value)}
-          >
-            <mwc-list-item value="asc">Ascending</mwc-list-item>
-            <mwc-list-item value="desc">Descending</mwc-list-item>
-          </ha-select>
+            .label=${'Sort Order'}
+            @value-changed=${(ev: any) => this._updateConfig('sort_order', ev.detail.value)}
+          ></ha-selector>
         </div>
 
         <!-- Grouping -->
         <div class="config-section">
           <h3>Grouping</h3>
 
-          <ha-select
-            .label=${'Group By'}
+          <ha-selector
+            .hass=${this.hass}
+            .selector=${{
+              select: {
+                options: [
+                  { value: 'none', label: 'None' },
+                  { value: 'status', label: 'Status' },
+                  { value: 'priority', label: 'Priority' },
+                  { value: 'assignee', label: 'Assignee' },
+                  { value: 'list', label: 'List' },
+                  { value: 'custom_field', label: 'Custom Field' },
+                ],
+              },
+            }}
             .value=${this._config.group_by || 'none'}
-            @selected=${(ev: CustomEvent) => this._updateConfig('group_by', ev.detail.value)}
-          >
-            <mwc-list-item value="none">None</mwc-list-item>
-            <mwc-list-item value="status">Status</mwc-list-item>
-            <mwc-list-item value="priority">Priority</mwc-list-item>
-            <mwc-list-item value="assignee">Assignee</mwc-list-item>
-            <mwc-list-item value="list">List</mwc-list-item>
-            <mwc-list-item value="custom_field">Custom Field</mwc-list-item>
-          </ha-select>
+            .label=${'Group By'}
+            @value-changed=${(ev: any) => this._updateConfig('group_by', ev.detail.value)}
+          ></ha-selector>
 
           ${this._config.group_by === 'custom_field' && customFields.length > 0 ? html`
-            <ha-select
-              .label=${'Custom Field for Grouping'}
+            <ha-selector
+              .hass=${this.hass}
+              .selector=${{
+                select: {
+                  options: customFields.map(field => ({
+                    value: field.value,
+                    label: field.label,
+                  })),
+                },
+              }}
               .value=${this._config.group_field_id || ''}
-              @selected=${(ev: CustomEvent) => this._updateConfig('group_field_id', ev.detail.value)}
-            >
-              ${customFields.map(field => html`
-                <mwc-list-item value="${field.value}">${field.label}</mwc-list-item>
-              `)}
-            </ha-select>
+              .label=${'Custom Field for Grouping'}
+              @value-changed=${(ev: any) => this._updateConfig('group_field_id', ev.detail.value)}
+            ></ha-selector>
           ` : ''}
         </div>
 
