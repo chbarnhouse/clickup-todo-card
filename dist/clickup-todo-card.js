@@ -307,21 +307,21 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 40px;
-    padding-right: 32px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-left: 48px;
+    padding-right: 38px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     position: relative;
-    min-height: 32px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 10px;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 6px;
+    left: 8px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -331,31 +331,35 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
     --mdc-icon-size: 16px;
     opacity: 0.9;
     flex-shrink: 0;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   /* Status Dropdown */
   .status-dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 4px);
     left: 0;
-    margin-top: 6px;
     background: var(--card-background-color);
-    border: 1px solid var(--divider-color);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--primary-color);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
     z-index: 100;
-    min-width: 180px;
+    min-width: 200px;
+    max-width: 280px;
     overflow: hidden;
-    padding: 4px;
+    padding: 6px;
   }
 
   .status-option {
     padding: 0;
     cursor: pointer;
-    transition: all 0.15s ease;
-    border-radius: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 10px;
     overflow: hidden;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 
   .status-option:last-child {
@@ -363,20 +367,21 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
   }
 
   .status-option:hover {
-    transform: scale(1.02);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .status-option .status-badge {
     display: block;
     width: 100%;
-    padding: 10px 14px;
+    padding: 12px 16px;
     margin: 0;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: none;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
   }
 
   /* Task Main Content */
@@ -656,7 +661,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
       min-width: 300px;
     }
   }
-`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.42  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class St extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Et}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return V`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return V`
+`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.43  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class St extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Et}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return V`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return V`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
@@ -814,9 +819,9 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
           </div>
         `)}
       </div>
-    `}async _toggleTask(t){const e="completed"===t.status?"needs_action":"completed";try{await this.hass.callService("todo","update_item",{entity_id:this._config.entity,item:t.uid,status:e})}catch(t){console.error("Error toggling task:",t)}}_toggleStatusDropdown(t){this._statusDropdownTask=this._statusDropdownTask===t?null:t}_renderStatusDropdown(t){const e=yt(this._tasks),i=e.length>0?e:[{name:"TO DO",color:"#d3d3d3",type:"open"},{name:"IN PROGRESS",color:"#4194f6",type:"custom"},{name:"IN REVIEW",color:"#f6c342",type:"custom"},{name:"COMPLETE",color:"#6bc950",type:"closed"},{name:"BLOCKED",color:"#f50000",type:"custom"}];return V`
+    `}async _toggleTask(t){const e="completed"===t.status?"needs_action":"completed";try{await this.hass.callService("todo","update_item",{entity_id:this._config.entity,item:t.uid,status:e})}catch(t){console.error("Error toggling task:",t)}}_toggleStatusDropdown(t){this._statusDropdownTask=this._statusDropdownTask===t?null:t}_renderStatusDropdown(t){const e=this.hass.states[this._config.entity],i=e?.attributes?.available_statuses||[];let s=[];if(i.length>0)s=i.map(t=>({name:t.status,color:t.color||"#d3d3d3",type:t.type}));else{const t=yt(this._tasks);s=t.length>0?t:[{name:"TO DO",color:"#d3d3d3",type:"open"},{name:"IN PROGRESS",color:"#4194f6",type:"custom"},{name:"IN REVIEW",color:"#f6c342",type:"custom"},{name:"COMPLETE",color:"#6bc950",type:"closed"},{name:"BLOCKED",color:"#f50000",type:"custom"}]}return V`
       <div class="status-dropdown" @click=${t=>t.stopPropagation()}>
-        ${i.map(e=>V`
+        ${s.map(e=>V`
           <div
             class="status-option"
             style="--status-color: ${e.color}"

@@ -309,21 +309,21 @@ export const styles = css`
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 40px;
-    padding-right: 32px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-left: 48px;
+    padding-right: 38px;
+    padding-top: 8px;
+    padding-bottom: 8px;
     position: relative;
-    min-height: 32px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 10px;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 6px;
+    left: 8px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -333,31 +333,35 @@ export const styles = css`
     --mdc-icon-size: 16px;
     opacity: 0.9;
     flex-shrink: 0;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   /* Status Dropdown */
   .status-dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 4px);
     left: 0;
-    margin-top: 6px;
     background: var(--card-background-color);
-    border: 1px solid var(--divider-color);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--primary-color);
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
     z-index: 100;
-    min-width: 180px;
+    min-width: 200px;
+    max-width: 280px;
     overflow: hidden;
-    padding: 4px;
+    padding: 6px;
   }
 
   .status-option {
     padding: 0;
     cursor: pointer;
-    transition: all 0.15s ease;
-    border-radius: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 10px;
     overflow: hidden;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 
   .status-option:last-child {
@@ -365,20 +369,21 @@ export const styles = css`
   }
 
   .status-option:hover {
-    transform: scale(1.02);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .status-option .status-badge {
     display: block;
     width: 100%;
-    padding: 10px 14px;
+    padding: 12px 16px;
     margin: 0;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: none;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
   }
 
   /* Task Main Content */

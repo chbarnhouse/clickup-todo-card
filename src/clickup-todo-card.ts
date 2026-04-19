@@ -431,17 +431,35 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderStatusDropdown(task: ClickUpTask): TemplateResult {
-    // Get actual statuses with colors from all tasks
-    const availableStatuses = getUniqueStatusesWithColors(this._tasks);
+    // Get available statuses from entity attributes (all configured statuses)
+    const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
+    const entityStatuses = stateObj?.attributes?.available_statuses || [];
 
-    // Fallback to common statuses if no tasks have status info
-    const statuses = availableStatuses.length > 0 ? availableStatuses : [
-      { name: 'TO DO', color: '#d3d3d3', type: 'open' },
-      { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
-      { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
-      { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
-      { name: 'BLOCKED', color: '#f50000', type: 'custom' },
-    ];
+    let statuses: Array<{ name: string; color: string; type: string }> = [];
+
+    if (entityStatuses.length > 0) {
+      // Use statuses from entity attributes (includes ALL configured statuses)
+      statuses = entityStatuses.map(s => ({
+        name: s.status,
+        color: s.color || '#d3d3d3',
+        type: s.type
+      }));
+    } else {
+      // Fallback to extracting from current tasks
+      const taskStatuses = getUniqueStatusesWithColors(this._tasks);
+      if (taskStatuses.length > 0) {
+        statuses = taskStatuses;
+      } else {
+        // Final fallback to common statuses
+        statuses = [
+          { name: 'TO DO', color: '#d3d3d3', type: 'open' },
+          { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
+          { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
+          { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
+          { name: 'BLOCKED', color: '#f50000', type: 'custom' },
+        ];
+      }
+    }
 
     return html`
       <div class="status-dropdown" @click=${(e: Event) => e.stopPropagation()}>

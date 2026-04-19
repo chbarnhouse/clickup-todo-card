@@ -138,6 +138,12 @@ export interface ClickUpEntityAttributes {
   friendly_name: string;
   todo_items: TodoItem[];
   clickup_tasks: ClickUpTask[];
+  available_statuses?: Array<{
+    status: string;
+    type: string;
+    color?: string;
+    orderindex: number;
+  }>;
   list_id?: string;
   space_id?: string;
   space_name?: string;
