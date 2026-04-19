@@ -309,20 +309,21 @@ export const styles = css`
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 32px;
-    padding-right: 26px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-left: 40px;
+    padding-right: 32px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     position: relative;
-    min-height: 28px;
+    min-height: 32px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 4px;
+    left: 6px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -330,8 +331,8 @@ export const styles = css`
 
   .status-chevron {
     --mdc-icon-size: 16px;
-    margin-left: auto;
-    opacity: 0.8;
+    opacity: 0.9;
+    flex-shrink: 0;
   }
 
   /* Status Dropdown */
@@ -339,35 +340,45 @@ export const styles = css`
     position: absolute;
     top: 100%;
     left: 0;
-    margin-top: 4px;
+    margin-top: 6px;
     background: var(--card-background-color);
     border: 1px solid var(--divider-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
     z-index: 100;
-    min-width: 150px;
+    min-width: 180px;
     overflow: hidden;
+    padding: 4px;
   }
 
   .status-option {
     padding: 0;
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition: all 0.15s ease;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 2px;
+  }
+
+  .status-option:last-child {
+    margin-bottom: 0;
   }
 
   .status-option:hover {
-    opacity: 0.8;
+    transform: scale(1.02);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .status-option .status-badge {
     display: block;
     width: 100%;
-    padding: 8px 12px;
+    padding: 10px 14px;
     margin: 0;
-    border-radius: 0;
+    border-radius: 8px;
     box-shadow: none;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
+    letter-spacing: 0.3px;
   }
 
   /* Task Main Content */

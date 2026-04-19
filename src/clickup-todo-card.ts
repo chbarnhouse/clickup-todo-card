@@ -4,7 +4,7 @@ import { HomeAssistant, LovelaceCard, hasConfigOrEntityChanged, fireEvent } from
 
 import { ClickUpTodoCardConfig, ClickUpTask, ExtendedHassEntity } from './types';
 import { CARD_VERSION, DEFAULT_CONFIG, PRIORITY_ICONS, PRIORITY_COLORS } from './const';
-import { parseClickUpTasks } from './utils/clickup-data';
+import { parseClickUpTasks, getUniqueStatusesWithColors } from './utils/clickup-data';
 import { filterTasks } from './utils/filters';
 import { sortTasks, groupTasks } from './utils/sort';
 import { formatDate, formatCustomFieldValue, getInitials, isOverdue, getDateClass } from './utils/formatters';
@@ -431,8 +431,11 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderStatusDropdown(task: ClickUpTask): TemplateResult {
-    // Common ClickUp statuses - this could be made dynamic by fetching from entity attributes
-    const commonStatuses = [
+    // Get actual statuses with colors from all tasks
+    const availableStatuses = getUniqueStatusesWithColors(this._tasks);
+
+    // Fallback to common statuses if no tasks have status info
+    const statuses = availableStatuses.length > 0 ? availableStatuses : [
       { name: 'TO DO', color: '#d3d3d3', type: 'open' },
       { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
       { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
@@ -442,7 +445,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="status-dropdown" @click=${(e: Event) => e.stopPropagation()}>
-        ${commonStatuses.map(status => html`
+        ${statuses.map(status => html`
           <div
             class="status-option"
             style="--status-color: ${status.color}"
@@ -479,7 +482,11 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderAddDialog(): TemplateResult {
-    const commonStatuses = [
+    // Get actual statuses with colors from all tasks
+    const availableStatuses = getUniqueStatusesWithColors(this._tasks);
+
+    // Fallback to common statuses if no tasks have status info
+    const statuses = availableStatuses.length > 0 ? availableStatuses : [
       { name: 'TO DO', color: '#d3d3d3', type: 'open' },
       { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
       { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
@@ -513,7 +520,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
             label="Status"
             id="add-status"
           >
-            ${commonStatuses.map(status => html`
+            ${statuses.map(status => html`
               <mwc-list-item value="${status.name}">${status.name}</mwc-list-item>
             `)}
           </ha-select>
@@ -563,7 +570,11 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const startDateValue = task.start_date ? new Date(typeof task.start_date === 'number' ? task.start_date : parseInt(task.start_date as string)).toISOString().split('T')[0] : '';
     const dueDateValue = task.due ? new Date(task.due).toISOString().split('T')[0] : '';
 
-    const commonStatuses = [
+    // Get actual statuses with colors from all tasks
+    const availableStatuses = getUniqueStatusesWithColors(this._tasks);
+
+    // Fallback to common statuses if no tasks have status info
+    const statuses = availableStatuses.length > 0 ? availableStatuses : [
       { name: 'TO DO', color: '#d3d3d3', type: 'open' },
       { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
       { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
@@ -600,7 +611,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
             id="edit-status"
             .value=${task.clickup_status?.status || 'TO DO'}
           >
-            ${commonStatuses.map(status => html`
+            ${statuses.map(status => html`
               <mwc-list-item value="${status.name}">${status.name}</mwc-list-item>
             `)}
           </ha-select>

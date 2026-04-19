@@ -73,6 +73,29 @@ export function getUniqueStatuses(tasks: ClickUpTask[]): Array<{value: string, l
 }
 
 /**
+ * Get unique statuses with colors from tasks
+ */
+export function getUniqueStatusesWithColors(tasks: ClickUpTask[]): Array<{
+  name: string;
+  color: string;
+  type: string;
+}> {
+  const statusMap = new Map<string, {name: string, color: string, type: string}>();
+
+  tasks.forEach(task => {
+    if (task.clickup_status?.status) {
+      statusMap.set(task.clickup_status.status, {
+        name: task.clickup_status.status,
+        color: task.clickup_status.color || '#d3d3d3',
+        type: task.clickup_status.type || 'custom',
+      });
+    }
+  });
+
+  return Array.from(statusMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
  * Get unique tags from tasks
  */
 export function getUniqueTags(tasks: ClickUpTask[]): Array<{value: string, label: string}> {
