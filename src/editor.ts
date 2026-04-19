@@ -232,8 +232,8 @@ export class ClickUpTodoCardEditor extends LitElement {
           <ha-select
             .label=${'Sort By'}
             .value=${this._config.sort_by || 'due_date'}
-            @selected=${(ev: CustomEvent) => {
-              console.log('Sort By @selected event fired:', ev);
+            @value-changed=${(ev: CustomEvent) => {
+              console.log('Sort By @value-changed event fired:', ev);
               console.log('Event detail:', ev.detail);
               this._updateConfig('sort_by', ev.detail.value);
             }}
