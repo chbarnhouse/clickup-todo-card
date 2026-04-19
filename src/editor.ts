@@ -505,6 +505,7 @@ export class ClickUpTodoCardEditor extends LitElement {
       [key]: value === '' ? undefined : value,
     };
 
+    this._config = newConfig;
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 
