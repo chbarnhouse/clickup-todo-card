@@ -443,36 +443,45 @@ export class ClickUpTodoCardEditor extends LitElement {
     if (!this._config || !this.hass) return;
 
     const target = ev.target as any;
-    const configValue = target.configValue;
+    if (!target) {
+      console.log('No target element in select change event');
+      return;
+    }
 
-    if (!configValue) return;
+    const configValue = target.configValue;
+    if (!configValue) {
+      console.log('No configValue on target', target);
+      return;
+    }
 
     // Use setTimeout to ensure DOM is updated
     setTimeout(() => {
-      // Try to get value from multiple sources
+      // Try to get value from target.value first
       let value = target.value;
 
-      // If value is still undefined, try getting from selected item
-      if (value === undefined || value === null) {
-        const selectedItem = target.querySelector('[selected]') || target.querySelector('[activated]');
-        if (selectedItem) {
-          value = selectedItem.value || selectedItem.getAttribute('value');
-        }
-      }
-
-      // If still no value, try from the select's selected property
-      if (value === undefined || value === null) {
-        if (target.selected !== undefined && target.selected !== null) {
-          const items = Array.from(target.querySelectorAll('mwc-list-item'));
-          const selectedItem = items[target.selected];
-          if (selectedItem) {
-            value = (selectedItem as any).value || selectedItem.getAttribute('value');
+      // If value is still undefined and target exists, try from selected property
+      if ((value === undefined || value === null) && target) {
+        if (typeof target.selected === 'number') {
+          // Try to get items safely
+          try {
+            const items = target.querySelectorAll ? Array.from(target.querySelectorAll('mwc-list-item')) : [];
+            const selectedItem = items[target.selected];
+            if (selectedItem) {
+              value = (selectedItem as any).value || selectedItem.getAttribute('value');
+            }
+          } catch (e) {
+            console.log('Error querying list items', e);
           }
         }
       }
 
-      if (value === undefined) {
-        console.log('Could not determine dropdown value', { target, configValue });
+      if (value === undefined || value === null) {
+        console.log('Could not determine dropdown value', {
+          target,
+          configValue,
+          targetValue: target?.value,
+          targetSelected: target?.selected
+        });
         return;
       }
 
@@ -484,12 +493,14 @@ export class ClickUpTodoCardEditor extends LitElement {
         [configValue]: finalValue,
       };
 
+      console.log('Updating config:', { configValue, value: finalValue });
+
       fireEvent(this, 'config-changed', { config: newConfig });
 
       // Force a complete re-render
       this.requestUpdate();
       this._config = newConfig;
-    }, 50); // Slightly longer timeout to ensure DOM is fully updated
+    }, 50);
   }
 
   private _entityChanged(entity: string): void {
