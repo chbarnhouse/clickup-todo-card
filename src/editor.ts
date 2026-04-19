@@ -232,10 +232,14 @@ export class ClickUpTodoCardEditor extends LitElement {
           <ha-select
             .label=${'Sort By'}
             .value=${this._config.sort_by || 'due_date'}
-            @value-changed=${(ev: CustomEvent) => {
-              console.log('Sort By @value-changed event fired:', ev);
-              console.log('Event detail:', ev.detail);
-              this._updateConfig('sort_by', ev.detail.value);
+            @closed=${(ev: Event) => {
+              console.log('Sort By @closed event fired:', ev);
+              const target = ev.target as any;
+              console.log('Target:', target);
+              console.log('Target value:', target.value);
+              if (target.value && target.value !== this._config.sort_by) {
+                this._updateConfig('sort_by', target.value);
+              }
             }}
           >
             <mwc-list-item value="due_date">Due Date</mwc-list-item>
