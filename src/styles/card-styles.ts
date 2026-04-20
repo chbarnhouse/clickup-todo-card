@@ -325,7 +325,7 @@ export const styles = css`
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 2px;
+    left: 0px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
