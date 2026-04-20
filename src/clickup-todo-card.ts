@@ -438,12 +438,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
     const entityStatuses = stateObj?.attributes?.available_statuses || [];
 
-    console.log('[ClickUp Card] Full task object:', task);
-    console.log('[ClickUp Card] Task has list_info?', 'list_info' in task);
-    console.log('[ClickUp Card] Task list_info:', (task as any).list_info);
-    console.log('[ClickUp Card] Task list statuses:', taskListStatuses);
-    console.log('[ClickUp Card] Available statuses from entity:', entityStatuses);
-
     let statuses: Array<{ name: string; color: string; type: string }> = [];
 
     if (taskListStatuses.length > 0) {
@@ -453,7 +447,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         color: s.color || '#d3d3d3',
         type: s.type
       }));
-      console.log('[ClickUp Card] Using task list statuses:', statuses);
     } else if (entityStatuses.length > 0) {
       // Fallback to statuses from entity attributes (includes ALL configured statuses)
       statuses = entityStatuses.map(s => ({
@@ -461,13 +454,11 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         color: s.color || '#d3d3d3',
         type: s.type
       }));
-      console.log('[ClickUp Card] Using entity statuses:', statuses);
     } else {
       // Final fallback to extracting from current tasks
       const taskStatuses = getUniqueStatusesWithColors(this._tasks);
       if (taskStatuses.length > 0) {
         statuses = taskStatuses;
-        console.log('[ClickUp Card] Using unique task statuses:', statuses);
       } else {
         // Last resort fallback to common statuses
         statuses = [
@@ -477,7 +468,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
           { name: 'BLOCKED', color: '#f50000', type: 'custom' },
         ];
-        console.log('[ClickUp Card] Using fallback statuses:', statuses);
       }
     }
 

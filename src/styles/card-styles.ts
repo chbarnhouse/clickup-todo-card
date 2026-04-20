@@ -309,32 +309,33 @@ export const styles = css`
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 42px;
-    padding-right: 34px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-left: 36px;
+    padding-right: 28px;
+    padding-top: 4px;
+    padding-bottom: 4px;
     position: relative;
-    min-height: 32px;
+    min-height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 6px;
+    left: 4px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
+    --mdc-checkbox-size: 20px;
   }
 
   .status-chevron {
-    --mdc-icon-size: 16px;
-    opacity: 0.9;
+    --mdc-icon-size: 14px;
+    opacity: 0.8;
     flex-shrink: 0;
     position: absolute;
-    right: 8px;
+    right: 6px;
     top: 50%;
     transform: translateY(-50%);
   }
@@ -346,11 +347,11 @@ export const styles = css`
     left: 0;
     background: var(--card-background-color);
     border: 1px solid var(--divider-color);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     z-index: 100;
-    min-width: 160px;
-    max-width: 240px;
+    min-width: 140px;
+    max-width: 200px;
     overflow: hidden;
     padding: 4px;
   }
@@ -358,10 +359,10 @@ export const styles = css`
   .status-option {
     padding: 0;
     cursor: pointer;
-    transition: all 0.15s ease;
-    border-radius: 8px;
+    transition: all 0.1s ease;
+    border-radius: 6px;
     overflow: hidden;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
   }
 
   .status-option:last-child {
@@ -369,21 +370,22 @@ export const styles = css`
   }
 
   .status-option:hover {
-    transform: scale(1.02);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transform: scale(1.01);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   }
 
   .status-option .status-badge {
     display: block;
     width: 100%;
-    padding: 8px 12px;
+    padding: 6px 10px;
     margin: 0;
-    border-radius: 8px;
+    border-radius: 6px;
     box-shadow: none;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.3px;
     text-align: center;
+    background: var(--status-color, var(--primary-color));
   }
 
   /* Task Main Content */
