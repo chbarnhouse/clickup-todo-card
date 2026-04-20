@@ -381,11 +381,10 @@ export const styles = css`
   }
 
   .status-option .status-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     width: 100%;
-    padding: 3px 14px;
+    padding: 0 14px;
     margin: 0;
     border-radius: 999px;
     box-shadow: none;
@@ -394,8 +393,8 @@ export const styles = css`
     letter-spacing: 0.3px;
     text-transform: uppercase;
     background: var(--status-color, var(--primary-color));
-    line-height: 1.4;
-    min-height: 26px;
+    line-height: 1;
+    height: 26px;
   }
 
   /* Task Main Content */
