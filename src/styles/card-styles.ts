@@ -325,7 +325,7 @@ export const styles = css`
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 4px;
+    left: 2px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -385,7 +385,7 @@ export const styles = css`
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 8px 16px;
+    padding: 3px 14px;
     margin: 0;
     border-radius: 999px;
     box-shadow: none;
@@ -396,7 +396,7 @@ export const styles = css`
     text-transform: uppercase;
     background: var(--status-color, var(--primary-color));
     line-height: 1;
-    min-height: 28px;
+    min-height: 26px;
   }
 
   /* Task Main Content */
