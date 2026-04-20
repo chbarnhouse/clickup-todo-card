@@ -431,17 +431,28 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderStatusDropdown(task: ClickUpTask): TemplateResult {
-    // Get available statuses from entity attributes (all configured statuses)
+    // Priority 1: Get statuses from the task's specific list (most accurate)
+    const taskListStatuses = (task as any).list_info?.statuses || [];
+
+    // Priority 2: Get statuses from entity attributes (all lists in view/space)
     const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
     const entityStatuses = stateObj?.attributes?.available_statuses || [];
 
+    console.log('[ClickUp Card] Task list statuses:', taskListStatuses);
     console.log('[ClickUp Card] Available statuses from entity:', entityStatuses);
-    console.log('[ClickUp Card] Entity attributes:', stateObj?.attributes);
 
     let statuses: Array<{ name: string; color: string; type: string }> = [];
 
-    if (entityStatuses.length > 0) {
-      // Use statuses from entity attributes (includes ALL configured statuses)
+    if (taskListStatuses.length > 0) {
+      // Use statuses from task's specific list (best option)
+      statuses = taskListStatuses.map(s => ({
+        name: s.status,
+        color: s.color || '#d3d3d3',
+        type: s.type
+      }));
+      console.log('[ClickUp Card] Using task list statuses:', statuses);
+    } else if (entityStatuses.length > 0) {
+      // Fallback to statuses from entity attributes (includes ALL configured statuses)
       statuses = entityStatuses.map(s => ({
         name: s.status,
         color: s.color || '#d3d3d3',
@@ -449,13 +460,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       }));
       console.log('[ClickUp Card] Using entity statuses:', statuses);
     } else {
-      // Fallback to extracting from current tasks
+      // Final fallback to extracting from current tasks
       const taskStatuses = getUniqueStatusesWithColors(this._tasks);
       if (taskStatuses.length > 0) {
         statuses = taskStatuses;
-        console.log('[ClickUp Card] Using task statuses:', statuses);
+        console.log('[ClickUp Card] Using unique task statuses:', statuses);
       } else {
-        // Final fallback to common statuses
+        // Last resort fallback to common statuses
         statuses = [
           { name: 'TO DO', color: '#d3d3d3', type: 'open' },
           { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
