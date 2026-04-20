@@ -90,7 +90,7 @@ export const styles = css`
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px color-mix(in srgb, var(--shadow-color, #000) 20%, transparent);
     transition: all 0.2s ease;
     z-index: 1;
   }
@@ -101,7 +101,7 @@ export const styles = css`
 
   .floating-add-button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px color-mix(in srgb, var(--shadow-color, #000) 30%, transparent);
   }
 
   .floating-add-button:active:not(:disabled) {
@@ -350,7 +350,7 @@ export const styles = css`
     background: var(--card-background-color);
     border: 1px solid var(--divider-color);
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--shadow-color, #000) 25%, transparent);
     z-index: 100;
     min-width: 140px;
     max-width: 200px;
@@ -373,7 +373,7 @@ export const styles = css`
 
   .status-option:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px color-mix(in srgb, var(--shadow-color, #000) 20%, transparent);
   }
 
   .status-option:active {
@@ -518,7 +518,7 @@ export const styles = css`
     color: white;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--shadow-color, #000) 10%, transparent);
   }
 
   .compact .status-badge {

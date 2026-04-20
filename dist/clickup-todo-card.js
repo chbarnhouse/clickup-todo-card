@@ -88,7 +88,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px color-mix(in srgb, var(--shadow-color, #000) 20%, transparent);
     transition: all 0.2s ease;
     z-index: 1;
   }
@@ -99,7 +99,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
 
   .floating-add-button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px color-mix(in srgb, var(--shadow-color, #000) 30%, transparent);
   }
 
   .floating-add-button:active:not(:disabled) {
@@ -348,7 +348,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
     background: var(--card-background-color);
     border: 1px solid var(--divider-color);
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--shadow-color, #000) 25%, transparent);
     z-index: 100;
     min-width: 140px;
     max-width: 200px;
@@ -371,7 +371,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
 
   .status-option:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px color-mix(in srgb, var(--shadow-color, #000) 20%, transparent);
   }
 
   .status-option:active {
@@ -516,7 +516,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
     color: white;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--shadow-color, #000) 10%, transparent);
   }
 
   .compact .status-badge {
@@ -673,7 +673,7 @@ function t(t,e,i,s){var a,o=arguments.length,r=o<3?e:null===s?s=Object.getOwnPro
       min-width: 300px;
     }
   }
-`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.61  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class St extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Et}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return B`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return B`
+`;console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 1.0.62  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class St extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...vt},this._tasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Et}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...vt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...vt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var s=e.get("hass");return!s||s.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return B`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return B`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
