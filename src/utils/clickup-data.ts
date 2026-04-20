@@ -48,6 +48,10 @@ export function parseClickUpTasks(entity: ExtendedHassEntity): ClickUpTask[] {
       points: task.points,
       list: task.list,
       space: task.space,
+      // Pass through enriched fields from integration
+      list_info: task.list_info,
+      space_info: task.space_info,
+      folder_info: task.folder_info,
     };
 
     return clickupTask;

@@ -95,6 +95,11 @@ export interface ClickUpTask extends TodoItem {
     id: string;
     name: string;
   };
+
+  // Enriched fields from integration (contains full list/space/folder details including statuses)
+  list_info?: any;
+  space_info?: any;
+  folder_info?: any;
 }
 
 export interface ClickUpCustomField {
