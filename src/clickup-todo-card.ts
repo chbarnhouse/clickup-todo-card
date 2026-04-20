@@ -438,6 +438,9 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
     const entityStatuses = stateObj?.attributes?.available_statuses || [];
 
+    console.log('[ClickUp Card] Full task object:', task);
+    console.log('[ClickUp Card] Task has list_info?', 'list_info' in task);
+    console.log('[ClickUp Card] Task list_info:', (task as any).list_info);
     console.log('[ClickUp Card] Task list statuses:', taskListStatuses);
     console.log('[ClickUp Card] Available statuses from entity:', entityStatuses);
 
