@@ -309,7 +309,7 @@ export const styles = css`
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 38px;
+    padding-left: 40px;
     padding-right: 30px;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -325,7 +325,7 @@ export const styles = css`
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 6px;
+    left: 4px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
@@ -362,7 +362,7 @@ export const styles = css`
     padding: 0;
     cursor: pointer;
     transition: all 0.2s ease;
-    border-radius: 6px;
+    border-radius: 999px;
     overflow: hidden;
     margin-bottom: 6px;
   }
@@ -381,11 +381,13 @@ export const styles = css`
   }
 
   .status-option .status-badge {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    padding: 10px 14px;
+    padding: 8px 16px;
     margin: 0;
-    border-radius: 6px;
+    border-radius: 999px;
     box-shadow: none;
     font-size: 10px;
     font-weight: 600;
@@ -393,8 +395,8 @@ export const styles = css`
     text-align: center;
     text-transform: uppercase;
     background: var(--status-color, var(--primary-color));
-    line-height: 1.3;
-    min-height: auto;
+    line-height: 1;
+    min-height: 28px;
   }
 
   /* Task Main Content */
