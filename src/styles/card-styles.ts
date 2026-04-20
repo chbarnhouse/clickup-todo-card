@@ -385,7 +385,7 @@ export const styles = css`
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 4px 14px;
+    padding: 6px 14px;
     margin: 0;
     border-radius: 999px;
     box-shadow: none;
@@ -394,8 +394,8 @@ export const styles = css`
     letter-spacing: 0.3px;
     text-transform: uppercase;
     background: var(--status-color, var(--primary-color));
-    line-height: 1.2;
-    min-height: 26px;
+    line-height: 1;
+    height: 26px;
   }
 
   /* Task Main Content */
