@@ -418,17 +418,32 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
-    const hasSpace = task.space && task.space.name;
-    const hasList = task.list && task.list.name;
+    // Build hierarchy path: Space / Folder / List
+    const parts: string[] = [];
 
-    if (!hasSpace && !hasList) {
+    // Add space (prefer space_info, fallback to space)
+    if (task.space_info?.name || task.space?.name) {
+      parts.push(task.space_info?.name || task.space.name);
+    }
+
+    // Add folder if exists
+    if (task.folder_info?.name) {
+      parts.push(task.folder_info.name);
+    }
+
+    // Add list (prefer list_info, fallback to list)
+    if (task.list_info?.name || task.list?.name) {
+      parts.push(task.list_info?.name || task.list.name);
+    }
+
+    if (parts.length === 0) {
       return html``;
     }
 
     return html`
       <div class="task-location">
         <ha-icon icon="mdi:folder-outline"></ha-icon>
-        <span>${hasSpace && hasList ? `${task.space.name} / ${task.list.name}` : hasSpace ? task.space.name : task.list!.name}</span>
+        <span>${parts.join(' / ')}</span>
       </div>
     `;
   }

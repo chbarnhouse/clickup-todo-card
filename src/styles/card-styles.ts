@@ -206,6 +206,14 @@ export const styles = css`
     opacity: 0.5;
   }
 
+  .compact .empty-state {
+    padding: 24px 12px;
+  }
+
+  .compact .empty-state ha-icon {
+    --mdc-icon-size: 36px;
+  }
+
   /* Task Groups */
   .task-group {
     margin-bottom: 16px;
@@ -240,6 +248,20 @@ export const styles = css`
     font-weight: 600;
     min-width: 16px;
     text-align: center;
+  }
+
+  .compact .group-header {
+    padding: 6px 10px;
+    margin: 6px 0;
+  }
+
+  .compact .group-name {
+    font-size: 13px;
+  }
+
+  .compact .group-count {
+    padding: 1px 5px;
+    font-size: 10px;
   }
 
   /* Tasks */
@@ -287,8 +309,8 @@ export const styles = css`
   }
 
   .compact .task-item {
-    padding: 6px 12px;
-    gap: 8px;
+    padding: 5px 10px;
+    gap: 6px;
   }
 
   /* Task Checkbox */
@@ -344,20 +366,22 @@ export const styles = css`
 
   /* Compact mode for task-status-wrapper */
   .compact .task-status-wrapper .status-badge {
-    padding-left: 32px;
-    padding-right: 24px;
+    padding-left: 30px;
+    padding-right: 22px;
     padding-top: 2px;
     padding-bottom: 2px;
     font-size: 9px;
+    min-height: 22px;
   }
 
   .compact .task-status-wrapper ha-checkbox {
-    --mdc-checkbox-size: 16px;
+    --mdc-checkbox-size: 15px;
+    left: 2px;
   }
 
   .compact .status-chevron {
     --mdc-icon-size: 10px;
-    right: 6px;
+    right: 4px;
   }
 
   /* Status Dropdown */
@@ -427,7 +451,7 @@ export const styles = css`
   }
 
   .compact .task-main {
-    gap: 4px;
+    gap: 3px;
   }
 
   /* Task Header */
@@ -460,7 +484,8 @@ export const styles = css`
   }
 
   .compact .priority-icon {
-    --mdc-icon-size: 16px;
+    --mdc-icon-size: 14px;
+    margin-top: 1px;
   }
 
   /* Task Description */
@@ -473,7 +498,8 @@ export const styles = css`
   }
 
   .compact .task-description {
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.3;
   }
 
   /* Task Metadata */
@@ -485,7 +511,8 @@ export const styles = css`
   }
 
   .compact .task-metadata {
-    gap: 6px;
+    gap: 8px;
+    align-items: flex-start;
   }
 
   /* Task Location */
@@ -620,9 +647,9 @@ export const styles = css`
   }
 
   .compact .assignee-avatar {
-    width: 24px;
-    height: 24px;
-    font-size: 10px;
+    width: 22px;
+    height: 22px;
+    font-size: 9px;
     border-width: 1px;
   }
 
