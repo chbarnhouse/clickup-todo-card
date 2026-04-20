@@ -385,17 +385,16 @@ export const styles = css`
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 3px 14px;
+    padding: 4px 14px;
     margin: 0;
     border-radius: 999px;
     box-shadow: none;
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.4px;
-    text-align: center;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
     background: var(--status-color, var(--primary-color));
-    line-height: 1;
+    line-height: 1.2;
     min-height: 26px;
   }
 
