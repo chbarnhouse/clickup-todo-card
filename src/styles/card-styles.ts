@@ -385,15 +385,17 @@ export const styles = css`
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 6px 14px;
+    padding: 3px 14px;
     margin: 0;
     border-radius: 999px;
     box-shadow: none;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     text-transform: uppercase;
     background: var(--status-color, var(--primary-color));
+    line-height: 1.4;
+    min-height: 26px;
   }
 
   /* Task Main Content */
