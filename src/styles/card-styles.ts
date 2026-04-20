@@ -309,33 +309,35 @@ export const styles = css`
   }
 
   .task-status-wrapper .status-badge {
-    padding-left: 36px;
-    padding-right: 28px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-left: 32px;
+    padding-right: 24px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     position: relative;
-    min-height: 28px;
+    min-height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
+    font-size: 10px;
+    line-height: 1.4;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 4px;
+    left: 2px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1;
-    --mdc-checkbox-size: 20px;
+    --mdc-checkbox-size: 18px;
   }
 
   .status-chevron {
-    --mdc-icon-size: 14px;
-    opacity: 0.8;
+    --mdc-icon-size: 12px;
+    opacity: 0.7;
     flex-shrink: 0;
     position: absolute;
-    right: 6px;
+    right: 4px;
     top: 50%;
     transform: translateY(-50%);
   }
@@ -343,26 +345,26 @@ export const styles = css`
   /* Status Dropdown */
   .status-dropdown {
     position: absolute;
-    top: calc(100% + 4px);
+    top: calc(100% + 6px);
     left: 0;
     background: var(--card-background-color);
     border: 1px solid var(--divider-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
     z-index: 100;
-    min-width: 140px;
-    max-width: 200px;
+    min-width: 120px;
+    max-width: 180px;
     overflow: hidden;
-    padding: 4px;
+    padding: 6px;
   }
 
   .status-option {
     padding: 0;
     cursor: pointer;
-    transition: all 0.1s ease;
-    border-radius: 6px;
+    transition: all 0.15s ease;
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
 
   .status-option:last-child {
@@ -370,22 +372,29 @@ export const styles = css`
   }
 
   .status-option:hover {
-    transform: scale(1.01);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .status-option:active {
+    transform: scale(0.98);
   }
 
   .status-option .status-badge {
     display: block;
     width: 100%;
-    padding: 6px 10px;
+    padding: 8px 12px;
     margin: 0;
-    border-radius: 6px;
+    border-radius: 4px;
     box-shadow: none;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
     text-align: center;
+    text-transform: uppercase;
     background: var(--status-color, var(--primary-color));
+    line-height: 1.2;
+    min-height: auto;
   }
 
   /* Task Main Content */
