@@ -36,7 +36,7 @@ export const styles = css`
   .card-header .task-count {
     background: var(--primary-color);
     color: var(--text-primary-color);
-    border-radius: 20px;
+    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 1.5), 999px);
     padding: 4px 12px;
     font-size: 12px;
     font-weight: 600;
@@ -86,7 +86,7 @@ export const styles = css`
     background: var(--primary-color);
     color: var(--text-primary-color);
     border: none;
-    border-radius: 24px;
+    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 2), 999px);
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
@@ -222,7 +222,7 @@ export const styles = css`
     padding: 8px 12px;
     margin: 8px 0;
     background: var(--secondary-background-color);
-    border-radius: 8px;
+    border-radius: calc(var(--ha-card-border-radius, 12px) * 0.67);
     font-weight: 500;
     color: var(--primary-text-color);
   }
@@ -234,7 +234,7 @@ export const styles = css`
   .group-count {
     background: var(--divider-color);
     color: var(--secondary-text-color);
-    border-radius: 10px;
+    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 0.83), 999px);
     padding: 2px 6px;
     font-size: 11px;
     font-weight: 600;
@@ -349,7 +349,7 @@ export const styles = css`
     left: 0;
     background: var(--card-background-color);
     border: 1px solid var(--divider-color);
-    border-radius: 8px;
+    border-radius: var(--ha-card-border-radius, 12px);
     box-shadow: 0 4px 16px color-mix(in srgb, var(--shadow-color, #000) 25%, transparent);
     z-index: 100;
     min-width: 140px;
@@ -362,7 +362,7 @@ export const styles = css`
     padding: 0;
     cursor: pointer;
     transition: all 0.2s ease;
-    border-radius: 999px;
+    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 2), 999px);
     overflow: hidden;
     margin-bottom: 6px;
   }
@@ -387,7 +387,7 @@ export const styles = css`
     width: 100%;
     padding: 5px 14px 2px 14px;
     margin: 0;
-    border-radius: 999px;
+    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 2), 999px);
     box-shadow: none;
     font-size: 10px;
     font-weight: 600;
@@ -513,7 +513,7 @@ export const styles = css`
     font-size: 11px;
     font-weight: 600;
     padding: 6px 14px;
-    border-radius: 999px;
+    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 2), 999px);
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
@@ -539,7 +539,7 @@ export const styles = css`
     font-size: 11px;
     font-weight: 500;
     padding: 3px 8px;
-    border-radius: 12px;
+    border-radius: min(var(--ha-card-border-radius, 12px), 999px);
     background: var(--secondary-background-color);
     color: var(--primary-text-color);
     border: 1px solid var(--divider-color);
