@@ -26,6 +26,7 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   show_assignees?: boolean;
   show_custom_fields?: boolean;
   visible_custom_fields?: string[];
+  show_task_locations?: boolean;
   compact_mode?: boolean;
 
   // Add button options

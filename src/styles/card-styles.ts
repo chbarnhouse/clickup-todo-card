@@ -342,6 +342,24 @@ export const styles = css`
     transform: translateY(-50%);
   }
 
+  /* Compact mode for task-status-wrapper */
+  .compact .task-status-wrapper .status-badge {
+    padding-left: 32px;
+    padding-right: 24px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 9px;
+  }
+
+  .compact .task-status-wrapper ha-checkbox {
+    --mdc-checkbox-size: 16px;
+  }
+
+  .compact .status-chevron {
+    --mdc-icon-size: 10px;
+    right: 6px;
+  }
+
   /* Status Dropdown */
   .status-dropdown {
     position: absolute;
@@ -468,6 +486,29 @@ export const styles = css`
 
   .compact .task-metadata {
     gap: 6px;
+  }
+
+  /* Task Location */
+  .task-location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    padding: 2px 0;
+  }
+
+  .task-location ha-icon {
+    --mdc-icon-size: 14px;
+    opacity: 0.7;
+  }
+
+  .compact .task-location {
+    font-size: 11px;
+  }
+
+  .compact .task-location ha-icon {
+    --mdc-icon-size: 12px;
   }
 
   /* Dates */

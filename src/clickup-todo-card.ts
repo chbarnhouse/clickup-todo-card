@@ -270,6 +270,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           ` : ''}
 
           <div class="task-metadata">
+            ${this._renderTaskLocation(task)}
             ${this._renderDates(task)}
             ${this._renderTags(task)}
             ${this._renderAssignees(task)}
@@ -408,6 +409,26 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
             <span class="field-value">${formatCustomFieldValue(field)}</span>
           </div>
         `)}
+      </div>
+    `;
+  }
+
+  private _renderTaskLocation(task: ClickUpTask): TemplateResult {
+    if (!this._config.show_task_locations) {
+      return html``;
+    }
+
+    const hasSpace = task.space && task.space.name;
+    const hasList = task.list && task.list.name;
+
+    if (!hasSpace && !hasList) {
+      return html``;
+    }
+
+    return html`
+      <div class="task-location">
+        <ha-icon icon="mdi:folder-outline"></ha-icon>
+        <span>${hasSpace && hasList ? `${task.space.name} / ${task.list.name}` : hasSpace ? task.space.name : task.list!.name}</span>
       </div>
     `;
   }

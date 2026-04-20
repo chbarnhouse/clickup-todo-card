@@ -165,6 +165,14 @@ export class ClickUpTodoCardEditor extends LitElement {
             ></ha-switch>
           </ha-formfield>
 
+          <ha-formfield .label=${'Show Task Locations'}>
+            <ha-switch
+              .checked=${this._config.show_task_locations === true}
+              .configValue=${'show_task_locations'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
           <ha-formfield .label=${'Compact Mode'}>
             <ha-switch
               .checked=${this._config.compact_mode === true}
