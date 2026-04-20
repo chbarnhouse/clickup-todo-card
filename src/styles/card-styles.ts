@@ -381,20 +381,19 @@ export const styles = css`
   }
 
   .status-option .status-badge {
-    display: grid;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    padding: 0 14px;
+    padding: 6px 14px;
     margin: 0;
     border-radius: 999px;
     box-shadow: none;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     background: var(--status-color, var(--primary-color));
-    line-height: 1;
-    height: 26px;
   }
 
   /* Task Main Content */
