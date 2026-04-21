@@ -41,7 +41,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   @state() private _displayedTasks: ClickUpTask[] = []; // Currently displayed (filtered/sorted) tasks
   @state() private _editingTask: ClickUpTask | null = null;
   @state() private _showAddDialog = false;
-  @state() private _statusDropdownTask: string | null = null;
 
   // Multi-select and bulk actions
   @state() private _selectedTasks: Set<string> = new Set();
@@ -378,7 +377,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const overdue = isOverdue(task);
     const completed = task.status === 'completed';
     const showStatus = this._config.show_status && task.clickup_status;
-    const isDropdownOpen = this._statusDropdownTask === task.uid;
     const isSelected = this._selectedTasks.has(task.uid);
     const isDragOver = this._dragOverTask === task.uid;
 
@@ -403,11 +401,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         ` : ''}
 
         ${showStatus ? html`
-          <div class="task-status-wrapper" @click=${(e: Event) => {
-            e.stopPropagation();
-            this._toggleStatusDropdown(task.uid);
-          }}>
-            ${this._renderStatus(task)}
+          <div class="task-status-wrapper">
             <ha-checkbox
               .checked=${completed}
               @change=${(e: Event) => {
@@ -416,7 +410,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
               }}
               @click=${(e: Event) => e.stopPropagation()}
             ></ha-checkbox>
-            ${isDropdownOpen ? this._renderStatusDropdown(task) : ''}
+            <editable-status
+              .value=${task.clickup_status}
+              .options=${getUniqueStatusesWithColors(this._tasks)}
+              .compact=${this._config.compact_mode}
+              @value-changed=${(e: CustomEvent) => this._handleStatusChange(task, e.detail.value)}
+              @click=${(e: Event) => e.stopPropagation()}
+            ></editable-status>
           </div>
         ` : html`
           <div class="task-checkbox">
@@ -553,21 +553,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     `;
   }
 
-  private _renderStatus(task: ClickUpTask): TemplateResult {
-    if (!task.clickup_status) {
-      return html``;
-    }
-
-    const statusColor = task.clickup_status.color || 'var(--primary-color)';
-
-    return html`
-      <span class="status-badge" style="--status-color: ${statusColor}">
-        ${task.clickup_status.status}
-        <ha-icon icon="mdi:chevron-down" class="status-chevron"></ha-icon>
-      </span>
-    `;
-  }
-
   private _renderTags(task: ClickUpTask): TemplateResult {
     if (!this._config.show_tags || !task.tags || task.tags.length === 0) {
       return html``;
@@ -686,81 +671,6 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       });
     } catch (err) {
       console.error('Error toggling task:', err);
-    }
-  }
-
-  private _toggleStatusDropdown(taskId: string): void {
-    this._statusDropdownTask = this._statusDropdownTask === taskId ? null : taskId;
-  }
-
-  private _renderStatusDropdown(task: ClickUpTask): TemplateResult {
-    // Priority 1: Get statuses from the task's specific list (most accurate)
-    const taskListStatuses = (task as any).list_info?.statuses || [];
-
-    // Priority 2: Get statuses from entity attributes (all lists in view/space)
-    const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
-    const entityStatuses = stateObj?.attributes?.available_statuses || [];
-
-    let statuses: Array<{ name: string; color: string; type: string }> = [];
-
-    if (taskListStatuses.length > 0) {
-      // Use statuses from task's specific list (best option)
-      statuses = taskListStatuses.map(s => ({
-        name: s.status,
-        color: s.color || '#d3d3d3',
-        type: s.type
-      }));
-    } else if (entityStatuses.length > 0) {
-      // Fallback to statuses from entity attributes (includes ALL configured statuses)
-      statuses = entityStatuses.map(s => ({
-        name: s.status,
-        color: s.color || '#d3d3d3',
-        type: s.type
-      }));
-    } else {
-      // Final fallback to extracting from current tasks
-      const taskStatuses = getUniqueStatusesWithColors(this._tasks);
-      if (taskStatuses.length > 0) {
-        statuses = taskStatuses;
-      } else {
-        // Last resort fallback to common statuses
-        statuses = [
-          { name: 'TO DO', color: '#d3d3d3', type: 'open' },
-          { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
-          { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
-          { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
-          { name: 'BLOCKED', color: '#f50000', type: 'custom' },
-        ];
-      }
-    }
-
-    return html`
-      <div class="status-dropdown" @click=${(e: Event) => e.stopPropagation()}>
-        ${statuses.map(status => html`
-          <div
-            class="status-option"
-            style="--status-color: ${status.color}"
-            @click=${() => this._changeTaskStatus(task, status.name)}
-          >
-            <span class="status-badge">${status.name}</span>
-          </div>
-        `)}
-      </div>
-    `;
-  }
-
-  private async _changeTaskStatus(task: ClickUpTask, newStatus: string): Promise<void> {
-    try {
-      // Close dropdown
-      this._statusDropdownTask = null;
-
-      // Call ClickUp integration service to update status
-      await this.hass.callService('clickup', 'update_task_status', {
-        task_id: task.clickup_id,
-        status: newStatus,
-      });
-    } catch (err) {
-      console.error('Error changing task status:', err);
     }
   }
 
@@ -1152,6 +1062,18 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
   }
 
+  private async _handleStatusChange(task: ClickUpTask, newStatus: any): Promise<void> {
+    if (newStatus?.name === task.clickup_status?.status) {
+      return;
+    }
+
+    const result = await updateTaskStatus(this.hass, task, newStatus.name);
+    if (!result.success) {
+      console.error('Failed to update status:', result.error);
+      // TODO: Show error toast
+    }
+  }
+
   private async _handleDueDateChange(task: ClickUpTask, newDate: Date | null): Promise<void> {
     const result = await updateTaskDueDate(this.hass, this._config.entity, task, newDate);
     if (!result.success) {
@@ -1239,7 +1161,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const selectedTasks = this._tasks.filter(t => this._selectedTasks.has(t.uid));
 
     for (const task of selectedTasks) {
-      await this._changeTaskStatus(task, newStatus);
+      const result = await updateTaskStatus(this.hass, task, newStatus);
+      if (!result.success) {
+        console.error('Failed to update status:', result.error);
+      }
     }
 
     this._clearSelection();

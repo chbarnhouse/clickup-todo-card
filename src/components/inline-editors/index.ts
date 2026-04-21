@@ -10,6 +10,7 @@ export { EditablePriority } from './editable-priority';
 export { EditableDate } from './editable-date';
 export { EditableAssignees, type Assignee } from './editable-assignees';
 export { EditableTags, type Tag } from './editable-tags';
+export { EditableStatus, type StatusOption } from './editable-status';
 
 // Import all components to ensure they're registered
 import './editable-text';
@@ -17,3 +18,4 @@ import './editable-priority';
 import './editable-date';
 import './editable-assignees';
 import './editable-tags';
+import './editable-status';

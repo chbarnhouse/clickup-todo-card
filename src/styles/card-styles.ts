@@ -278,8 +278,8 @@ export const styles = css`
   /* Task Item */
   .task-item {
     display: flex;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: 10px;
+    padding: 10px 14px;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--divider-color);
@@ -310,7 +310,7 @@ export const styles = css`
   }
 
   .compact .task-item {
-    padding: 5px 10px;
+    padding: 6px 10px;
     gap: 6px;
   }
 
@@ -322,140 +322,25 @@ export const styles = css`
     padding-top: 2px;
   }
 
-  /* Task Status Wrapper (status badge with checkbox inside) */
+  /* Task Status Wrapper (checkbox + status badge) */
   .task-status-wrapper {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    position: relative;
-    cursor: pointer;
-  }
-
-  .task-status-wrapper .status-badge {
-    padding-left: 40px;
-    padding-right: 30px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    position: relative;
-    min-height: 26px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    font-size: 10px;
-    line-height: 1.4;
+    gap: 6px;
   }
 
   .task-status-wrapper ha-checkbox {
-    position: absolute;
-    left: 0px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
     --mdc-checkbox-size: 18px;
-  }
-
-  .status-chevron {
-    --mdc-icon-size: 12px;
-    opacity: 0.7;
     flex-shrink: 0;
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
   }
 
-  /* Compact mode for task-status-wrapper */
-  .compact .task-status-wrapper .status-badge {
-    padding-left: 30px;
-    padding-right: 22px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    font-size: 9px;
-    min-height: 22px;
+  .compact .task-status-wrapper {
+    gap: 4px;
   }
 
   .compact .task-status-wrapper ha-checkbox {
-    --mdc-checkbox-size: 15px;
-    left: 2px;
-  }
-
-  .compact .status-chevron {
-    --mdc-icon-size: 10px;
-    right: 4px;
-  }
-
-  /* Status Dropdown */
-  .status-dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    background: var(--card-background-color);
-    border: 1px solid var(--divider-color);
-    border-radius: var(--ha-card-border-radius, 12px);
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--shadow-color, #000) 25%, transparent);
-    z-index: 100;
-    min-width: 140px;
-    max-width: 200px;
-    overflow: hidden;
-    padding: 8px;
-  }
-
-  .status-option {
-    padding: 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 2), 999px);
-    overflow: hidden;
-    margin-bottom: 6px;
-  }
-
-  .status-option:last-child {
-    margin-bottom: 0;
-  }
-
-  .status-option:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px color-mix(in srgb, var(--shadow-color, #000) 20%, transparent);
-  }
-
-  .status-option:active {
-    transform: translateY(0px);
-  }
-
-  .status-option .status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 5px 14px 2px 14px;
-    margin: 0;
-    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 2), 999px);
-    box-shadow: none;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
-    background: var(--status-color, var(--primary-color));
-    line-height: 1.2;
-    min-height: 26px;
-  }
-
-  /* Compact mode for status dropdown */
-  .compact .status-dropdown {
-    padding: 6px;
-    min-width: 120px;
-  }
-
-  .compact .status-option {
-    margin-bottom: 4px;
-  }
-
-  .compact .status-option .status-badge {
-    padding: 3px 10px 2px 10px;
-    font-size: 9px;
-    min-height: 22px;
-    letter-spacing: 0.2px;
+    --mdc-checkbox-size: 16px;
   }
 
   /* Task Main Content */
@@ -1070,7 +955,7 @@ export const styles = css`
   }
 
   /* Better shadow for dropdowns */
-  .status-dropdown,
+  editable-status .dropdown,
   editable-priority .dropdown,
   editable-date .edit-popup,
   editable-assignees .dropdown {
