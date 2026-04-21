@@ -337,7 +337,7 @@ export const styles = css`
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 8px;
+    left: 11px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 2;
@@ -346,7 +346,7 @@ export const styles = css`
 
   .compact .task-status-wrapper ha-checkbox {
     --mdc-checkbox-size: 14px;
-    left: 7px;
+    left: 9px;
   }
 
   /* Task Main Content */

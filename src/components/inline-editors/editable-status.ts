@@ -44,7 +44,7 @@ export class EditableStatus extends LitElement {
       justify-content: flex-start;
       font-size: 10px;
       font-weight: 700;
-      padding: 8px 16px 8px 32px;
+      padding: 8px 16px 8px 38px;
       border-radius: 18px;
       background: var(--status-color, var(--primary-color));
       color: white;
@@ -59,7 +59,7 @@ export class EditableStatus extends LitElement {
 
     .compact .status-badge {
       font-size: 9px;
-      padding: 6px 14px 6px 28px;
+      padding: 6px 14px 6px 32px;
       min-height: 26px;
       letter-spacing: 0.5px;
     }
@@ -225,18 +225,20 @@ export class EditableStatus extends LitElement {
       const type = option.type || 'custom';
       const statusName = (option.name || option.status || '').toLowerCase();
 
-      // Categorize based on type and name
-      if (type === 'closed') {
-        // Check if it's specifically "done" or truly closed
-        if (statusName.includes('complete') || statusName.includes('done')) {
-          grouped.done.push(option);
-        } else {
-          grouped.closed.push(option);
-        }
-      } else if (type === 'open') {
+      // Check for done/complete keywords first (regardless of type)
+      if (statusName.includes('complete') || statusName.includes('done') || statusName === 'finished') {
+        grouped.done.push(option);
+      }
+      // Check for closed keywords
+      else if (statusName.includes('cancel') || statusName.includes('archive') || (type === 'closed' && !statusName.includes('complete'))) {
+        grouped.closed.push(option);
+      }
+      // Check for open/not started
+      else if (type === 'open' || statusName.includes('to do') || statusName.includes('todo') || statusName.includes('backlog')) {
         grouped.notStarted.push(option);
-      } else {
-        // Custom statuses go to active
+      }
+      // Everything else goes to active
+      else {
         grouped.active.push(option);
       }
     });
