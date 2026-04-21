@@ -59,53 +59,91 @@ export class EditableStatus extends LitElement {
     }
 
     /* Dialog content styles */
+    ha-dialog {
+      --mdc-dialog-min-width: 400px;
+      --mdc-dialog-max-width: 500px;
+    }
+
     .status-options {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       gap: 12px;
-      padding: 8px;
+      padding: 16px;
     }
 
     .status-option {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
+      justify-content: center;
+      padding: 16px 12px;
       border-radius: 12px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid transparent;
+      background: rgba(0, 0, 0, 0.02);
+      position: relative;
+      min-height: 80px;
     }
 
     .status-option:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-      transform: translateX(4px);
+      background: rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .status-option.selected {
-      background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
+      background: color-mix(in srgb, var(--primary-color) 8%, transparent);
       border-color: var(--primary-color);
+      box-shadow: 0 0 0 1px var(--primary-color);
+    }
+
+    .status-option.selected::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status-option.selected::before {
+      content: '✓';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
     }
 
     .option-badge {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       font-size: 11px;
       font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 12px;
+      padding: 8px 16px;
+      border-radius: 16px;
       background: var(--option-color);
       color: white;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      flex-shrink: 0;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .option-check {
-      --mdc-icon-size: 20px;
-      color: var(--primary-color);
-      margin-left: auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      min-height: 32px;
+      width: 100%;
+      text-align: center;
     }
   `;
 
@@ -163,9 +201,6 @@ export class EditableStatus extends LitElement {
         >
           ${option.name}
         </span>
-        ${isSelected ? html`
-          <ha-icon class="option-check" icon="mdi:check"></ha-icon>
-        ` : ''}
       </div>
     `;
   }

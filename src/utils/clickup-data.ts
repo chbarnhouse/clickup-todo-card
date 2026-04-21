@@ -100,6 +100,71 @@ export function getUniqueStatusesWithColors(tasks: ClickUpTask[]): Array<{
 }
 
 /**
+ * Get all available statuses from entity and tasks
+ * Priority: entity attributes > task list_info > tasks
+ */
+export function getAllAvailableStatuses(
+  entity: ExtendedHassEntity,
+  tasks: ClickUpTask[]
+): Array<{
+  name: string;
+  color: string;
+  type: string;
+}> {
+  const statusMap = new Map<string, {name: string, color: string, type: string}>();
+
+  // Priority 1: Get statuses from entity attributes (all configured statuses)
+  const entityStatuses = entity.attributes?.available_statuses || [];
+  if (entityStatuses.length > 0) {
+    entityStatuses.forEach((s: any) => {
+      statusMap.set(s.status, {
+        name: s.status,
+        color: s.color || '#d3d3d3',
+        type: s.type || 'custom',
+      });
+    });
+  }
+
+  // Priority 2: Get statuses from task list_info (list-specific statuses)
+  tasks.forEach(task => {
+    const listStatuses = (task as any).list_info?.statuses || [];
+    listStatuses.forEach((s: any) => {
+      if (!statusMap.has(s.status)) {
+        statusMap.set(s.status, {
+          name: s.status,
+          color: s.color || '#d3d3d3',
+          type: s.type || 'custom',
+        });
+      }
+    });
+  });
+
+  // Priority 3: Get statuses from task statuses (fallback)
+  tasks.forEach(task => {
+    if (task.clickup_status?.status && !statusMap.has(task.clickup_status.status)) {
+      statusMap.set(task.clickup_status.status, {
+        name: task.clickup_status.status,
+        color: task.clickup_status.color || '#d3d3d3',
+        type: task.clickup_status.type || 'custom',
+      });
+    }
+  });
+
+  // Final fallback: common statuses
+  if (statusMap.size === 0) {
+    return [
+      { name: 'TO DO', color: '#d3d3d3', type: 'open' },
+      { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
+      { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
+      { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
+      { name: 'BLOCKED', color: '#f50000', type: 'custom' },
+    ];
+  }
+
+  return Array.from(statusMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
  * Get unique tags from tasks
  */
 export function getUniqueTags(tasks: ClickUpTask[]): Array<{value: string, label: string}> {

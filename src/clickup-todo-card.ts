@@ -4,7 +4,7 @@ import { HomeAssistant, LovelaceCard, hasConfigOrEntityChanged, fireEvent } from
 
 import { ClickUpTodoCardConfig, ClickUpTask, ExtendedHassEntity } from './types';
 import { CARD_VERSION, DEFAULT_CONFIG, PRIORITY_ICONS, PRIORITY_COLORS } from './const';
-import { parseClickUpTasks, getUniqueStatusesWithColors } from './utils/clickup-data';
+import { parseClickUpTasks, getAllAvailableStatuses } from './utils/clickup-data';
 import { filterTasks } from './utils/filters';
 import { sortTasks, groupTasks } from './utils/sort';
 import { formatDate, formatCustomFieldValue, getInitials, isOverdue, getDateClass } from './utils/formatters';
@@ -208,7 +208,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
   private _renderBulkActionsToolbar(): TemplateResult {
     const selectedCount = this._selectedTasks.size;
-    const availableStatuses = getUniqueStatusesWithColors(this._tasks);
+    const availableStatuses = this._getAvailableStatuses();
 
     return html`
       <div class="bulk-actions-toolbar">
@@ -412,7 +412,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
             ></ha-checkbox>
             <editable-status
               .value=${task.clickup_status}
-              .options=${getUniqueStatusesWithColors(this._tasks)}
+              .options=${this._getAvailableStatuses()}
               .compact=${this._config.compact_mode}
               @value-changed=${(e: CustomEvent) => this._handleStatusChange(task, e.detail.value)}
               @click=${(e: Event) => e.stopPropagation()}
@@ -683,17 +683,8 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderAddDialog(): TemplateResult {
-    // Get actual statuses with colors from all tasks
-    const availableStatuses = getUniqueStatusesWithColors(this._tasks);
-
-    // Fallback to common statuses if no tasks have status info
-    const statuses = availableStatuses.length > 0 ? availableStatuses : [
-      { name: 'TO DO', color: '#d3d3d3', type: 'open' },
-      { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
-      { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
-      { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
-      { name: 'BLOCKED', color: '#f50000', type: 'custom' },
-    ];
+    // Get all available statuses
+    const statuses = this._getAvailableStatuses();
 
     return html`
       <ha-dialog
@@ -771,17 +762,8 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const startDateValue = task.start_date ? new Date(typeof task.start_date === 'number' ? task.start_date : parseInt(task.start_date as string)).toISOString().split('T')[0] : '';
     const dueDateValue = task.due ? new Date(task.due).toISOString().split('T')[0] : '';
 
-    // Get actual statuses with colors from all tasks
-    const availableStatuses = getUniqueStatusesWithColors(this._tasks);
-
-    // Fallback to common statuses if no tasks have status info
-    const statuses = availableStatuses.length > 0 ? availableStatuses : [
-      { name: 'TO DO', color: '#d3d3d3', type: 'open' },
-      { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
-      { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
-      { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
-      { name: 'BLOCKED', color: '#f50000', type: 'custom' },
-    ];
+    // Get all available statuses
+    const statuses = this._getAvailableStatuses();
 
     return html`
       <ha-dialog
@@ -1060,6 +1042,19 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       console.error('Failed to update priority:', result.error);
       // TODO: Show error toast
     }
+  }
+
+  private _getAvailableStatuses(): Array<{ name: string; color: string; type: string }> {
+    if (!this.hass || !this._config.entity) {
+      return [];
+    }
+
+    const stateObj = this.hass.states[this._config.entity] as ExtendedHassEntity;
+    if (!stateObj) {
+      return [];
+    }
+
+    return getAllAvailableStatuses(stateObj, this._tasks);
   }
 
   private async _handleStatusChange(task: ClickUpTask, newStatus: any): Promise<void> {
