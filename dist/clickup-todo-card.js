@@ -2105,7 +2105,7 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
           ></ha-icon>
         </div>
       </div>
-    `}_startAdding(){this._isAdding=!0,this._newTagName="",requestAnimationFrame(()=>{this._input?.focus()})}_handleInput(t){const e=t.target;this._newTagName=e.value}_handleKeyDown(t){"Enter"===t.key?(t.preventDefault(),this._addTag()):"Escape"===t.key&&(t.preventDefault(),this._cancelAdding())}_handleBlur(){setTimeout(()=>{this._isAdding&&this._newTagName.trim()?this._addTag():this._isAdding&&this._cancelAdding()},200)}_addTag(){const t=this._newTagName.trim();if(!t)return void this._cancelAdding();if(this.value.some(e=>e.name.toLowerCase()===t.toLowerCase()))return void this._cancelAdding();const e=this.value,i={name:t},a=[...this.value,i];this.value=a,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:a,oldValue:e},bubbles:!0,composed:!0})),this._newTagName="",this._isAdding=!1}_removeTag(t){const e=this.value,i=this.value.filter((e,i)=>i!==t);this.value=i,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:i,oldValue:e},bubbles:!0,composed:!0}))}_cancelAdding(){this._isAdding=!1,this._newTagName=""}};t([ht({type:Array})],Nt.prototype,"value",void 0),t([ht({type:Boolean})],Nt.prototype,"compact",void 0),t([ut()],Nt.prototype,"_isAdding",void 0),t([ut()],Nt.prototype,"_newTagName",void 0),t([gt("input")],Nt.prototype,"_input",void 0),Nt=t([ct("editable-tags")],Nt),console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 2.0.2  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class It extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...yt},this._tasks=[],this._displayedTasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null,this._selectedTasks=new Set,this._selectionMode=!1,this._draggedTask=null,this._dragOverTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Mt}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...yt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...yt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var a=e.get("hass");return!a||a.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return j`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return j`
+    `}_startAdding(){this._isAdding=!0,this._newTagName="",requestAnimationFrame(()=>{this._input?.focus()})}_handleInput(t){const e=t.target;this._newTagName=e.value}_handleKeyDown(t){"Enter"===t.key?(t.preventDefault(),this._addTag()):"Escape"===t.key&&(t.preventDefault(),this._cancelAdding())}_handleBlur(){setTimeout(()=>{this._isAdding&&this._newTagName.trim()?this._addTag():this._isAdding&&this._cancelAdding()},200)}_addTag(){const t=this._newTagName.trim();if(!t)return void this._cancelAdding();if(this.value.some(e=>e.name.toLowerCase()===t.toLowerCase()))return void this._cancelAdding();const e=this.value,i={name:t},a=[...this.value,i];this.value=a,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:a,oldValue:e},bubbles:!0,composed:!0})),this._newTagName="",this._isAdding=!1}_removeTag(t){const e=this.value,i=this.value.filter((e,i)=>i!==t);this.value=i,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:i,oldValue:e},bubbles:!0,composed:!0}))}_cancelAdding(){this._isAdding=!1,this._newTagName=""}};t([ht({type:Array})],Nt.prototype,"value",void 0),t([ht({type:Boolean})],Nt.prototype,"compact",void 0),t([ut()],Nt.prototype,"_isAdding",void 0),t([ut()],Nt.prototype,"_newTagName",void 0),t([gt("input")],Nt.prototype,"_input",void 0),Nt=t([ct("editable-tags")],Nt),console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 2.0.3  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class It extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...yt},this._tasks=[],this._displayedTasks=[],this._editingTask=null,this._showAddDialog=!1,this._statusDropdownTask=null,this._selectedTasks=new Set,this._selectionMode=!1,this._draggedTask=null,this._dragOverTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Mt}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...yt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...yt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var a=e.get("hass");return!a||a.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return j`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return j`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
@@ -2742,7 +2742,7 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
 
           <ha-selector
             .hass=${this.hass}
-            .selector=${{select:{mode:"dropdown",options:[{value:"due_date",label:"Due Date"},{value:"start_date",label:"Start Date"},{value:"priority",label:"Priority"},{value:"name",label:"Name"},{value:"status",label:"Status"}]}}}
+            .selector=${{select:{mode:"dropdown",options:[{value:"due_date",label:"Due Date"},{value:"start_date",label:"Start Date"},{value:"priority",label:"Priority"},{value:"name",label:"Name"},{value:"status",label:"Status"},{value:"custom",label:"Custom Order"}]}}}
             .value=${this._config.sort_by||"due_date"}
             .label=${"Sort By"}
             @value-changed=${t=>this._updateConfig("sort_by",t.detail.value)}
@@ -2755,6 +2755,22 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
             .label=${"Sort Order"}
             @value-changed=${t=>this._updateConfig("sort_order",t.detail.value)}
           ></ha-selector>
+
+          <ha-formfield .label=${"Show Sort Controls in Card"}>
+            <ha-switch
+              .checked=${!0===this._config.show_sort_controls}
+              .configValue=${"show_sort_controls"}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
+          <ha-formfield .label=${"Show Filter Controls in Card"}>
+            <ha-switch
+              .checked=${!0===this._config.show_filter_controls}
+              .configValue=${"show_filter_controls"}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
         </div>
 
         <!-- Grouping -->

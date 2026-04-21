@@ -254,6 +254,7 @@ export class ClickUpTodoCardEditor extends LitElement {
                   { value: 'priority', label: 'Priority' },
                   { value: 'name', label: 'Name' },
                   { value: 'status', label: 'Status' },
+                  { value: 'custom', label: 'Custom Order' },
                 ],
               },
             }}
@@ -277,6 +278,22 @@ export class ClickUpTodoCardEditor extends LitElement {
             .label=${'Sort Order'}
             @value-changed=${(ev: any) => this._updateConfig('sort_order', ev.detail.value)}
           ></ha-selector>
+
+          <ha-formfield .label=${'Show Sort Controls in Card'}>
+            <ha-switch
+              .checked=${this._config.show_sort_controls === true}
+              .configValue=${'show_sort_controls'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
+          <ha-formfield .label=${'Show Filter Controls in Card'}>
+            <ha-switch
+              .checked=${this._config.show_filter_controls === true}
+              .configValue=${'show_filter_controls'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
         </div>
 
         <!-- Grouping -->
