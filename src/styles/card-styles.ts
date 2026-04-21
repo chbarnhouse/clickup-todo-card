@@ -330,26 +330,18 @@ export const styles = css`
     position: relative;
   }
 
-  .task-status-wrapper editable-status {
-    padding-left: 32px;
-  }
-
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 6px;
+    left: 8px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 1;
+    z-index: 2;
     --mdc-checkbox-size: 18px;
-  }
-
-  .compact .task-status-wrapper editable-status {
-    padding-left: 28px;
   }
 
   .compact .task-status-wrapper ha-checkbox {
     --mdc-checkbox-size: 16px;
-    left: 4px;
+    left: 6px;
   }
 
   /* Task Main Content */

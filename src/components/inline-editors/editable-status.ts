@@ -41,7 +41,7 @@ export class EditableStatus extends LitElement {
       align-items: center;
       font-size: 11px;
       font-weight: 600;
-      padding: 6px 14px 6px 6px;
+      padding: 6px 16px 6px 38px;
       border-radius: 16px;
       background: var(--status-color, var(--primary-color));
       color: white;
@@ -49,66 +49,21 @@ export class EditableStatus extends LitElement {
       letter-spacing: 0.5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       transition: all 0.2s ease;
+      min-height: 28px;
     }
 
     .compact .status-badge {
       font-size: 10px;
-      padding: 4px 10px 4px 4px;
+      padding: 4px 12px 4px 32px;
+      min-height: 24px;
     }
 
-    /* Modal styles */
-    .modal-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .modal-content {
-      background: var(--card-background-color);
-      border-radius: var(--ha-card-border-radius, 12px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      max-width: 400px;
-      max-height: 80vh;
-      overflow-y: auto;
-      padding: 24px;
-      animation: slideUp 0.2s ease;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .modal-header {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      color: var(--primary-text-color);
-    }
-
+    /* Dialog content styles */
     .status-options {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
+      padding: 8px;
     }
 
     .status-option {
@@ -158,8 +113,8 @@ export class EditableStatus extends LitElement {
     return html`
       <div class="${this.compact ? 'compact' : ''}">
         ${this._renderDisplay()}
+        ${this._renderDialog()}
       </div>
-      ${this._isOpen ? this._renderModal() : ''}
     `;
   }
 
@@ -167,7 +122,7 @@ export class EditableStatus extends LitElement {
     return html`
       <div
         class="status-display"
-        @click=${this._openModal}
+        @click=${this._openDialog}
         title="${this.value?.name || 'No Status'}"
       >
         <span
@@ -180,16 +135,17 @@ export class EditableStatus extends LitElement {
     `;
   }
 
-  private _renderModal(): TemplateResult {
+  private _renderDialog(): TemplateResult {
     return html`
-      <div class="modal-backdrop" @click=${this._closeModal}>
-        <div class="modal-content" @click=${(e: Event) => e.stopPropagation()}>
-          <div class="modal-header">Change Status</div>
-          <div class="status-options">
-            ${this.options.map(option => this._renderOption(option))}
-          </div>
+      <ha-dialog
+        .open=${this._isOpen}
+        @closed=${this._closeDialog}
+        .heading=${'Change Status'}
+      >
+        <div class="status-options">
+          ${this.options.map(option => this._renderOption(option))}
         </div>
-      </div>
+      </ha-dialog>
     `;
   }
 
@@ -214,22 +170,11 @@ export class EditableStatus extends LitElement {
     `;
   }
 
-  private _openModal(): void {
+  private _openDialog(): void {
     this._isOpen = true;
-
-    // Close on ESC key
-    setTimeout(() => {
-      const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          this._closeModal();
-          document.removeEventListener('keydown', handleEscape);
-        }
-      };
-      document.addEventListener('keydown', handleEscape);
-    }, 0);
   }
 
-  private _closeModal(): void {
+  private _closeDialog(): void {
     this._isOpen = false;
   }
 
