@@ -100,6 +100,47 @@ export function getUniqueStatusesWithColors(tasks: ClickUpTask[]): Array<{
 }
 
 /**
+ * Get list-specific statuses for a single task
+ * Only returns statuses from the task's specific list
+ */
+export function getTaskListStatuses(
+  task: ClickUpTask
+): Array<{
+  name: string;
+  color: string;
+  type: string;
+}> {
+  // Get statuses from task's list_info
+  const listStatuses = (task as any).list_info?.statuses || [];
+
+  if (listStatuses.length > 0) {
+    return listStatuses.map((s: any) => ({
+      name: s.status,
+      color: s.color || '#d3d3d3',
+      type: s.type || 'custom',
+    })).sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  // Fallback: return task's current status if no list_info available
+  if (task.clickup_status?.status) {
+    return [{
+      name: task.clickup_status.status,
+      color: task.clickup_status.color || '#d3d3d3',
+      type: task.clickup_status.type || 'custom',
+    }];
+  }
+
+  // Final fallback: common statuses
+  return [
+    { name: 'TO DO', color: '#d3d3d3', type: 'open' },
+    { name: 'IN PROGRESS', color: '#4194f6', type: 'custom' },
+    { name: 'IN REVIEW', color: '#f6c342', type: 'custom' },
+    { name: 'COMPLETE', color: '#6bc950', type: 'closed' },
+    { name: 'BLOCKED', color: '#f50000', type: 'custom' },
+  ];
+}
+
+/**
  * Get all available statuses from entity and tasks
  * Priority: entity attributes > task list_info > tasks
  */

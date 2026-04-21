@@ -4,7 +4,7 @@ import { HomeAssistant, LovelaceCard, hasConfigOrEntityChanged, fireEvent } from
 
 import { ClickUpTodoCardConfig, ClickUpTask, ExtendedHassEntity } from './types';
 import { CARD_VERSION, DEFAULT_CONFIG, PRIORITY_ICONS, PRIORITY_COLORS } from './const';
-import { parseClickUpTasks, getAllAvailableStatuses } from './utils/clickup-data';
+import { parseClickUpTasks, getAllAvailableStatuses, getTaskListStatuses } from './utils/clickup-data';
 import { filterTasks } from './utils/filters';
 import { sortTasks, groupTasks } from './utils/sort';
 import { formatDate, formatCustomFieldValue, getInitials, isOverdue, getDateClass } from './utils/formatters';
@@ -412,7 +412,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
             ></ha-checkbox>
             <editable-status
               .value=${task.clickup_status}
-              .options=${this._getAvailableStatuses()}
+              .options=${getTaskListStatuses(task)}
               .compact=${this._config.compact_mode}
               @value-changed=${(e: CustomEvent) => this._handleStatusChange(task, e.detail.value)}
               @click=${(e: Event) => e.stopPropagation()}
