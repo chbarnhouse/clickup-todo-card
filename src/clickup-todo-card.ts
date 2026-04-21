@@ -38,6 +38,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     ...DEFAULT_CONFIG,
   };
   @state() private _tasks: ClickUpTask[] = [];
+  @state() private _displayedTasks: ClickUpTask[] = []; // Currently displayed (filtered/sorted) tasks
   @state() private _editingTask: ClickUpTask | null = null;
   @state() private _showAddDialog = false;
   @state() private _statusDropdownTask: string | null = null;
@@ -142,6 +143,9 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
       // Apply sorting
       const sortedTasks = sortTasks(filteredTasks, this._config);
+
+      // Store displayed tasks for drag & drop
+      this._displayedTasks = sortedTasks;
 
       // Group if needed
       const groupBy = this._config.group_by || 'none';
@@ -1294,22 +1298,29 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return;
     }
 
-    // Get current order
-    const tasks = [...this._tasks];
-    const draggedIndex = tasks.findIndex(t => t.uid === this._draggedTask!.uid);
-    const targetIndex = tasks.findIndex(t => t.uid === targetTask.uid);
+    // Work with displayed tasks (filtered/sorted)
+    const displayedTasks = [...this._displayedTasks];
+    const draggedIndex = displayedTasks.findIndex(t => t.uid === this._draggedTask!.uid);
+    const targetIndex = displayedTasks.findIndex(t => t.uid === targetTask.uid);
 
     if (draggedIndex === -1 || targetIndex === -1) {
       this._dragOverTask = null;
       return;
     }
 
-    // Reorder tasks
-    tasks.splice(draggedIndex, 1);
-    tasks.splice(targetIndex, 0, this._draggedTask);
+    // Reorder displayed tasks
+    displayedTasks.splice(draggedIndex, 1);
+    displayedTasks.splice(targetIndex, 0, this._draggedTask);
+
+    // Build new full order by merging displayed tasks with non-displayed
+    const displayedIds = new Set(displayedTasks.map(t => t.uid));
+    const nonDisplayedTasks = this._tasks.filter(t => !displayedIds.has(t.uid));
+
+    // Combine: displayed tasks in their new order, followed by non-displayed tasks
+    const newTaskOrder = [...displayedTasks, ...nonDisplayedTasks];
 
     // Save custom order to localStorage
-    const taskIds = tasks.map(t => t.uid);
+    const taskIds = newTaskOrder.map(t => t.uid);
     saveCustomOrder(this._config.entity, taskIds);
 
     // Switch to custom sort if not already
@@ -1322,13 +1333,16 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
 
     // Update local state for immediate visual feedback
-    this._tasks = tasks;
+    this._tasks = newTaskOrder;
+    this._displayedTasks = displayedTasks;
     this._dragOverTask = null;
 
     console.log('Task reordered and saved:', {
       task: this._draggedTask.summary,
       from: draggedIndex,
       to: targetIndex,
+      totalTasks: newTaskOrder.length,
+      displayedTasks: displayedTasks.length,
     });
   }
 
