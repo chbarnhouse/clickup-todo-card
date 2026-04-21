@@ -47,12 +47,16 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   };
 
   // Sorting
-  sort_by?: 'due_date' | 'start_date' | 'priority' | 'name' | 'status';
+  sort_by?: 'due_date' | 'start_date' | 'priority' | 'name' | 'status' | 'custom';
   sort_order?: 'asc' | 'desc';
 
   // Grouping
   group_by?: 'none' | 'status' | 'priority' | 'assignee' | 'list' | 'custom_field';
   group_field_id?: string;
+
+  // UI Controls
+  show_sort_controls?: boolean;
+  show_filter_controls?: boolean;
 }
 
 export interface ClickUpTask extends TodoItem {

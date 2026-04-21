@@ -8,6 +8,11 @@ export function sortTasks(tasks: ClickUpTask[], config: ClickUpTodoCardConfig): 
   const sortBy = config.sort_by || 'due_date';
   const sortOrder = config.sort_order || 'asc';
 
+  // Custom sort means no automatic sorting - order is managed manually
+  if (sortBy === 'custom') {
+    return sorted;
+  }
+
   sorted.sort((a, b) => {
     let comparison = 0;
 

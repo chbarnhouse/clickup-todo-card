@@ -8,6 +8,7 @@ import { parseClickUpTasks, getUniqueStatusesWithColors } from './utils/clickup-
 import { filterTasks } from './utils/filters';
 import { sortTasks, groupTasks } from './utils/sort';
 import { formatDate, formatCustomFieldValue, getInitials, isOverdue, getDateClass } from './utils/formatters';
+import { loadCustomOrder, saveCustomOrder, applyCustomOrder } from './utils/custom-order';
 import { styles } from './styles/card-styles';
 import {
   updateTaskName,
@@ -127,8 +128,17 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       // Parse ClickUp tasks
       this._tasks = parseClickUpTasks(stateObj);
 
+      // Apply custom order if sort is set to 'custom'
+      let orderedTasks = this._tasks;
+      if (this._config.sort_by === 'custom') {
+        const customOrder = loadCustomOrder(this._config.entity);
+        if (customOrder) {
+          orderedTasks = applyCustomOrder(this._tasks, customOrder);
+        }
+      }
+
       // Apply filters
-      const filteredTasks = filterTasks(this._tasks, this._config);
+      const filteredTasks = filterTasks(orderedTasks, this._config);
 
       // Apply sorting
       const sortedTasks = sortTasks(filteredTasks, this._config);
@@ -146,6 +156,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         <ha-card>
           ${this._renderHeader(stateObj)}
           ${this._selectionMode ? this._renderBulkActionsToolbar() : ''}
+          ${(this._config.show_sort_controls || this._config.show_filter_controls) && !this._selectionMode ? this._renderControlsToolbar() : ''}
           ${showButtonBefore ? html`<div class="button-container">${this._renderFloatingAddButton(stateObj)}</div>` : ''}
           <div class="card-content ${this._config.compact_mode ? 'compact' : ''}">
             ${groups.size === 1 && groups.has('all')
@@ -232,6 +243,74 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
             <span>Delete</span>
           </button>
         </div>
+      </div>
+    `;
+  }
+
+  private _renderControlsToolbar(): TemplateResult {
+    const sortOptions = [
+      { value: 'due_date', label: 'Due Date' },
+      { value: 'start_date', label: 'Start Date' },
+      { value: 'priority', label: 'Priority' },
+      { value: 'name', label: 'Name' },
+      { value: 'status', label: 'Status' },
+      { value: 'custom', label: 'Custom Order' },
+    ];
+
+    const groupOptions = [
+      { value: 'none', label: 'No Grouping' },
+      { value: 'status', label: 'Status' },
+      { value: 'priority', label: 'Priority' },
+      { value: 'assignee', label: 'Assignee' },
+      { value: 'list', label: 'List' },
+    ];
+
+    return html`
+      <div class="controls-toolbar">
+        ${this._config.show_sort_controls ? html`
+          <div class="control-group">
+            <span class="control-label">Sort:</span>
+            <select
+              class="control-select"
+              .value=${this._config.sort_by || 'due_date'}
+              @change=${(e: Event) => {
+                const select = e.target as HTMLSelectElement;
+                this._config = { ...this._config, sort_by: select.value as any };
+                fireEvent(this, 'config-changed', { config: this._config });
+              }}
+            >
+              ${sortOptions.map(opt => html`
+                <option value="${opt.value}">${opt.label}</option>
+              `)}
+            </select>
+
+            <button
+              class="control-btn"
+              @click=${() => {
+                const newOrder = this._config.sort_order === 'asc' ? 'desc' : 'asc';
+                this._config = { ...this._config, sort_order: newOrder };
+                fireEvent(this, 'config-changed', { config: this._config });
+              }}
+              title="${this._config.sort_order === 'asc' ? 'Ascending' : 'Descending'}"
+            >
+              <ha-icon icon="${this._config.sort_order === 'asc' ? 'mdi:sort-ascending' : 'mdi:sort-descending'}"></ha-icon>
+            </button>
+
+            <select
+              class="control-select"
+              .value=${this._config.group_by || 'none'}
+              @change=${(e: Event) => {
+                const select = e.target as HTMLSelectElement;
+                this._config = { ...this._config, group_by: select.value as any };
+                fireEvent(this, 'config-changed', { config: this._config });
+              }}
+            >
+              ${groupOptions.map(opt => html`
+                <option value="${opt.value}">${opt.label}</option>
+              `)}
+            </select>
+          </div>
+        ` : ''}
       </div>
     `;
   }
@@ -1229,14 +1308,24 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     tasks.splice(draggedIndex, 1);
     tasks.splice(targetIndex, 0, this._draggedTask);
 
-    // Update task order
-    // Note: This would require a service to update task order in ClickUp
-    // For now, just update local state for visual feedback
+    // Save custom order to localStorage
+    const taskIds = tasks.map(t => t.uid);
+    saveCustomOrder(this._config.entity, taskIds);
+
+    // Switch to custom sort if not already
+    if (this._config.sort_by !== 'custom') {
+      this._config = {
+        ...this._config,
+        sort_by: 'custom',
+      };
+      fireEvent(this, 'config-changed', { config: this._config });
+    }
+
+    // Update local state for immediate visual feedback
     this._tasks = tasks;
     this._dragOverTask = null;
 
-    // TODO: Call service to persist task order if available
-    console.log('Task reordered:', {
+    console.log('Task reordered and saved:', {
       task: this._draggedTask.summary,
       from: draggedIndex,
       to: targetIndex,

@@ -1,4 +1,4 @@
-export const CARD_VERSION = '2.0.0';
+export const CARD_VERSION = '2.0.1';
 
 export const CARD_NAME = 'ClickUp Todo Card';
 
@@ -51,4 +51,6 @@ export const DEFAULT_CONFIG = {
   sort_by: 'due_date' as const,
   sort_order: 'asc' as const,
   group_by: 'none' as const,
+  show_sort_controls: false,
+  show_filter_controls: false,
 };

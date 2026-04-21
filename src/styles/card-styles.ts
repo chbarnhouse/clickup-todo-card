@@ -936,4 +936,186 @@ export const styles = css`
     padding: 4px 8px;
     font-size: 11px;
   }
+
+  /* ========================================
+   * v2.0.1: Controls Toolbar
+   * ======================================== */
+
+  .controls-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: var(--card-background-color);
+    border-bottom: 1px solid var(--divider-color);
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .control-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--secondary-text-color);
+  }
+
+  .control-select {
+    padding: 6px 10px;
+    border: 1px solid var(--divider-color);
+    border-radius: 8px;
+    background: var(--card-background-color);
+    color: var(--primary-text-color);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+
+  .control-select:hover {
+    border-color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 5%, transparent);
+  }
+
+  .control-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 20%, transparent);
+  }
+
+  .control-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--divider-color);
+    border-radius: 8px;
+    background: var(--card-background-color);
+    color: var(--primary-text-color);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .control-btn:hover {
+    border-color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+  }
+
+  .control-btn ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .compact .controls-toolbar {
+    padding: 8px 12px;
+  }
+
+  .compact .control-label {
+    font-size: 11px;
+  }
+
+  .compact .control-select {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .compact .control-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .compact .control-btn ha-icon {
+    --mdc-icon-size: 16px;
+  }
+
+  /* ========================================
+   * v2.0.1: Style Polish
+   * ======================================== */
+
+  /* Improved task item hover states */
+  .task-item {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .task-item:hover {
+    background: color-mix(in srgb, var(--primary-color) 3%, transparent);
+  }
+
+  /* Better shadow for dropdowns */
+  .status-dropdown,
+  editable-priority .dropdown,
+  editable-date .edit-popup,
+  editable-assignees .dropdown {
+    box-shadow:
+      0 2px 8px color-mix(in srgb, var(--shadow-color, #000) 10%, transparent),
+      0 8px 24px color-mix(in srgb, var(--shadow-color, #000) 15%, transparent);
+  }
+
+  /* Smooth scrolling */
+  .card-content {
+    scroll-behavior: smooth;
+  }
+
+  /* Better focus indicators */
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  /* Improved button transitions */
+  .add-button,
+  .bulk-action-btn,
+  .control-btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Better disabled states */
+  button:disabled,
+  select:disabled,
+  input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Improved animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Apply animations */
+  .task-item {
+    animation: slideIn 0.2s ease;
+  }
+
+  .bulk-actions-toolbar,
+  .controls-toolbar {
+    animation: fadeIn 0.2s ease;
+  }
 `;
