@@ -28,6 +28,7 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   visible_custom_fields?: string[];
   show_task_locations?: boolean;
   compact_mode?: boolean;
+  fixed_height?: number;  // Card height in pixels (enables scrolling)
 
   // Add button options
   add_button_text?: string;

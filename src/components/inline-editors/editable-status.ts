@@ -66,49 +66,58 @@ export class EditableStatus extends LitElement {
 
     /* Dialog styling */
     ha-dialog {
-      --mdc-dialog-min-width: 460px;
-      --mdc-dialog-max-width: 560px;
+      --mdc-dialog-min-width: 380px;
+      --mdc-dialog-max-width: 480px;
       --mdc-dialog-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       --mdc-shape-medium: 20px;
     }
 
     .status-options {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
       padding: 20px;
-      max-width: 100%;
+      max-height: 60vh;
+      overflow-y: auto;
     }
 
-    @media (max-width: 500px) {
-      .status-options {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .status-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .group-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--secondary-text-color);
+      padding: 0 4px 4px 4px;
+      border-bottom: 1px solid var(--divider-color);
     }
 
     .status-option {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
       padding: 0;
-      border-radius: 16px;
+      border-radius: 12px;
       cursor: pointer;
       transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid transparent;
       background: transparent;
       position: relative;
-      min-height: 60px;
+      min-height: 48px;
       overflow: hidden;
     }
 
     .status-option:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .status-option:active {
-      transform: translateY(0) scale(0.98);
+      transform: translateX(2px);
     }
 
     .status-option.selected {
@@ -119,10 +128,11 @@ export class EditableStatus extends LitElement {
     .status-option.selected::after {
       content: '';
       position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 22px;
-      height: 22px;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
       background: rgba(255, 255, 255, 0.95);
       border-radius: 50%;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -132,12 +142,13 @@ export class EditableStatus extends LitElement {
     .status-option.selected::before {
       content: '✓';
       position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 22px;
-      height: 22px;
+      top: 50%;
+      right: 12px;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
       color: var(--option-color);
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 900;
       display: flex;
       align-items: center;
@@ -149,19 +160,17 @@ export class EditableStatus extends LitElement {
     .option-badge {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 10px;
+      justify-content: flex-start;
+      font-size: 11px;
       font-weight: 700;
-      padding: 16px 12px;
+      padding: 14px 44px 14px 18px;
       width: 100%;
-      height: 100%;
       background: var(--option-color);
       color: white;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      text-align: center;
+      text-align: left;
       line-height: 1.3;
-      word-wrap: break-word;
       transition: filter 0.15s ease;
     }
 
@@ -204,6 +213,20 @@ export class EditableStatus extends LitElement {
   }
 
   private _renderDialog(): TemplateResult {
+    // Group statuses by type
+    const grouped = {
+      open: [] as StatusOption[],
+      closed: [] as StatusOption[],
+      custom: [] as StatusOption[]
+    };
+
+    this.options.forEach(option => {
+      const type = option.type || 'custom';
+      if (type in grouped) {
+        grouped[type as keyof typeof grouped].push(option);
+      }
+    });
+
     return html`
       <ha-dialog
         .open=${this._isOpen}
@@ -211,7 +234,24 @@ export class EditableStatus extends LitElement {
         .heading=${'Change Status'}
       >
         <div class="status-options">
-          ${this.options.map(option => this._renderOption(option))}
+          ${grouped.open.length > 0 ? html`
+            <div class="status-group">
+              <div class="group-label">Open</div>
+              ${grouped.open.map(option => this._renderOption(option))}
+            </div>
+          ` : ''}
+          ${grouped.custom.length > 0 ? html`
+            <div class="status-group">
+              <div class="group-label">Custom</div>
+              ${grouped.custom.map(option => this._renderOption(option))}
+            </div>
+          ` : ''}
+          ${grouped.closed.length > 0 ? html`
+            <div class="status-group">
+              <div class="group-label">Closed</div>
+              ${grouped.closed.map(option => this._renderOption(option))}
+            </div>
+          ` : ''}
         </div>
       </ha-dialog>
     `;

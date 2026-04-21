@@ -189,6 +189,11 @@ export const styles = css`
     padding: 0;
   }
 
+  .card-content.fixed-height {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
   /* Empty State */
   .empty-state {
     display: flex;

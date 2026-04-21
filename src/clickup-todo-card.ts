@@ -161,7 +161,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           ${this._selectionMode ? this._renderBulkActionsToolbar() : ''}
           ${(this._config.show_sort_controls || this._config.show_filter_controls) && !this._selectionMode ? this._renderControlsToolbar() : ''}
           ${showButtonBefore ? html`<div class="button-container">${this._renderFloatingAddButton(stateObj)}</div>` : ''}
-          <div class="card-content ${this._config.compact_mode ? 'compact' : ''}">
+          <div
+            class="card-content ${this._config.compact_mode ? 'compact' : ''} ${this._config.fixed_height ? 'fixed-height' : ''}"
+            style="${this._config.fixed_height ? `max-height: ${this._config.fixed_height}px; overflow-y: auto;` : ''}"
+          >
             ${groups.size === 1 && groups.has('all')
               ? this._renderTaskList(groups.get('all')!)
               : this._renderGroupedTasks(groups)}
