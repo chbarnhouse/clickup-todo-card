@@ -9,6 +9,18 @@ import { filterTasks } from './utils/filters';
 import { sortTasks, groupTasks } from './utils/sort';
 import { formatDate, formatCustomFieldValue, getInitials, isOverdue, getDateClass } from './utils/formatters';
 import { styles } from './styles/card-styles';
+import {
+  updateTaskName,
+  updateTaskStatus,
+  updateTaskPriority,
+  updateTaskDueDate,
+  updateTaskStartDate,
+  updateTaskAssignees,
+  updateTaskTags,
+} from './utils/task-service';
+
+// Import inline editor components
+import './components/inline-editors';
 
 console.info(
   `%c  CLICKUP-TODO-CARD  \n%c  Version ${CARD_VERSION}  `,
@@ -28,6 +40,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   @state() private _editingTask: ClickUpTask | null = null;
   @state() private _showAddDialog = false;
   @state() private _statusDropdownTask: string | null = null;
+
+  // Multi-select and bulk actions
+  @state() private _selectedTasks: Set<string> = new Set();
+  @state() private _selectionMode = false;
+
+  // Drag and drop
+  @state() private _draggedTask: ClickUpTask | null = null;
+  @state() private _dragOverTask: string | null = null;
 
   // Public config getter required by hasConfigOrEntityChanged helper
   public get config(): ClickUpTodoCardConfig {
@@ -125,6 +145,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html`
         <ha-card>
           ${this._renderHeader(stateObj)}
+          ${this._selectionMode ? this._renderBulkActionsToolbar() : ''}
           ${showButtonBefore ? html`<div class="button-container">${this._renderFloatingAddButton(stateObj)}</div>` : ''}
           <div class="card-content ${this._config.compact_mode ? 'compact' : ''}">
             ${groups.size === 1 && groups.has('all')
@@ -167,6 +188,50 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       <div class="card-header">
         ${showTitle ? html`<div class="name">${title}</div>` : ''}
         ${showCount ? html`<div class="task-count ${isSingleDigit ? 'single-digit' : ''}">${taskCount}</div>` : ''}
+      </div>
+    `;
+  }
+
+  private _renderBulkActionsToolbar(): TemplateResult {
+    const selectedCount = this._selectedTasks.size;
+    const availableStatuses = getUniqueStatusesWithColors(this._tasks);
+
+    return html`
+      <div class="bulk-actions-toolbar">
+        <div class="bulk-actions-info">
+          <span class="selected-count">${selectedCount} selected</span>
+          <button class="bulk-action-btn" @click=${this._selectAll} title="Select all">
+            <ha-icon icon="mdi:checkbox-multiple-marked"></ha-icon>
+          </button>
+          <button class="bulk-action-btn" @click=${this._clearSelection} title="Clear selection">
+            <ha-icon icon="mdi:close"></ha-icon>
+          </button>
+        </div>
+
+        <div class="bulk-actions-buttons">
+          ${availableStatuses && availableStatuses.length > 0 ? html`
+            <select
+              class="bulk-status-select"
+              @change=${(e: Event) => {
+                const select = e.target as HTMLSelectElement;
+                if (select.value) {
+                  this._bulkUpdateStatus(select.value);
+                  select.value = '';
+                }
+              }}
+            >
+              <option value="">Change status...</option>
+              ${availableStatuses.map(status => html`
+                <option value="${status.name}">${status.name}</option>
+              `)}
+            </select>
+          ` : ''}
+
+          <button class="bulk-action-btn danger" @click=${this._bulkDelete} title="Delete selected">
+            <ha-icon icon="mdi:delete"></ha-icon>
+            <span>Delete</span>
+          </button>
+        </div>
       </div>
     `;
   }
@@ -231,9 +296,29 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const completed = task.status === 'completed';
     const showStatus = this._config.show_status && task.clickup_status;
     const isDropdownOpen = this._statusDropdownTask === task.uid;
+    const isSelected = this._selectedTasks.has(task.uid);
+    const isDragOver = this._dragOverTask === task.uid;
 
     return html`
-      <div class="task-item ${completed ? 'completed' : ''} ${overdue ? 'overdue' : ''}">
+      <div
+        class="task-item ${completed ? 'completed' : ''} ${overdue ? 'overdue' : ''} ${isSelected ? 'selected' : ''} ${isDragOver ? 'drag-over' : ''}"
+        draggable="true"
+        @dragstart=${() => this._handleDragStart(task)}
+        @dragend=${() => this._handleDragEnd()}
+        @dragover=${(e: DragEvent) => this._handleDragOver(e, task)}
+        @dragleave=${() => this._handleDragLeave()}
+        @drop=${(e: DragEvent) => this._handleDrop(e, task)}
+      >
+        ${this._selectionMode ? html`
+          <div class="task-select">
+            <ha-checkbox
+              .checked=${isSelected}
+              @change=${() => this._toggleSelection(task.uid)}
+              @click=${(e: Event) => e.stopPropagation()}
+            ></ha-checkbox>
+          </div>
+        ` : ''}
+
         ${showStatus ? html`
           <div class="task-status-wrapper" @click=${(e: Event) => {
             e.stopPropagation();
@@ -259,10 +344,24 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           </div>
         `}
 
-        <div class="task-main" @click=${() => this._openEditDialog(task)}>
+        <div class="task-main">
           <div class="task-header">
-            <span class="task-summary">${task.summary}</span>
-            ${this._renderPriority(task)}
+            <editable-text
+              class="task-name-editor"
+              .value=${task.summary}
+              .required=${true}
+              @value-changed=${(e: CustomEvent) => this._handleTaskNameChange(task, e.detail.value)}
+              @click=${(e: Event) => e.stopPropagation()}
+            ></editable-text>
+
+            ${this._config.show_priority ? html`
+              <editable-priority
+                .value=${task.priority}
+                .compact=${this._config.compact_mode}
+                @value-changed=${(e: CustomEvent) => this._handlePriorityChange(task, e.detail.value)}
+                @click=${(e: Event) => e.stopPropagation()}
+              ></editable-priority>
+            ` : ''}
           </div>
 
           ${task.description ? html`
@@ -271,9 +370,54 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
           <div class="task-metadata">
             ${this._renderTaskLocation(task)}
-            ${this._renderDates(task)}
-            ${this._renderTags(task)}
-            ${this._renderAssignees(task)}
+
+            ${this._config.show_start_date || this._config.show_due_date ? html`
+              <div class="task-dates-inline">
+                ${this._config.show_start_date ? html`
+                  <editable-date
+                    .value=${task.start_date ? new Date(task.start_date) : null}
+                    .label=${'Start'}
+                    .icon=${'mdi:calendar-start'}
+                    .dateType=${'start'}
+                    .compact=${this._config.compact_mode}
+                    @value-changed=${(e: CustomEvent) => this._handleStartDateChange(task, e.detail.value)}
+                    @click=${(e: Event) => e.stopPropagation()}
+                  ></editable-date>
+                ` : ''}
+
+                ${this._config.show_due_date ? html`
+                  <editable-date
+                    .value=${task.due || null}
+                    .label=${'Due'}
+                    .icon=${'mdi:calendar-end'}
+                    .dateType=${'due'}
+                    .compact=${this._config.compact_mode}
+                    @value-changed=${(e: CustomEvent) => this._handleDueDateChange(task, e.detail.value)}
+                    @click=${(e: Event) => e.stopPropagation()}
+                  ></editable-date>
+                ` : ''}
+              </div>
+            ` : ''}
+
+            ${this._config.show_tags ? html`
+              <editable-tags
+                .value=${task.tags || []}
+                .compact=${this._config.compact_mode}
+                @value-changed=${(e: CustomEvent) => this._handleTagsChange(task, e.detail.value)}
+                @click=${(e: Event) => e.stopPropagation()}
+              ></editable-tags>
+            ` : ''}
+
+            ${this._config.show_assignees ? html`
+              <editable-assignees
+                .value=${task.assignees || []}
+                .available=${this._getAvailableAssignees()}
+                .compact=${this._config.compact_mode}
+                @value-changed=${(e: CustomEvent) => this._handleAssigneesChange(task, e.detail.value)}
+                @click=${(e: Event) => e.stopPropagation()}
+              ></editable-assignees>
+            ` : ''}
+
             ${this._renderCustomFields(task)}
           </div>
         </div>
@@ -895,6 +1039,208 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     } catch (err) {
       console.error('Error deleting task:', err);
     }
+  }
+
+  /* ========================================
+   * Inline Editing Handlers (v2.0.0)
+   * ======================================== */
+
+  private async _handleTaskNameChange(task: ClickUpTask, newName: string): Promise<void> {
+    if (newName === task.summary) {
+      return;
+    }
+
+    const result = await updateTaskName(this.hass, this._config.entity, task, newName);
+    if (!result.success) {
+      console.error('Failed to update task name:', result.error);
+      // TODO: Show error toast
+    }
+  }
+
+  private async _handlePriorityChange(task: ClickUpTask, newPriority: number | null): Promise<void> {
+    if (newPriority === task.priority) {
+      return;
+    }
+
+    const result = await updateTaskPriority(this.hass, task, newPriority);
+    if (!result.success) {
+      console.error('Failed to update priority:', result.error);
+      // TODO: Show error toast
+    }
+  }
+
+  private async _handleDueDateChange(task: ClickUpTask, newDate: Date | null): Promise<void> {
+    const result = await updateTaskDueDate(this.hass, this._config.entity, task, newDate);
+    if (!result.success) {
+      console.error('Failed to update due date:', result.error);
+      // TODO: Show error toast
+    }
+  }
+
+  private async _handleStartDateChange(task: ClickUpTask, newDate: Date | null): Promise<void> {
+    const result = await updateTaskStartDate(this.hass, task, newDate);
+    if (!result.success) {
+      console.error('Failed to update start date:', result.error);
+      // TODO: Show error toast
+    }
+  }
+
+  private async _handleAssigneesChange(task: ClickUpTask, newAssignees: any[]): Promise<void> {
+    const assigneeIds = newAssignees.map(a => a.id);
+    const result = await updateTaskAssignees(this.hass, task, assigneeIds);
+    if (!result.success) {
+      console.error('Failed to update assignees:', result.error);
+      // TODO: Show error toast
+    }
+  }
+
+  private async _handleTagsChange(task: ClickUpTask, newTags: any[]): Promise<void> {
+    const tagNames = newTags.map(t => t.name);
+    const result = await updateTaskTags(this.hass, task, tagNames);
+    if (!result.success) {
+      console.error('Failed to update tags:', result.error);
+      // TODO: Show error toast
+    }
+  }
+
+  private _getAvailableAssignees(): any[] {
+    // Get unique assignees from all tasks
+    const assigneesMap = new Map();
+
+    this._tasks.forEach(task => {
+      if (task.assignees) {
+        task.assignees.forEach(assignee => {
+          if (!assigneesMap.has(assignee.id)) {
+            assigneesMap.set(assignee.id, assignee);
+          }
+        });
+      }
+    });
+
+    return Array.from(assigneesMap.values());
+  }
+
+  /* ========================================
+   * Multi-Select Handlers (v2.0.0)
+   * ======================================== */
+
+  private _toggleSelection(taskId: string): void {
+    if (this._selectedTasks.has(taskId)) {
+      this._selectedTasks.delete(taskId);
+    } else {
+      this._selectedTasks.add(taskId);
+    }
+
+    // Force re-render
+    this.requestUpdate();
+
+    // Enable selection mode if any tasks are selected
+    this._selectionMode = this._selectedTasks.size > 0;
+  }
+
+  private _selectAll(): void {
+    this._tasks.forEach(task => {
+      this._selectedTasks.add(task.uid);
+    });
+    this._selectionMode = true;
+    this.requestUpdate();
+  }
+
+  private _clearSelection(): void {
+    this._selectedTasks.clear();
+    this._selectionMode = false;
+    this.requestUpdate();
+  }
+
+  private async _bulkUpdateStatus(newStatus: string): Promise<void> {
+    const selectedTasks = this._tasks.filter(t => this._selectedTasks.has(t.uid));
+
+    for (const task of selectedTasks) {
+      await this._changeTaskStatus(task, newStatus);
+    }
+
+    this._clearSelection();
+  }
+
+  private async _bulkDelete(): Promise<void> {
+    if (!confirm(`Delete ${this._selectedTasks.size} tasks?`)) {
+      return;
+    }
+
+    const selectedTasks = this._tasks.filter(t => this._selectedTasks.has(t.uid));
+
+    for (const task of selectedTasks) {
+      try {
+        await this.hass.callService('todo', 'remove_item', {
+          entity_id: this._config.entity,
+          item: task.uid,
+        });
+      } catch (err) {
+        console.error('Error deleting task:', err);
+      }
+    }
+
+    this._clearSelection();
+  }
+
+  /* ========================================
+   * Drag and Drop Handlers (v2.0.0)
+   * ======================================== */
+
+  private _handleDragStart(task: ClickUpTask): void {
+    this._draggedTask = task;
+  }
+
+  private _handleDragEnd(): void {
+    this._draggedTask = null;
+    this._dragOverTask = null;
+  }
+
+  private _handleDragOver(e: DragEvent, task: ClickUpTask): void {
+    e.preventDefault();
+    if (this._draggedTask && this._draggedTask.uid !== task.uid) {
+      this._dragOverTask = task.uid;
+    }
+  }
+
+  private _handleDragLeave(): void {
+    this._dragOverTask = null;
+  }
+
+  private _handleDrop(e: DragEvent, targetTask: ClickUpTask): void {
+    e.preventDefault();
+
+    if (!this._draggedTask || this._draggedTask.uid === targetTask.uid) {
+      this._dragOverTask = null;
+      return;
+    }
+
+    // Get current order
+    const tasks = [...this._tasks];
+    const draggedIndex = tasks.findIndex(t => t.uid === this._draggedTask!.uid);
+    const targetIndex = tasks.findIndex(t => t.uid === targetTask.uid);
+
+    if (draggedIndex === -1 || targetIndex === -1) {
+      this._dragOverTask = null;
+      return;
+    }
+
+    // Reorder tasks
+    tasks.splice(draggedIndex, 1);
+    tasks.splice(targetIndex, 0, this._draggedTask);
+
+    // Update task order
+    // Note: This would require a service to update task order in ClickUp
+    // For now, just update local state for visual feedback
+    this._tasks = tasks;
+    this._dragOverTask = null;
+
+    // TODO: Call service to persist task order if available
+    console.log('Task reordered:', {
+      task: this._draggedTask.summary,
+      from: draggedIndex,
+      to: targetIndex,
+    });
   }
 
   static get styles(): CSSResultGroup {

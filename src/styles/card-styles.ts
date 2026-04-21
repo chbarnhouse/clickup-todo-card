@@ -440,6 +440,23 @@ export const styles = css`
     min-height: 26px;
   }
 
+  /* Compact mode for status dropdown */
+  .compact .status-dropdown {
+    padding: 6px;
+    min-width: 120px;
+  }
+
+  .compact .status-option {
+    margin-bottom: 4px;
+  }
+
+  .compact .status-option .status-badge {
+    padding: 3px 10px 2px 10px;
+    font-size: 9px;
+    min-height: 22px;
+    letter-spacing: 0.2px;
+  }
+
   /* Task Main Content */
   .task-main {
     flex: 1;
@@ -742,5 +759,181 @@ export const styles = css`
     .dialog-content {
       min-width: 300px;
     }
+  }
+
+  /* ========================================
+   * v2.0.0: Inline Editing Styles
+   * ======================================== */
+
+  /* Inline editable text */
+  .task-name-editor {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .task-name-editor editable-text {
+    width: 100%;
+  }
+
+  /* Inline dates container */
+  .task-dates-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .compact .task-dates-inline {
+    gap: 6px;
+  }
+
+  /* ========================================
+   * v2.0.0: Multi-Select & Bulk Actions
+   * ======================================== */
+
+  /* Selection checkbox */
+  .task-select {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+  }
+
+  .task-item.selected {
+    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+    border-left: 3px solid var(--primary-color);
+  }
+
+  /* Bulk actions toolbar */
+  .bulk-actions-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+    border-bottom: 1px solid var(--divider-color);
+    gap: 12px;
+    flex-wrap: wrap;
+    animation: slideDown 0.2s ease;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .bulk-actions-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .selected-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .bulk-actions-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .bulk-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--card-background-color);
+    color: var(--primary-text-color);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+  }
+
+  .bulk-action-btn:hover {
+    background: var(--divider-color);
+    transform: translateY(-1px);
+  }
+
+  .bulk-action-btn.danger {
+    color: var(--error-color);
+  }
+
+  .bulk-action-btn.danger:hover {
+    background: color-mix(in srgb, var(--error-color) 15%, transparent);
+  }
+
+  .bulk-action-btn ha-icon {
+    --mdc-icon-size: 18px;
+  }
+
+  .bulk-status-select {
+    padding: 6px 12px;
+    border: 1px solid var(--divider-color);
+    border-radius: 8px;
+    background: var(--card-background-color);
+    color: var(--primary-text-color);
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+
+  .bulk-status-select:hover {
+    border-color: var(--primary-color);
+  }
+
+  .bulk-status-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 20%, transparent);
+  }
+
+  /* ========================================
+   * v2.0.0: Drag and Drop
+   * ======================================== */
+
+  .task-item[draggable="true"] {
+    cursor: move;
+  }
+
+  .task-item.drag-over {
+    border-top: 2px solid var(--primary-color);
+    margin-top: -2px;
+  }
+
+  /* Compact mode adjustments for v2.0.0 */
+  .compact .bulk-actions-toolbar {
+    padding: 8px 12px;
+  }
+
+  .compact .selected-count {
+    font-size: 12px;
+  }
+
+  .compact .bulk-action-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .compact .bulk-action-btn ha-icon {
+    --mdc-icon-size: 16px;
+  }
+
+  .compact .bulk-status-select {
+    padding: 4px 8px;
+    font-size: 11px;
   }
 `;
