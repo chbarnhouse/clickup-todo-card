@@ -279,12 +279,12 @@ export const styles = css`
   .task-item {
     display: flex;
     gap: 12px;
-    padding: 8px 16px;
+    padding: 12px 16px;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--divider-color);
     border-radius: 0;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .task-item:last-child {
@@ -292,7 +292,8 @@ export const styles = css`
   }
 
   .task-item:hover {
-    background: var(--secondary-background-color);
+    background: rgba(var(--rgb-primary-color), 0.05);
+    transform: translateX(2px);
   }
 
   .task-item.completed {
@@ -539,7 +540,14 @@ export const styles = css`
     gap: 4px;
     font-size: 12px;
     color: var(--secondary-text-color);
-    padding: 2px 0;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+  }
+
+  .task-location:hover {
+    background: rgba(0, 0, 0, 0.08);
   }
 
   .task-location ha-icon {
@@ -549,6 +557,7 @@ export const styles = css`
 
   .compact .task-location {
     font-size: 11px;
+    padding: 3px 6px;
   }
 
   .compact .task-location ha-icon {
@@ -568,10 +577,15 @@ export const styles = css`
     align-items: center;
     gap: 4px;
     font-size: 12px;
-    padding: 0;
-    border-radius: 0;
-    background: transparent;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.05);
     color: var(--secondary-text-color);
+    transition: all 0.2s ease;
+  }
+
+  .date-item:hover {
+    background: rgba(0, 0, 0, 0.08);
   }
 
   .date-item ha-icon {
@@ -580,11 +594,12 @@ export const styles = css`
 
   .date-item.overdue {
     color: var(--error-color);
+    background: rgba(var(--rgb-error-color), 0.1);
   }
 
   .compact .date-item {
     font-size: 11px;
-    padding: 0;
+    padding: 3px 6px;
   }
 
   .compact .date-item ha-icon {
@@ -598,12 +613,13 @@ export const styles = css`
     font-size: 11px;
     font-weight: 600;
     padding: 6px 14px;
-    border-radius: min(calc(var(--ha-card-border-radius, 12px) * 2), 999px);
+    border-radius: 16px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 1px 2px color-mix(in srgb, var(--shadow-color, #000) 10%, transparent);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
   }
 
   .compact .status-badge {
@@ -623,11 +639,17 @@ export const styles = css`
     align-items: center;
     font-size: 11px;
     font-weight: 500;
-    padding: 3px 8px;
-    border-radius: min(var(--ha-card-border-radius, 12px), 999px);
-    background: var(--secondary-background-color);
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.05);
     color: var(--primary-text-color);
-    border: 1px solid var(--divider-color);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .tag:hover {
+    background: rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
   }
 
   .compact .tag {
@@ -945,7 +967,7 @@ export const styles = css`
     display: flex;
     align-items: center;
     padding: 10px 16px;
-    background: var(--card-background-color);
+    background: transparent;
     border-bottom: 1px solid var(--divider-color);
     gap: 16px;
     flex-wrap: wrap;
@@ -968,7 +990,7 @@ export const styles = css`
     padding: 6px 10px;
     border: 1px solid var(--divider-color);
     border-radius: 8px;
-    background: var(--card-background-color);
+    background: rgba(0, 0, 0, 0.2);
     color: var(--primary-text-color);
     cursor: pointer;
     font-size: 13px;
@@ -978,7 +1000,7 @@ export const styles = css`
 
   .control-select:hover {
     border-color: var(--primary-color);
-    background: color-mix(in srgb, var(--primary-color) 5%, transparent);
+    background: rgba(0, 0, 0, 0.3);
   }
 
   .control-select:focus {
@@ -995,7 +1017,7 @@ export const styles = css`
     height: 32px;
     border: 1px solid var(--divider-color);
     border-radius: 8px;
-    background: var(--card-background-color);
+    background: rgba(0, 0, 0, 0.2);
     color: var(--primary-text-color);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -1003,7 +1025,7 @@ export const styles = css`
 
   .control-btn:hover {
     border-color: var(--primary-color);
-    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+    background: rgba(0, 0, 0, 0.3);
     color: var(--primary-color);
     transform: translateY(-1px);
   }
