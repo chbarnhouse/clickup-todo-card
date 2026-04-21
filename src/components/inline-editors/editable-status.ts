@@ -2,7 +2,8 @@ import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 
 export interface StatusOption {
-  name: string;
+  name?: string;
+  status?: string;  // ClickUp uses 'status' instead of 'name'
   color: string;
   type: 'open' | 'closed' | 'custom';
 }
@@ -183,17 +184,20 @@ export class EditableStatus extends LitElement {
   }
 
   private _renderDisplay(): TemplateResult {
+    const statusName = this.value?.name || this.value?.status || 'NO STATUS';
+    const statusTitle = this.value?.name || this.value?.status || 'No Status';
+
     return html`
       <div
         class="status-display"
         @click=${this._openDialog}
-        title="${this.value?.name || 'No Status'}"
+        title="${statusTitle}"
       >
         <span
           class="status-badge"
           style="--status-color: ${this.value?.color || 'var(--disabled-text-color)'}"
         >
-          ${this.value?.name || 'NO STATUS'}
+          ${statusName}
         </span>
       </div>
     `;
@@ -214,7 +218,9 @@ export class EditableStatus extends LitElement {
   }
 
   private _renderOption(option: StatusOption): TemplateResult {
-    const isSelected = option.name === this.value?.name;
+    const optionName = option.name || option.status || '';
+    const valueName = this.value?.name || this.value?.status || '';
+    const isSelected = optionName === valueName;
 
     return html`
       <div
@@ -225,7 +231,7 @@ export class EditableStatus extends LitElement {
           class="option-badge"
           style="--option-color: ${option.color}"
         >
-          ${option.name}
+          ${optionName}
         </span>
       </div>
     `;
@@ -241,8 +247,10 @@ export class EditableStatus extends LitElement {
 
   private _selectStatus(status: StatusOption): void {
     const oldValue = this.value;
+    const oldName = oldValue?.name || oldValue?.status || '';
+    const newName = status.name || status.status || '';
 
-    if (oldValue?.name !== status.name) {
+    if (oldName !== newName) {
       this.value = status;
       this.dispatchEvent(new CustomEvent('value-changed', {
         detail: { value: status, oldValue },
