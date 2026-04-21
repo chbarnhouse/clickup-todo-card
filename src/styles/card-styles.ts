@@ -322,25 +322,34 @@ export const styles = css`
     padding-top: 2px;
   }
 
-  /* Task Status Wrapper (checkbox + status badge) */
+  /* Task Status Wrapper (checkbox overlaid on status badge) */
   .task-status-wrapper {
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 6px;
+    position: relative;
+  }
+
+  .task-status-wrapper editable-status {
+    padding-left: 32px;
   }
 
   .task-status-wrapper ha-checkbox {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
     --mdc-checkbox-size: 18px;
-    flex-shrink: 0;
   }
 
-  .compact .task-status-wrapper {
-    gap: 4px;
+  .compact .task-status-wrapper editable-status {
+    padding-left: 28px;
   }
 
   .compact .task-status-wrapper ha-checkbox {
     --mdc-checkbox-size: 16px;
+    left: 4px;
   }
 
   /* Task Main Content */

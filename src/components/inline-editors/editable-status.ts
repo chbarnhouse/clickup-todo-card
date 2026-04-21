@@ -22,15 +22,12 @@ export class EditableStatus extends LitElement {
   static styles = css`
     :host {
       display: inline-block;
-      position: relative;
     }
 
     .status-display {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
       cursor: pointer;
-      transition: all 0.15s ease;
       user-select: none;
     }
 
@@ -39,16 +36,12 @@ export class EditableStatus extends LitElement {
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
     }
 
-    .status-display.open .status-badge {
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    }
-
     .status-badge {
       display: inline-flex;
       align-items: center;
       font-size: 11px;
       font-weight: 600;
-      padding: 6px 14px;
+      padding: 6px 14px 6px 6px;
       border-radius: 16px;
       background: var(--status-color, var(--primary-color));
       color: white;
@@ -60,29 +53,44 @@ export class EditableStatus extends LitElement {
 
     .compact .status-badge {
       font-size: 10px;
-      padding: 3px 8px;
+      padding: 4px 10px 4px 4px;
     }
 
-    .dropdown {
-      position: absolute;
-      top: calc(100% + 4px);
+    /* Modal styles */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
       left: 0;
-      background: var(--card-background-color);
-      border: 1px solid var(--divider-color);
-      border-radius: var(--ha-card-border-radius, 12px);
-      box-shadow: 0 4px 16px color-mix(in srgb, var(--shadow-color, #000) 25%, transparent);
-      z-index: 100;
-      min-width: 200px;
-      max-height: 400px;
-      overflow-y: auto;
-      padding: 8px;
-      animation: fadeIn 0.15s ease;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
     }
 
     @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: var(--card-background-color);
+      border-radius: var(--ha-card-border-radius, 12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 24px;
+      animation: slideUp 0.2s ease;
+    }
+
+    @keyframes slideUp {
       from {
         opacity: 0;
-        transform: translateY(-4px);
+        transform: translateY(20px);
       }
       to {
         opacity: 1;
@@ -90,46 +98,57 @@ export class EditableStatus extends LitElement {
       }
     }
 
+    .modal-header {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--primary-text-color);
+    }
+
+    .status-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .status-option {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 12px;
-      border-radius: 8px;
+      padding: 12px 16px;
+      border-radius: 12px;
       cursor: pointer;
       transition: all 0.15s ease;
-      margin-bottom: 4px;
-    }
-
-    .status-option:last-child {
-      margin-bottom: 0;
+      border: 2px solid transparent;
     }
 
     .status-option:hover {
-      background-color: var(--divider-color, rgba(0, 0, 0, 0.08));
-      transform: translateX(2px);
+      background-color: rgba(0, 0, 0, 0.05);
+      transform: translateX(4px);
     }
 
     .status-option.selected {
-      background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
+      background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
+      border-color: var(--primary-color);
     }
 
     .option-badge {
       display: inline-flex;
       align-items: center;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
-      padding: 4px 10px;
+      padding: 6px 14px;
       border-radius: 12px;
       background: var(--option-color);
       color: white;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .option-check {
-      --mdc-icon-size: 16px;
+      --mdc-icon-size: 20px;
       color: var(--primary-color);
       margin-left: auto;
     }
@@ -139,16 +158,16 @@ export class EditableStatus extends LitElement {
     return html`
       <div class="${this.compact ? 'compact' : ''}">
         ${this._renderDisplay()}
-        ${this._isOpen ? this._renderDropdown() : ''}
       </div>
+      ${this._isOpen ? this._renderModal() : ''}
     `;
   }
 
   private _renderDisplay(): TemplateResult {
     return html`
       <div
-        class="status-display ${this._isOpen ? 'open' : ''}"
-        @click=${this._toggleDropdown}
+        class="status-display"
+        @click=${this._openModal}
         title="${this.value?.name || 'No Status'}"
       >
         <span
@@ -161,10 +180,15 @@ export class EditableStatus extends LitElement {
     `;
   }
 
-  private _renderDropdown(): TemplateResult {
+  private _renderModal(): TemplateResult {
     return html`
-      <div class="dropdown" @click=${(e: Event) => e.stopPropagation()}>
-        ${this.options.map(option => this._renderOption(option))}
+      <div class="modal-backdrop" @click=${this._closeModal}>
+        <div class="modal-content" @click=${(e: Event) => e.stopPropagation()}>
+          <div class="modal-header">Change Status</div>
+          <div class="status-options">
+            ${this.options.map(option => this._renderOption(option))}
+          </div>
+        </div>
       </div>
     `;
   }
@@ -190,21 +214,23 @@ export class EditableStatus extends LitElement {
     `;
   }
 
-  private _toggleDropdown(): void {
-    this._isOpen = !this._isOpen;
+  private _openModal(): void {
+    this._isOpen = true;
 
-    if (this._isOpen) {
-      // Close on outside click
-      setTimeout(() => {
-        const closeOnOutsideClick = (e: Event) => {
-          if (!this.shadowRoot?.contains(e.target as Node)) {
-            this._isOpen = false;
-            document.removeEventListener('click', closeOnOutsideClick);
-          }
-        };
-        document.addEventListener('click', closeOnOutsideClick);
-      }, 0);
-    }
+    // Close on ESC key
+    setTimeout(() => {
+      const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          this._closeModal();
+          document.removeEventListener('keydown', handleEscape);
+        }
+      };
+      document.addEventListener('keydown', handleEscape);
+    }, 0);
+  }
+
+  private _closeModal(): void {
+    this._isOpen = false;
   }
 
   private _selectStatus(status: StatusOption): void {
