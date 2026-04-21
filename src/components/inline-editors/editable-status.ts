@@ -44,7 +44,7 @@ export class EditableStatus extends LitElement {
       justify-content: flex-start;
       font-size: 10px;
       font-weight: 700;
-      padding: 8px 16px 8px 38px;
+      padding: 8px 16px 8px 42px;
       border-radius: 18px;
       background: var(--status-color, var(--primary-color));
       color: white;
@@ -59,7 +59,7 @@ export class EditableStatus extends LitElement {
 
     .compact .status-badge {
       font-size: 9px;
-      padding: 6px 14px 6px 32px;
+      padding: 6px 14px 6px 36px;
       min-height: 26px;
       letter-spacing: 0.5px;
     }

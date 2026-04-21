@@ -3,6 +3,7 @@ import { css } from 'lit';
 export const styles = css`
   :host {
     display: block;
+    height: 100%;
   }
 
   ha-card {
@@ -10,6 +11,7 @@ export const styles = css`
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
   }
 
   .warning {
@@ -337,7 +339,7 @@ export const styles = css`
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 11px;
+    left: 13px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 2;
@@ -346,7 +348,7 @@ export const styles = css`
 
   .compact .task-status-wrapper ha-checkbox {
     --mdc-checkbox-size: 14px;
-    left: 9px;
+    left: 11px;
   }
 
   /* Task Main Content */
