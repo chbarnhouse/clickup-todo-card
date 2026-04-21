@@ -33,42 +33,56 @@ export class EditableStatus extends LitElement {
 
     .status-display:hover .status-badge {
       transform: translateY(-1px);
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      filter: brightness(1.05);
     }
 
     .status-badge {
       display: inline-flex;
       align-items: center;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 6px 16px 6px 38px;
-      border-radius: 16px;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 7px 14px 7px 36px;
+      border-radius: 20px;
       background: var(--status-color, var(--primary-color));
       color: white;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: all 0.2s ease;
-      min-height: 28px;
+      letter-spacing: 0.8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 32px;
+      white-space: nowrap;
+      position: relative;
     }
 
     .compact .status-badge {
-      font-size: 10px;
-      padding: 4px 12px 4px 32px;
-      min-height: 24px;
+      font-size: 9px;
+      padding: 5px 12px 5px 30px;
+      min-height: 26px;
+      letter-spacing: 0.6px;
     }
 
-    /* Dialog content styles */
+    /* Dialog styling */
     ha-dialog {
-      --mdc-dialog-min-width: 400px;
-      --mdc-dialog-max-width: 500px;
+      --mdc-dialog-min-width: 460px;
+      --mdc-dialog-max-width: 560px;
+      --mdc-dialog-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --mdc-shape-medium: 20px;
     }
 
     .status-options {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 12px;
-      padding: 16px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 20px;
+      max-width: 100%;
+    }
+
+    @media (max-width: 500px) {
+      .status-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .status-option {
@@ -76,74 +90,86 @@ export class EditableStatus extends LitElement {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 16px 12px;
-      border-radius: 12px;
+      padding: 0;
+      border-radius: 16px;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
       border: 2px solid transparent;
-      background: rgba(0, 0, 0, 0.02);
+      background: transparent;
       position: relative;
-      min-height: 80px;
+      min-height: 60px;
+      overflow: hidden;
     }
 
     .status-option:hover {
-      background: rgba(0, 0, 0, 0.05);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .status-option:active {
+      transform: translateY(0) scale(0.98);
     }
 
     .status-option.selected {
-      background: color-mix(in srgb, var(--primary-color) 8%, transparent);
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 1px var(--primary-color);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 0 2px rgba(255, 255, 255, 0.2);
     }
 
     .status-option.selected::after {
       content: '';
       position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 20px;
-      height: 20px;
-      background: var(--primary-color);
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 2;
     }
 
     .status-option.selected::before {
       content: '✓';
       position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 20px;
-      height: 20px;
-      color: white;
-      font-size: 14px;
-      font-weight: bold;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      color: var(--option-color);
+      font-size: 16px;
+      font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1;
+      z-index: 3;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .option-badge {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 16px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 16px 12px;
+      width: 100%;
+      height: 100%;
       background: var(--option-color);
       color: white;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-      min-height: 32px;
-      width: 100%;
+      letter-spacing: 0.8px;
       text-align: center;
+      line-height: 1.3;
+      word-wrap: break-word;
+      transition: filter 0.15s ease;
+    }
+
+    .status-option:hover .option-badge {
+      filter: brightness(1.1);
+    }
+
+    .status-option.selected .option-badge {
+      filter: brightness(1.15);
     }
   `;
 
