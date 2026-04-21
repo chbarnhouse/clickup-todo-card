@@ -213,17 +213,31 @@ export class EditableStatus extends LitElement {
   }
 
   private _renderDialog(): TemplateResult {
-    // Group statuses by type
+    // Group statuses by type with ClickUp-style categorization
     const grouped = {
-      open: [] as StatusOption[],
-      closed: [] as StatusOption[],
-      custom: [] as StatusOption[]
+      notStarted: [] as StatusOption[],
+      active: [] as StatusOption[],
+      done: [] as StatusOption[],
+      closed: [] as StatusOption[]
     };
 
     this.options.forEach(option => {
       const type = option.type || 'custom';
-      if (type in grouped) {
-        grouped[type as keyof typeof grouped].push(option);
+      const statusName = (option.name || option.status || '').toLowerCase();
+
+      // Categorize based on type and name
+      if (type === 'closed') {
+        // Check if it's specifically "done" or truly closed
+        if (statusName.includes('complete') || statusName.includes('done')) {
+          grouped.done.push(option);
+        } else {
+          grouped.closed.push(option);
+        }
+      } else if (type === 'open') {
+        grouped.notStarted.push(option);
+      } else {
+        // Custom statuses go to active
+        grouped.active.push(option);
       }
     });
 
@@ -234,16 +248,22 @@ export class EditableStatus extends LitElement {
         .heading=${'Change Status'}
       >
         <div class="status-options">
-          ${grouped.open.length > 0 ? html`
+          ${grouped.notStarted.length > 0 ? html`
             <div class="status-group">
-              <div class="group-label">Open</div>
-              ${grouped.open.map(option => this._renderOption(option))}
+              <div class="group-label">Not Started</div>
+              ${grouped.notStarted.map(option => this._renderOption(option))}
             </div>
           ` : ''}
-          ${grouped.custom.length > 0 ? html`
+          ${grouped.active.length > 0 ? html`
             <div class="status-group">
-              <div class="group-label">Custom</div>
-              ${grouped.custom.map(option => this._renderOption(option))}
+              <div class="group-label">Active</div>
+              ${grouped.active.map(option => this._renderOption(option))}
+            </div>
+          ` : ''}
+          ${grouped.done.length > 0 ? html`
+            <div class="status-group">
+              <div class="group-label">Done</div>
+              ${grouped.done.map(option => this._renderOption(option))}
             </div>
           ` : ''}
           ${grouped.closed.length > 0 ? html`

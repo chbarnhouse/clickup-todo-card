@@ -180,6 +180,15 @@ export class ClickUpTodoCardEditor extends LitElement {
               @change=${this._valueChanged}
             ></ha-switch>
           </ha-formfield>
+
+          <ha-textfield
+            label="Fixed Height (pixels, leave empty for auto)"
+            type="number"
+            .configValue=${'fixed_height'}
+            .value=${this._config.fixed_height || ''}
+            @input=${this._valueChanged}
+            helper="Set a fixed height for scrollable content (e.g., 400)"
+          ></ha-textfield>
         </div>
 
         <!-- Add Button Settings -->
@@ -474,6 +483,14 @@ export class ClickUpTodoCardEditor extends LitElement {
     // Special case: add_button_text should allow empty string
     if (value === '' && configValue !== 'add_button_text') {
       value = undefined;
+    }
+
+    // Convert number fields
+    if (configValue === 'fixed_height' && value !== undefined) {
+      value = parseInt(value, 10);
+      if (isNaN(value)) {
+        value = undefined;
+      }
     }
 
     const newConfig = {
