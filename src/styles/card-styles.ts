@@ -415,21 +415,15 @@ export const styles = css`
 
   /* Task Metadata */
   .task-metadata {
-    display: grid;
-    grid-template-columns: minmax(180px, auto) minmax(200px, 1fr);
-    gap: 8px 12px;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     margin-top: 8px;
   }
 
   .compact .task-metadata {
-    grid-template-columns: minmax(160px, auto) minmax(180px, 1fr);
-    gap: 6px 10px;
+    gap: 4px;
     margin-top: 6px;
-  }
-
-  .task-metadata > * {
-    min-width: 0;
   }
 
   /* Task Location */
@@ -443,11 +437,17 @@ export const styles = css`
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease;
-    grid-column: 1;
   }
 
   .task-location:hover {
     background: rgba(0, 0, 0, 0.08);
+  }
+
+  /* Date fields */
+  .task-start-date,
+  .task-due-date {
+    display: flex;
+    align-items: center;
   }
 
   .task-location ha-icon {
@@ -697,28 +697,6 @@ export const styles = css`
     width: 100%;
   }
 
-  /* Inline dates container */
-  .task-dates-inline {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    grid-column: 2;
-  }
-
-  .compact .task-dates-inline {
-    gap: 6px;
-  }
-
-  /* Tags and assignees span both columns */
-  editable-tags,
-  editable-assignees {
-    grid-column: 1 / -1;
-  }
-
-  .custom-fields {
-    grid-column: 1 / -1;
-  }
 
   /* ========================================
    * v2.0.0: Multi-Select & Bulk Actions
