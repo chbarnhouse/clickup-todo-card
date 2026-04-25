@@ -299,8 +299,8 @@ export const styles = css`
   }
 
   .task-item:hover {
-    background: rgba(var(--rgb-primary-color), 0.05);
-    transform: translateX(2px);
+    background: var(--secondary-background-color);
+    cursor: pointer;
   }
 
   .task-item.completed {
