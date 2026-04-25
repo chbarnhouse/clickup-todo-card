@@ -2,7 +2,7 @@ import { LitElement, html, TemplateResult, CSSResultGroup, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { fireEvent, HomeAssistant } from 'custom-card-helpers';
 
-import { ClickUpTodoCardConfig, ClickUpTask, ExtendedHassEntity } from './types';
+import { ClickUpTodoCardConfig, ClickUpTask, ExtendedHassEntity, MetadataField, MetadataFieldType } from './types';
 import { parseClickUpTasks } from './utils/clickup-data';
 import { getUniqueStatuses, getUniqueTags, getUniqueAssignees, getAvailableCustomFields } from './utils/clickup-data';
 
@@ -448,6 +448,52 @@ export class ClickUpTodoCardEditor extends LitElement {
             ></ha-textfield>
           </div>
         </div>
+
+        <!-- Metadata Grid Layout -->
+        <div class="config-section">
+          <h3>Metadata Grid Layout</h3>
+          <p class="hint">Configure how task metadata fields are displayed using a flexible grid system</p>
+
+          <ha-formfield .label=${'Use Custom Grid Layout'}>
+            <ha-switch
+              .checked=${this._config.metadata_grid !== undefined}
+              @change=${this._toggleMetadataGrid}
+            ></ha-switch>
+          </ha-formfield>
+
+          ${this._config.metadata_grid ? html`
+            <div class="metadata-grid-config">
+              <ha-textfield
+                label="Grid Columns"
+                .value=${this._config.metadata_grid.columns || 'repeat(auto-fit, minmax(150px, 1fr))'}
+                @input=${(e: any) => this._metadataGridPropertyChanged('columns', e.target.value)}
+                helper="CSS grid-template-columns value"
+              ></ha-textfield>
+
+              <ha-textfield
+                label="Grid Gap"
+                .value=${this._config.metadata_grid.gap || '6px 8px'}
+                @input=${(e: any) => this._metadataGridPropertyChanged('gap', e.target.value)}
+                helper="CSS gap value (row column)"
+              ></ha-textfield>
+
+              <div class="field-list">
+                <label>Fields (drag to reorder)</label>
+                ${this._config.metadata_grid.fields?.map((field, index) => this._renderMetadataFieldRow(field, index))}
+              </div>
+
+              <mwc-button @click=${this._addMetadataField}>
+                <ha-icon icon="mdi:plus"></ha-icon>
+                Add Field
+              </mwc-button>
+            </div>
+          ` : html`
+            <p class="hint">
+              Grid layout is automatically generated from the "Display Options" settings above.
+              Enable custom grid layout to manually configure fields.
+            </p>
+          `}
+        </div>
       </div>
     `;
     } catch (error) {
@@ -773,6 +819,215 @@ export class ClickUpTodoCardEditor extends LitElement {
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 
+  // Metadata Grid Methods
+
+  private _toggleMetadataGrid(ev: any): void {
+    const enabled = ev.target.checked;
+
+    if (enabled) {
+      // Create default metadata grid from current show_* settings
+      const fields: MetadataField[] = [];
+
+      if (this._config.show_task_locations) {
+        fields.push({ type: 'location' });
+      }
+      if (this._config.show_start_date || this._config.show_due_date) {
+        fields.push({ type: 'dates' });
+      }
+      if (this._config.show_tags) {
+        fields.push({ type: 'tags', span: 'full' });
+      }
+      if (this._config.show_assignees) {
+        fields.push({ type: 'assignees', span: 'full' });
+      }
+      if (this._config.show_custom_fields) {
+        fields.push({ type: 'custom_fields', span: 'full' });
+      }
+
+      const newConfig = {
+        ...this._config,
+        metadata_grid: {
+          columns: 'repeat(auto-fit, minmax(150px, 1fr))',
+          gap: '6px 8px',
+          fields,
+        },
+      };
+
+      fireEvent(this, 'config-changed', { config: newConfig });
+    } else {
+      // Remove metadata_grid from config
+      const newConfig = { ...this._config };
+      delete newConfig.metadata_grid;
+      fireEvent(this, 'config-changed', { config: newConfig });
+    }
+  }
+
+  private _metadataGridPropertyChanged(property: 'columns' | 'gap', value: string): void {
+    if (!this._config.metadata_grid) return;
+
+    const newConfig = {
+      ...this._config,
+      metadata_grid: {
+        ...this._config.metadata_grid,
+        [property]: value,
+      },
+    };
+
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private _renderMetadataFieldRow(field: MetadataField, index: number): TemplateResult {
+    const fieldTypeOptions = [
+      { value: 'location', label: 'Location' },
+      { value: 'start_date', label: 'Start Date' },
+      { value: 'due_date', label: 'Due Date' },
+      { value: 'dates', label: 'Dates (Start + Due)' },
+      { value: 'tags', label: 'Tags' },
+      { value: 'assignees', label: 'Assignees' },
+      { value: 'custom_fields', label: 'Custom Fields' },
+      { value: 'status', label: 'Status' },
+      { value: 'priority', label: 'Priority' },
+    ];
+
+    const spanOptions = [
+      { value: '', label: 'Auto' },
+      { value: 'full', label: 'Full Width' },
+      { value: '2', label: 'Span 2' },
+      { value: '3', label: 'Span 3' },
+    ];
+
+    return html`
+      <div class="field-row">
+        <ha-icon icon="mdi:drag" class="drag-handle"></ha-icon>
+
+        <ha-selector
+          .hass=${this.hass}
+          .selector=${{
+            select: {
+              options: fieldTypeOptions,
+            },
+          }}
+          .value=${field.type}
+          @value-changed=${(ev: any) => this._metadataFieldPropertyChanged(index, 'type', ev.detail.value)}
+        ></ha-selector>
+
+        <ha-selector
+          .hass=${this.hass}
+          .selector=${{
+            select: {
+              options: spanOptions,
+            },
+          }}
+          .value=${field.span || ''}
+          @value-changed=${(ev: any) => this._metadataFieldPropertyChanged(index, 'span', ev.detail.value)}
+        ></ha-selector>
+
+        <mwc-icon-button @click=${() => this._moveMetadataField(index, -1)}>
+          <ha-icon icon="mdi:arrow-up"></ha-icon>
+        </mwc-icon-button>
+
+        <mwc-icon-button @click=${() => this._moveMetadataField(index, 1)}>
+          <ha-icon icon="mdi:arrow-down"></ha-icon>
+        </mwc-icon-button>
+
+        <mwc-icon-button @click=${() => this._removeMetadataField(index)}>
+          <ha-icon icon="mdi:delete"></ha-icon>
+        </mwc-icon-button>
+      </div>
+    `;
+  }
+
+  private _addMetadataField(): void {
+    if (!this._config.metadata_grid) return;
+
+    const newField: MetadataField = {
+      type: 'location',
+    };
+
+    const newConfig = {
+      ...this._config,
+      metadata_grid: {
+        ...this._config.metadata_grid,
+        fields: [...(this._config.metadata_grid.fields || []), newField],
+      },
+    };
+
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private _removeMetadataField(index: number): void {
+    if (!this._config.metadata_grid) return;
+
+    const fields = [...(this._config.metadata_grid.fields || [])];
+    fields.splice(index, 1);
+
+    const newConfig = {
+      ...this._config,
+      metadata_grid: {
+        ...this._config.metadata_grid,
+        fields,
+      },
+    };
+
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private _moveMetadataField(index: number, direction: number): void {
+    if (!this._config.metadata_grid) return;
+
+    const fields = [...(this._config.metadata_grid.fields || [])];
+    const newIndex = index + direction;
+
+    if (newIndex < 0 || newIndex >= fields.length) return;
+
+    // Swap fields
+    [fields[index], fields[newIndex]] = [fields[newIndex], fields[index]];
+
+    const newConfig = {
+      ...this._config,
+      metadata_grid: {
+        ...this._config.metadata_grid,
+        fields,
+      },
+    };
+
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private _metadataFieldPropertyChanged(index: number, property: 'type' | 'span', value: any): void {
+    if (!this._config.metadata_grid) return;
+
+    const fields = [...(this._config.metadata_grid.fields || [])];
+
+    if (property === 'type') {
+      fields[index] = {
+        ...fields[index],
+        type: value as MetadataFieldType,
+      };
+    } else if (property === 'span') {
+      if (value === '') {
+        // Remove span property
+        const { span, ...rest } = fields[index];
+        fields[index] = rest as MetadataField;
+      } else {
+        fields[index] = {
+          ...fields[index],
+          span: value,
+        };
+      }
+    }
+
+    const newConfig = {
+      ...this._config,
+      metadata_grid: {
+        ...this._config.metadata_grid,
+        fields,
+      },
+    };
+
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
   static get styles(): CSSResultGroup {
     return css`
       .card-config {
@@ -887,6 +1142,62 @@ export class ClickUpTodoCardEditor extends LitElement {
 
       .filter-group ha-formfield {
         margin-bottom: 8px;
+      }
+
+      /* Metadata Grid Styles */
+      .metadata-grid-config {
+        margin-top: 16px;
+        padding: 16px;
+        background: var(--secondary-background-color);
+        border-radius: 8px;
+      }
+
+      .field-list {
+        margin: 16px 0;
+      }
+
+      .field-list > label {
+        display: block;
+        margin-bottom: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--primary-text-color);
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: 24px 1fr 1fr auto auto auto;
+        gap: 8px;
+        align-items: center;
+        padding: 8px;
+        margin-bottom: 8px;
+        background: var(--card-background-color);
+        border-radius: 8px;
+        border: 1px solid var(--divider-color);
+      }
+
+      .field-row:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .drag-handle {
+        cursor: move;
+        color: var(--secondary-text-color);
+        --mdc-icon-size: 20px;
+      }
+
+      .field-row ha-selector {
+        margin: 0;
+      }
+
+      .field-row mwc-icon-button {
+        --mdc-icon-button-size: 32px;
+        --mdc-icon-size: 20px;
+      }
+
+      mwc-button {
+        margin-top: 12px;
       }
     `;
   }
