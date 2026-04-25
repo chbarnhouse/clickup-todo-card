@@ -415,14 +415,16 @@ export const styles = css`
 
   /* Task Metadata */
   .task-metadata {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 6px 8px;
     margin-top: 8px;
+    align-items: start;
   }
 
   .compact .task-metadata {
-    gap: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 4px 6px;
     margin-top: 6px;
   }
 
@@ -448,6 +450,16 @@ export const styles = css`
   .task-due-date {
     display: flex;
     align-items: center;
+  }
+
+  /* Tags and assignees span full width */
+  editable-tags,
+  editable-assignees {
+    grid-column: 1 / -1;
+  }
+
+  .custom-fields {
+    grid-column: 1 / -1;
   }
 
   .task-location ha-icon {
