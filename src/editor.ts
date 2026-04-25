@@ -72,13 +72,13 @@ export class ClickUpTodoCardEditor extends LitElement {
             class="tab ${this._selectedTab === 1 ? 'active' : ''}"
             @click=${() => this._selectTab(1)}
           >
-            Visibility
+            Fields
           </button>
           <button
             class="tab ${this._selectedTab === 2 ? 'active' : ''}"
             @click=${() => this._selectTab(2)}
           >
-            Layout
+            Appearance
           </button>
           <button
             class="tab ${this._selectedTab === 3 ? 'active' : ''}"
@@ -125,32 +125,29 @@ export class ClickUpTodoCardEditor extends LitElement {
     return html`
       <div class="tab-panel">
         <div class="config-section">
-          <h3>Basic Settings</h3>
+          <h3>Data Source</h3>
+          <p class="hint">Select the ClickUp entity to display tasks from</p>
 
           <ha-selector
             .hass=${this.hass}
             .selector=${{ entity: { domain: ['todo'] } }}
             .value=${this._config.entity}
-            .label=${'Entity (required)'}
+            .label=${'ClickUp Entity (required)'}
             .required=${true}
             @value-changed=${(ev: any) => this._entityChanged(ev.detail.value)}
           ></ha-selector>
+        </div>
+
+        <div class="config-section">
+          <h3>Card Display</h3>
+          <p class="hint">Customize the card's appearance and behavior</p>
 
           <ha-textfield
-            label="Title"
+            label="Card Title"
             .configValue=${'title'}
             .value=${this._config.title || ''}
             @input=${this._valueChanged}
-            helper="Optional custom title for the card"
-          ></ha-textfield>
-
-          <ha-textfield
-            label="Fixed Height (pixels)"
-            type="number"
-            .configValue=${'fixed_height'}
-            .value=${this._config.fixed_height || ''}
-            @input=${this._valueChanged}
-            helper="Set a fixed height for scrollable content (leave empty for auto)"
+            helper="Override the entity's friendly name (leave empty to use entity name)"
           ></ha-textfield>
 
           <ha-formfield .label=${'Compact Mode'}>
@@ -160,126 +157,160 @@ export class ClickUpTodoCardEditor extends LitElement {
               @change=${this._valueChanged}
             ></ha-switch>
           </ha-formfield>
+          <p class="hint">Reduces padding and spacing for a denser task list</p>
+
+          <ha-textfield
+            label="Fixed Height (pixels)"
+            type="number"
+            .configValue=${'fixed_height'}
+            .value=${this._config.fixed_height || ''}
+            @input=${this._valueChanged}
+            helper="Set a fixed height to enable scrolling (leave empty for auto-height)"
+          ></ha-textfield>
         </div>
       </div>
     `;
   }
 
   private _renderVisibilityTab(customFields: Array<{value: string; label: string}>): TemplateResult {
+    // Check if using custom metadata grid
+    const usingCustomGrid = this._config.metadata_grid !== undefined;
+
     return html`
       <div class="tab-panel">
-        <div class="config-section">
-          <h3>Header</h3>
-
-          <ha-formfield .label=${'Hide Header'}>
-            <ha-switch
-              .checked=${this._config.hide_header === true}
-              .configValue=${'hide_header'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Hide Title'}>
-            <ha-switch
-              .checked=${this._config.hide_title === true}
-              .configValue=${'hide_title'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Show Task Count Badge'}>
-            <ha-switch
-              .checked=${this._config.show_task_count !== false}
-              .configValue=${'show_task_count'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-        </div>
-
-        <div class="config-section">
-          <h3>Task Fields</h3>
-
-          <ha-formfield .label=${'Show Priority'}>
-            <ha-switch
-              .checked=${this._config.show_priority !== false}
-              .configValue=${'show_priority'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Show ClickUp Status'}>
-            <ha-switch
-              .checked=${this._config.show_status === true}
-              .configValue=${'show_status'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Show Start Date'}>
-            <ha-switch
-              .checked=${this._config.show_start_date !== false}
-              .configValue=${'show_start_date'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Show Due Date'}>
-            <ha-switch
-              .checked=${this._config.show_due_date !== false}
-              .configValue=${'show_due_date'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Show Tags'}>
-            <ha-switch
-              .checked=${this._config.show_tags !== false}
-              .configValue=${'show_tags'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Show Assignees'}>
-            <ha-switch
-              .checked=${this._config.show_assignees !== false}
-              .configValue=${'show_assignees'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Show Custom Fields'}>
-            <ha-switch
-              .checked=${this._config.show_custom_fields === true}
-              .configValue=${'show_custom_fields'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-
-          <ha-formfield .label=${'Show Task Locations'}>
-            <ha-switch
-              .checked=${this._config.show_task_locations === true}
-              .configValue=${'show_task_locations'}
-              @change=${this._valueChanged}
-            ></ha-switch>
-          </ha-formfield>
-        </div>
-
-        ${this._config.show_custom_fields && customFields.length > 0 ? html`
-          <div class="config-section">
-            <h3>Visible Custom Fields</h3>
-            <p class="hint">Select which custom fields to display (leave all unchecked to show all)</p>
-
-            ${customFields.map(field => html`
-              <ha-formfield .label=${field.label}>
-                <ha-checkbox
-                  .checked=${this._isFieldVisible(field.value)}
-                  .value=${field.value}
-                  @change=${this._customFieldChanged}
-                ></ha-checkbox>
-              </ha-formfield>
-            `)}
+        <div class="info-box">
+          <ha-icon icon="mdi:information-outline"></ha-icon>
+          <div>
+            <strong>Field Layout System</strong>
+            <p>Control which fields appear on tasks and how they're arranged. Enable custom layout for full control, or use quick toggles for simple configuration.</p>
           </div>
-        ` : ''}
+        </div>
+
+        <div class="config-section">
+          <div class="section-header">
+            <h3>Custom Field Layout</h3>
+            <ha-switch
+              .checked=${usingCustomGrid}
+              @change=${this._toggleMetadataGrid}
+            ></ha-switch>
+          </div>
+          <p class="hint">Enable to customize field order, grouping, and width. Disable to use simple toggles.</p>
+
+          ${usingCustomGrid ? html`
+            <div class="metadata-grid-config">
+              <ha-textfield
+                label="Grid Columns"
+                .value=${this._config.metadata_grid!.columns || 'repeat(auto-fit, minmax(150px, 1fr))'}
+                @input=${(e: any) => this._metadataGridPropertyChanged('columns', e.target.value)}
+                helper="CSS grid-template-columns value"
+              ></ha-textfield>
+
+              <ha-textfield
+                label="Grid Gap"
+                .value=${this._config.metadata_grid!.gap || '6px 8px'}
+                @input=${(e: any) => this._metadataGridPropertyChanged('gap', e.target.value)}
+                helper="CSS gap value (row column)"
+              ></ha-textfield>
+
+              <div class="field-list">
+                <label>Fields (use arrows to reorder)</label>
+                ${this._config.metadata_grid!.fields?.map((field, index) => this._renderMetadataFieldRow(field, index))}
+              </div>
+
+              <mwc-button @click=${this._addMetadataField}>
+                <ha-icon icon="mdi:plus"></ha-icon>
+                Add Field
+              </mwc-button>
+            </div>
+          ` : html`
+            <div class="quick-toggles">
+              <p class="hint">Quick toggles - enable the fields you want to show:</p>
+
+              <div class="toggle-grid">
+                <ha-formfield .label=${'Task Location'}>
+                  <ha-switch
+                    .checked=${this._config.show_task_locations === true}
+                    .configValue=${'show_task_locations'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Start Date'}>
+                  <ha-switch
+                    .checked=${this._config.show_start_date !== false}
+                    .configValue=${'show_start_date'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Due Date'}>
+                  <ha-switch
+                    .checked=${this._config.show_due_date !== false}
+                    .configValue=${'show_due_date'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Priority'}>
+                  <ha-switch
+                    .checked=${this._config.show_priority !== false}
+                    .configValue=${'show_priority'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'ClickUp Status'}>
+                  <ha-switch
+                    .checked=${this._config.show_status === true}
+                    .configValue=${'show_status'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Tags'}>
+                  <ha-switch
+                    .checked=${this._config.show_tags !== false}
+                    .configValue=${'show_tags'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Assignees'}>
+                  <ha-switch
+                    .checked=${this._config.show_assignees !== false}
+                    .configValue=${'show_assignees'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Custom Fields'}>
+                  <ha-switch
+                    .checked=${this._config.show_custom_fields === true}
+                    .configValue=${'show_custom_fields'}
+                    @change=${this._valueChanged}
+                  ></ha-switch>
+                </ha-formfield>
+              </div>
+            </div>
+
+            ${this._config.show_custom_fields && customFields.length > 0 ? html`
+              <div class="subsection">
+                <h4>Visible Custom Fields</h4>
+                <p class="hint">Select which custom fields to display (leave all unchecked to show all)</p>
+
+                ${customFields.map(field => html`
+                  <ha-formfield .label=${field.label}>
+                    <ha-checkbox
+                      .checked=${this._isFieldVisible(field.value)}
+                      .value=${field.value}
+                      @change=${this._customFieldChanged}
+                    ></ha-checkbox>
+                  </ha-formfield>
+                `)}
+              </div>
+            ` : ''}
+          `}
+        </div>
       </div>
     `;
   }
@@ -288,7 +319,39 @@ export class ClickUpTodoCardEditor extends LitElement {
     return html`
       <div class="tab-panel">
         <div class="config-section">
-          <h3>Add Button</h3>
+          <h3>Header Display</h3>
+          <p class="hint">Control what appears in the card header</p>
+
+          <ha-formfield .label=${'Hide Entire Header'}>
+            <ha-switch
+              .checked=${this._config.hide_header === true}
+              .configValue=${'hide_header'}
+              @change=${this._valueChanged}
+            ></ha-switch>
+          </ha-formfield>
+
+          ${!this._config.hide_header ? html`
+            <ha-formfield .label=${'Hide Title'}>
+              <ha-switch
+                .checked=${this._config.hide_title === true}
+                .configValue=${'hide_title'}
+                @change=${this._valueChanged}
+              ></ha-switch>
+            </ha-formfield>
+
+            <ha-formfield .label=${'Show Task Count'}>
+              <ha-switch
+                .checked=${this._config.show_task_count !== false}
+                .configValue=${'show_task_count'}
+                @change=${this._valueChanged}
+              ></ha-switch>
+            </ha-formfield>
+          ` : ''}
+        </div>
+
+        <div class="config-section">
+          <h3>Add Task Button</h3>
+          <p class="hint">Configure the button for adding new tasks</p>
 
           <ha-textfield
             label="Button Text"
@@ -327,9 +390,10 @@ export class ClickUpTodoCardEditor extends LitElement {
         </div>
 
         <div class="config-section">
-          <h3>UI Controls</h3>
+          <h3>Interactive Controls</h3>
+          <p class="hint">Show user controls in the card for sorting and filtering</p>
 
-          <ha-formfield .label=${'Show Sort Controls in Card'}>
+          <ha-formfield .label=${'Show Sort Controls'}>
             <ha-switch
               .checked=${this._config.show_sort_controls === true}
               .configValue=${'show_sort_controls'}
@@ -337,58 +401,13 @@ export class ClickUpTodoCardEditor extends LitElement {
             ></ha-switch>
           </ha-formfield>
 
-          <ha-formfield .label=${'Show Filter Controls in Card'}>
+          <ha-formfield .label=${'Show Filter Controls'}>
             <ha-switch
               .checked=${this._config.show_filter_controls === true}
               .configValue=${'show_filter_controls'}
               @change=${this._valueChanged}
             ></ha-switch>
           </ha-formfield>
-        </div>
-
-        <div class="config-section">
-          <h3>Metadata Grid Layout</h3>
-          <p class="hint">Configure how task metadata fields are displayed using a flexible grid system</p>
-
-          <ha-formfield .label=${'Use Custom Grid Layout'}>
-            <ha-switch
-              .checked=${this._config.metadata_grid !== undefined}
-              @change=${this._toggleMetadataGrid}
-            ></ha-switch>
-          </ha-formfield>
-
-          ${this._config.metadata_grid ? html`
-            <div class="metadata-grid-config">
-              <ha-textfield
-                label="Grid Columns"
-                .value=${this._config.metadata_grid.columns || 'repeat(auto-fit, minmax(150px, 1fr))'}
-                @input=${(e: any) => this._metadataGridPropertyChanged('columns', e.target.value)}
-                helper="CSS grid-template-columns value"
-              ></ha-textfield>
-
-              <ha-textfield
-                label="Grid Gap"
-                .value=${this._config.metadata_grid.gap || '6px 8px'}
-                @input=${(e: any) => this._metadataGridPropertyChanged('gap', e.target.value)}
-                helper="CSS gap value (row column)"
-              ></ha-textfield>
-
-              <div class="field-list">
-                <label>Fields (use arrows to reorder)</label>
-                ${this._config.metadata_grid.fields?.map((field, index) => this._renderMetadataFieldRow(field, index))}
-              </div>
-
-              <mwc-button @click=${this._addMetadataField}>
-                <ha-icon icon="mdi:plus"></ha-icon>
-                Add Field
-              </mwc-button>
-            </div>
-          ` : html`
-            <p class="hint">
-              Grid layout is automatically generated from the "Visibility" tab settings.
-              Enable custom grid layout to manually configure fields.
-            </p>
-          `}
         </div>
       </div>
     `;
@@ -1329,6 +1348,76 @@ export class ClickUpTodoCardEditor extends LitElement {
 
       mwc-button {
         margin-top: 12px;
+      }
+
+      /* Info Box */
+      .info-box {
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+        background: rgba(var(--rgb-primary-color), 0.08);
+        border-left: 4px solid var(--primary-color);
+        border-radius: 4px;
+        margin-bottom: 16px;
+      }
+
+      .info-box ha-icon {
+        color: var(--primary-color);
+        --mdc-icon-size: 24px;
+        margin-top: 2px;
+        flex-shrink: 0;
+      }
+
+      .info-box strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--primary-text-color);
+      }
+
+      .info-box p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--secondary-text-color);
+        line-height: 1.4;
+      }
+
+      /* Section Header with Toggle */
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .section-header h3 {
+        margin: 0;
+      }
+
+      /* Quick Toggles Grid */
+      .quick-toggles {
+        margin-top: 16px;
+      }
+
+      .toggle-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px 16px;
+        margin-top: 12px;
+      }
+
+      /* Subsection */
+      .subsection {
+        margin-top: 16px;
+        padding: 16px;
+        background: var(--secondary-background-color);
+        border-radius: 8px;
+      }
+
+      .subsection h4 {
+        margin: 0 0 12px 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--primary-text-color);
       }
     `;
   }
