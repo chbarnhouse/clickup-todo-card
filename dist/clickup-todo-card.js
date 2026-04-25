@@ -283,8 +283,8 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
   /* Task Item */
   .task-item {
     display: flex;
-    gap: 10px;
-    padding: 10px 14px;
+    gap: 8px;
+    padding: 7px 12px;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--divider-color);
@@ -315,7 +315,7 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
   }
 
   .compact .task-item {
-    padding: 6px 10px;
+    padding: 4px 8px;
     gap: 6px;
   }
 
@@ -355,12 +355,12 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     cursor: pointer;
   }
 
   .compact .task-main {
-    gap: 3px;
+    gap: 2px;
   }
 
   /* Task Header */
@@ -415,12 +415,12 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
   .task-metadata {
     display: grid;
     /* grid-template-columns and gap are set dynamically via inline styles */
-    margin-top: 8px;
+    margin-top: 4px;
     align-items: start;
   }
 
   .compact .task-metadata {
-    margin-top: 6px;
+    margin-top: 2px;
   }
 
   /* Task Location */
@@ -467,12 +467,12 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
   .task-dates {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
   }
 
   .compact .task-dates {
-    gap: 6px;
+    gap: 4px;
   }
 
   .date-item {
@@ -513,21 +513,32 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
   .status-badge {
     display: inline-flex;
     align-items: center;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 16px;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 12px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     transition: all 0.2s ease;
+    min-height: 22px;
+  }
+
+  .status-badge:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
   }
 
   .compact .status-badge {
-    font-size: 10px;
+    font-size: 9px;
     padding: 3px 8px;
+    border-radius: 10px;
+    min-height: 18px;
+    letter-spacing: 0.4px;
   }
 
   /* Tags */
@@ -599,8 +610,8 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
   .custom-fields {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    padding-top: 4px;
+    gap: 8px;
+    padding-top: 0;
   }
 
   .custom-field {
@@ -2245,7 +2256,7 @@ function t(t,e,i,a){var o,s=arguments.length,r=s<3?e:null===a?a=Object.getOwnPro
           ${e}
         </span>
       </div>
-    `}_openDialog(){this._isOpen=!0}_closeDialog(){this._isOpen=!1}_selectStatus(t){const e=this.value;(e?.name||e?.status||"")!==(t.name||t.status||"")&&(this.value=t,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:t,oldValue:e},bubbles:!0,composed:!0}))),this._isOpen=!1}};t([ht({type:Object})],It.prototype,"value",void 0),t([ht({type:Array})],It.prototype,"options",void 0),t([ht({type:Boolean})],It.prototype,"compact",void 0),t([ut()],It.prototype,"_isOpen",void 0),It=t([ct("editable-status")],It),console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 2.2.2  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class Lt extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...yt},this._tasks=[],this._displayedTasks=[],this._editingTask=null,this._showAddDialog=!1,this._selectedTasks=new Set,this._selectionMode=!1,this._draggedTask=null,this._dragOverTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Rt}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...yt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...yt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var a=e.get("hass");return!a||a.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return j`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return j`
+    `}_openDialog(){this._isOpen=!0}_closeDialog(){this._isOpen=!1}_selectStatus(t){const e=this.value;(e?.name||e?.status||"")!==(t.name||t.status||"")&&(this.value=t,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:t,oldValue:e},bubbles:!0,composed:!0}))),this._isOpen=!1}};t([ht({type:Object})],It.prototype,"value",void 0),t([ht({type:Array})],It.prototype,"options",void 0),t([ht({type:Boolean})],It.prototype,"compact",void 0),t([ut()],It.prototype,"_isOpen",void 0),It=t([ct("editable-status")],It),console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 2.2.3  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class Lt extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...yt},this._tasks=[],this._displayedTasks=[],this._editingTask=null,this._showAddDialog=!1,this._selectedTasks=new Set,this._selectionMode=!1,this._draggedTask=null,this._dragOverTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Rt}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...yt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...yt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var a=e.get("hass");return!a||a.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return j`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return j`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>

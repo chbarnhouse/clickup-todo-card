@@ -285,8 +285,8 @@ export const styles = css`
   /* Task Item */
   .task-item {
     display: flex;
-    gap: 10px;
-    padding: 10px 14px;
+    gap: 8px;
+    padding: 7px 12px;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--divider-color);
@@ -317,7 +317,7 @@ export const styles = css`
   }
 
   .compact .task-item {
-    padding: 6px 10px;
+    padding: 4px 8px;
     gap: 6px;
   }
 
@@ -357,12 +357,12 @@ export const styles = css`
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     cursor: pointer;
   }
 
   .compact .task-main {
-    gap: 3px;
+    gap: 2px;
   }
 
   /* Task Header */
@@ -417,12 +417,12 @@ export const styles = css`
   .task-metadata {
     display: grid;
     /* grid-template-columns and gap are set dynamically via inline styles */
-    margin-top: 8px;
+    margin-top: 4px;
     align-items: start;
   }
 
   .compact .task-metadata {
-    margin-top: 6px;
+    margin-top: 2px;
   }
 
   /* Task Location */
@@ -469,12 +469,12 @@ export const styles = css`
   .task-dates {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
   }
 
   .compact .task-dates {
-    gap: 6px;
+    gap: 4px;
   }
 
   .date-item {
@@ -515,21 +515,32 @@ export const styles = css`
   .status-badge {
     display: inline-flex;
     align-items: center;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 16px;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 12px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     transition: all 0.2s ease;
+    min-height: 22px;
+  }
+
+  .status-badge:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
   }
 
   .compact .status-badge {
-    font-size: 10px;
+    font-size: 9px;
     padding: 3px 8px;
+    border-radius: 10px;
+    min-height: 18px;
+    letter-spacing: 0.4px;
   }
 
   /* Tags */
@@ -601,8 +612,8 @@ export const styles = css`
   .custom-fields {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    padding-top: 4px;
+    gap: 8px;
+    padding-top: 0;
   }
 
   .custom-field {
