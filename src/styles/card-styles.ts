@@ -416,15 +416,12 @@ export const styles = css`
   /* Task Metadata */
   .task-metadata {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 6px 8px;
+    /* grid-template-columns and gap are set dynamically via inline styles */
     margin-top: 8px;
     align-items: start;
   }
 
   .compact .task-metadata {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 4px 6px;
     margin-top: 6px;
   }
 
@@ -452,15 +449,7 @@ export const styles = css`
     align-items: center;
   }
 
-  /* Tags and assignees span full width */
-  editable-tags,
-  editable-assignees {
-    grid-column: 1 / -1;
-  }
-
-  .custom-fields {
-    grid-column: 1 / -1;
-  }
+  /* Field spans are controlled by metadata_grid config */
 
   .task-location ha-icon {
     --mdc-icon-size: 14px;

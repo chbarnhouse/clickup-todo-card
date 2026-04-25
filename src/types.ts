@@ -9,6 +9,30 @@ export interface TodoItem {
   due?: Date | string | number;
 }
 
+// Metadata Grid Configuration
+export type MetadataFieldType =
+  | 'location'
+  | 'start_date'
+  | 'due_date'
+  | 'dates'
+  | 'tags'
+  | 'assignees'
+  | 'custom_fields'
+  | 'status'
+  | 'priority';
+
+export interface MetadataField {
+  type: MetadataFieldType;
+  span?: 'full' | number | string;  // 'full' = 1 / -1, number = span X columns, string = custom grid-column
+  label?: string;  // Optional custom label override
+}
+
+export interface MetadataGridConfig {
+  columns?: string;  // CSS grid-template-columns value
+  gap?: string;  // CSS gap value (row column)
+  fields: MetadataField[];
+}
+
 export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   type: string;
   entity: string;
@@ -58,6 +82,9 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   // UI Controls
   show_sort_controls?: boolean;
   show_filter_controls?: boolean;
+
+  // Metadata Grid Layout (v2.1.0+)
+  metadata_grid?: MetadataGridConfig;
 }
 
 export interface ClickUpTask extends TodoItem {

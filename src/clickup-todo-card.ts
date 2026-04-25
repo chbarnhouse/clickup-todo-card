@@ -2,8 +2,8 @@ import { LitElement, html, TemplateResult, CSSResultGroup } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { HomeAssistant, LovelaceCard, hasConfigOrEntityChanged, fireEvent } from 'custom-card-helpers';
 
-import { ClickUpTodoCardConfig, ClickUpTask, ExtendedHassEntity } from './types';
-import { CARD_VERSION, DEFAULT_CONFIG, PRIORITY_ICONS, PRIORITY_COLORS } from './const';
+import { ClickUpTodoCardConfig, ClickUpTask, ExtendedHassEntity, MetadataField, MetadataFieldType, MetadataGridConfig } from './types';
+import { CARD_VERSION, DEFAULT_CONFIG, DEFAULT_METADATA_GRID, PRIORITY_ICONS, PRIORITY_COLORS } from './const';
 import { parseClickUpTasks, getAllAvailableStatuses, getTaskListStatuses } from './utils/clickup-data';
 import { filterTasks } from './utils/filters';
 import { sortTasks, groupTasks } from './utils/sort';
@@ -454,60 +454,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
             <div class="task-description">${task.description}</div>
           ` : ''}
 
-          <div class="task-metadata">
-            ${this._renderTaskLocation(task)}
-
-            ${this._config.show_start_date || this._config.show_due_date ? html`
-              <div class="task-dates">
-                ${this._config.show_start_date ? html`
-                  <editable-date
-                    class="task-start-date"
-                    .value=${task.start_date ? new Date(task.start_date) : null}
-                    .label=${'Start'}
-                    .icon=${'mdi:calendar-start'}
-                    .dateType=${'start'}
-                    .compact=${this._config.compact_mode}
-                    @value-changed=${(e: CustomEvent) => this._handleStartDateChange(task, e.detail.value)}
-                    @click=${(e: Event) => e.stopPropagation()}
-                  ></editable-date>
-                ` : ''}
-
-                ${this._config.show_due_date ? html`
-                  <editable-date
-                    class="task-due-date"
-                    .value=${task.due || null}
-                    .label=${'Due'}
-                    .icon=${'mdi:calendar-end'}
-                    .dateType=${'due'}
-                    .compact=${this._config.compact_mode}
-                    @value-changed=${(e: CustomEvent) => this._handleDueDateChange(task, e.detail.value)}
-                    @click=${(e: Event) => e.stopPropagation()}
-                  ></editable-date>
-                ` : ''}
-              </div>
-            ` : ''}
-
-            ${this._config.show_tags ? html`
-              <editable-tags
-                .value=${task.tags || []}
-                .compact=${this._config.compact_mode}
-                @value-changed=${(e: CustomEvent) => this._handleTagsChange(task, e.detail.value)}
-                @click=${(e: Event) => e.stopPropagation()}
-              ></editable-tags>
-            ` : ''}
-
-            ${this._config.show_assignees ? html`
-              <editable-assignees
-                .value=${task.assignees || []}
-                .available=${this._getAvailableAssignees()}
-                .compact=${this._config.compact_mode}
-                @value-changed=${(e: CustomEvent) => this._handleAssigneesChange(task, e.detail.value)}
-                @click=${(e: Event) => e.stopPropagation()}
-              ></editable-assignees>
-            ` : ''}
-
-            ${this._renderCustomFields(task)}
-          </div>
+          ${this._renderTaskMetadata(task)}
         </div>
       </div>
     `;
@@ -627,6 +574,328 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           </div>
         `)}
       </div>
+    `;
+  }
+
+  /**
+   * Render task metadata using grid configuration
+   */
+  private _renderTaskMetadata(task: ClickUpTask): TemplateResult {
+    const gridConfig = this._getMetadataGrid();
+
+    // If no fields, return empty
+    if (!gridConfig.fields || gridConfig.fields.length === 0) {
+      return html``;
+    }
+
+    // Render grid with dynamic styles
+    const gridColumns = gridConfig.columns || DEFAULT_METADATA_GRID.columns;
+    const gap = gridConfig.gap || DEFAULT_METADATA_GRID.gap;
+    const compactGap = this._config.compact_mode ? '4px 6px' : gap;
+
+    return html`
+      <div
+        class="task-metadata"
+        style="
+          grid-template-columns: ${this._config.compact_mode ? gridColumns.replace('150px', '140px') : gridColumns};
+          gap: ${this._config.compact_mode ? compactGap : gap};
+        "
+      >
+        ${gridConfig.fields.map(field => this._renderMetadataField(field, task))}
+      </div>
+    `;
+  }
+
+  /**
+   * Get metadata grid configuration
+   * Returns custom grid config if specified, otherwise builds from show_* flags
+   */
+  private _getMetadataGrid(): MetadataGridConfig {
+    if (this._config.metadata_grid) {
+      return {
+        columns: this._config.metadata_grid.columns || DEFAULT_METADATA_GRID.columns,
+        gap: this._config.metadata_grid.gap || DEFAULT_METADATA_GRID.gap,
+        fields: this._config.metadata_grid.fields,
+      };
+    }
+
+    // Build default grid from show_* flags for backward compatibility
+    return this._buildDefaultMetadataGrid();
+  }
+
+  /**
+   * Build default metadata grid from show_* config flags
+   * For backward compatibility with cards that don't use metadata_grid
+   */
+  private _buildDefaultMetadataGrid(): MetadataGridConfig {
+    const fields: MetadataField[] = [];
+
+    // Add location if enabled
+    if (this._config.show_task_locations) {
+      fields.push({ type: 'location' });
+    }
+
+    // Add dates as combined field if either is enabled
+    if (this._config.show_start_date || this._config.show_due_date) {
+      fields.push({ type: 'dates' });
+    }
+
+    // Add tags if enabled (full width)
+    if (this._config.show_tags) {
+      fields.push({ type: 'tags', span: 'full' });
+    }
+
+    // Add assignees if enabled (full width)
+    if (this._config.show_assignees) {
+      fields.push({ type: 'assignees', span: 'full' });
+    }
+
+    // Add custom fields if enabled (full width)
+    if (this._config.show_custom_fields) {
+      fields.push({ type: 'custom_fields', span: 'full' });
+    }
+
+    return {
+      columns: DEFAULT_METADATA_GRID.columns,
+      gap: DEFAULT_METADATA_GRID.gap,
+      fields,
+    };
+  }
+
+  /**
+   * Render a metadata field based on type
+   */
+  private _renderMetadataField(field: MetadataField, task: ClickUpTask): TemplateResult {
+    const spanStyle = this._getFieldSpanStyle(field.span);
+
+    switch (field.type) {
+      case 'location':
+        return this._renderLocationField(task, spanStyle);
+
+      case 'start_date':
+        return this._renderStartDateField(task, spanStyle);
+
+      case 'due_date':
+        return this._renderDueDateField(task, spanStyle);
+
+      case 'dates':
+        return this._renderDatesField(task, spanStyle);
+
+      case 'tags':
+        return this._renderTagsField(task, spanStyle);
+
+      case 'assignees':
+        return this._renderAssigneesField(task, spanStyle);
+
+      case 'custom_fields':
+        return this._renderCustomFieldsField(task, spanStyle);
+
+      case 'status':
+        return this._renderStatusField(task, spanStyle);
+
+      case 'priority':
+        return this._renderPriorityField(task, spanStyle);
+
+      default:
+        return html``;
+    }
+  }
+
+  /**
+   * Get grid-column style for field span
+   */
+  private _getFieldSpanStyle(span?: 'full' | number | string): string {
+    if (!span) return '';
+    if (span === 'full') return 'grid-column: 1 / -1;';
+    if (typeof span === 'number') return `grid-column: span ${span};`;
+    return `grid-column: ${span};`;
+  }
+
+  /**
+   * Render individual field types
+   */
+  private _renderLocationField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    if (!this._config.show_task_locations) {
+      return html``;
+    }
+
+    // Build hierarchy path: Space / Folder / List
+    const parts: string[] = [];
+
+    // Add space (prefer space_info, fallback to space)
+    if (task.space_info?.name || task.space?.name) {
+      parts.push(task.space_info?.name || task.space.name);
+    }
+
+    // Add folder if exists
+    if (task.folder_info?.name) {
+      parts.push(task.folder_info.name);
+    }
+
+    // Add list (prefer list_info, fallback to list)
+    if (task.list_info?.name || task.list?.name) {
+      parts.push(task.list_info?.name || task.list.name);
+    }
+
+    if (parts.length === 0) {
+      return html``;
+    }
+
+    return html`
+      <div class="task-location" style="${spanStyle}">
+        <ha-icon icon="mdi:folder-outline"></ha-icon>
+        <span>${parts.join(' / ')}</span>
+      </div>
+    `;
+  }
+
+  private _renderStartDateField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    if (!this._config.show_start_date) {
+      return html``;
+    }
+
+    return html`
+      <editable-date
+        class="task-start-date"
+        style="${spanStyle}"
+        .value=${task.start_date ? new Date(task.start_date) : null}
+        .label=${'Start'}
+        .icon=${'mdi:calendar-start'}
+        .dateType=${'start'}
+        .compact=${this._config.compact_mode}
+        @value-changed=${(e: CustomEvent) => this._handleStartDateChange(task, e.detail.value)}
+        @click=${(e: Event) => e.stopPropagation()}
+      ></editable-date>
+    `;
+  }
+
+  private _renderDueDateField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    if (!this._config.show_due_date) {
+      return html``;
+    }
+
+    return html`
+      <editable-date
+        class="task-due-date"
+        style="${spanStyle}"
+        .value=${task.due || null}
+        .label=${'Due'}
+        .icon=${'mdi:calendar-end'}
+        .dateType=${'due'}
+        .compact=${this._config.compact_mode}
+        @value-changed=${(e: CustomEvent) => this._handleDueDateChange(task, e.detail.value)}
+        @click=${(e: Event) => e.stopPropagation()}
+      ></editable-date>
+    `;
+  }
+
+  private _renderDatesField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    const showStart = this._config.show_start_date;
+    const showDue = this._config.show_due_date;
+
+    if (!showStart && !showDue) {
+      return html``;
+    }
+
+    return html`
+      <div class="task-dates" style="${spanStyle}">
+        ${showStart ? this._renderStartDateField(task, '') : ''}
+        ${showDue ? this._renderDueDateField(task, '') : ''}
+      </div>
+    `;
+  }
+
+  private _renderTagsField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    if (!this._config.show_tags) {
+      return html``;
+    }
+
+    return html`
+      <editable-tags
+        style="${spanStyle}"
+        .value=${task.tags || []}
+        .compact=${this._config.compact_mode}
+        @value-changed=${(e: CustomEvent) => this._handleTagsChange(task, e.detail.value)}
+        @click=${(e: Event) => e.stopPropagation()}
+      ></editable-tags>
+    `;
+  }
+
+  private _renderAssigneesField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    if (!this._config.show_assignees) {
+      return html``;
+    }
+
+    return html`
+      <editable-assignees
+        style="${spanStyle}"
+        .value=${task.assignees || []}
+        .available=${this._getAvailableAssignees()}
+        .compact=${this._config.compact_mode}
+        @value-changed=${(e: CustomEvent) => this._handleAssigneesChange(task, e.detail.value)}
+        @click=${(e: Event) => e.stopPropagation()}
+      ></editable-assignees>
+    `;
+  }
+
+  private _renderCustomFieldsField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    if (!this._config.show_custom_fields) {
+      return html``;
+    }
+
+    const customFieldsHtml = this._renderCustomFields(task);
+    if (!customFieldsHtml || customFieldsHtml.values.length === 0) {
+      return html``;
+    }
+
+    return html`<div style="${spanStyle}">${customFieldsHtml}</div>`;
+  }
+
+  private _renderStatusField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    if (!this._config.show_status) {
+      return html``;
+    }
+
+    const listStatuses = getTaskListStatuses(task);
+    const currentStatus = task.clickup_status || {
+      status: 'to do',
+      type: 'open' as const,
+      color: '#d3d3d3'
+    };
+
+    return html`
+      <editable-status
+        style="${spanStyle}"
+        .value=${{
+          name: currentStatus.status,
+          color: currentStatus.color || '#d3d3d3',
+          type: currentStatus.type || 'open'
+        }}
+        .options=${listStatuses.map(s => ({
+          status: s.name,
+          color: s.color,
+          type: s.type
+        }))}
+        .compact=${this._config.compact_mode}
+        @value-changed=${(e: CustomEvent) => this._handleStatusChange(task, e.detail.value)}
+        @click=${(e: Event) => e.stopPropagation()}
+      ></editable-status>
+    `;
+  }
+
+  private _renderPriorityField(task: ClickUpTask, spanStyle: string): TemplateResult {
+    if (!this._config.show_priority || task.priority === null || task.priority === undefined) {
+      return html``;
+    }
+
+    return html`
+      <editable-priority
+        style="${spanStyle}"
+        .value=${task.priority}
+        .compact=${this._config.compact_mode}
+        @value-changed=${(e: CustomEvent) => this._handlePriorityChange(task, e.detail.value)}
+        @click=${(e: Event) => e.stopPropagation()}
+      ></editable-priority>
     `;
   }
 
