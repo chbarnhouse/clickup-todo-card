@@ -683,8 +683,8 @@ export const styles = css`
     }
 
     .task-item {
-      padding: 6px 12px;
-      gap: 10px;
+      padding: 3px 10px;
+      gap: 8px;
     }
 
     .task-summary {
@@ -962,13 +962,9 @@ export const styles = css`
    * v2.0.1: Style Polish
    * ======================================== */
 
-  /* Improved task item hover states */
+  /* Improved task item transition */
   .task-item {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .task-item:hover {
-    background: color-mix(in srgb, var(--primary-color) 3%, transparent);
   }
 
   /* Better shadow for dropdowns */

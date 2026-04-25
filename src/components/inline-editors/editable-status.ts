@@ -33,35 +33,32 @@ export class EditableStatus extends LitElement {
     }
 
     .status-display:hover .status-badge {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      filter: brightness(1.05);
+      opacity: 0.85;
     }
 
     .status-badge {
       display: inline-flex;
       align-items: center;
-      justify-content: flex-start;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 8px 16px 8px 42px;
-      border-radius: 18px;
+      justify-content: center;
+      font-size: 7px;
+      font-weight: 500;
+      padding: 1px 4px;
+      border-radius: 4px;
       background: var(--status-color, var(--primary-color));
       color: white;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      min-height: 30px;
+      letter-spacing: 0.1px;
       white-space: nowrap;
+      transition: opacity 0.2s ease;
+      line-height: 1;
       position: relative;
     }
 
     .compact .status-badge {
-      font-size: 9px;
-      padding: 6px 14px 6px 36px;
-      min-height: 26px;
-      letter-spacing: 0.5px;
+      font-size: 6px;
+      padding: 1px 3px;
+      border-radius: 3px;
+      letter-spacing: 0;
     }
 
     /* Dialog styling */
