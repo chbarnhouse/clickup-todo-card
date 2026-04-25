@@ -61,16 +61,38 @@ export class ClickUpTodoCardEditor extends LitElement {
 
     return html`
       <div class="card-config">
-        <mwc-tab-bar
-          .activeIndex=${this._selectedTab}
-          @MDCTabBar:activated=${this._handleTabChanged}
-        >
-          <mwc-tab label="Config"></mwc-tab>
-          <mwc-tab label="Visibility"></mwc-tab>
-          <mwc-tab label="Layout"></mwc-tab>
-          <mwc-tab label="Filters"></mwc-tab>
-          <mwc-tab label="Sort & Group"></mwc-tab>
-        </mwc-tab-bar>
+        <div class="tabs">
+          <button
+            class="tab ${this._selectedTab === 0 ? 'active' : ''}"
+            @click=${() => this._selectTab(0)}
+          >
+            Config
+          </button>
+          <button
+            class="tab ${this._selectedTab === 1 ? 'active' : ''}"
+            @click=${() => this._selectTab(1)}
+          >
+            Visibility
+          </button>
+          <button
+            class="tab ${this._selectedTab === 2 ? 'active' : ''}"
+            @click=${() => this._selectTab(2)}
+          >
+            Layout
+          </button>
+          <button
+            class="tab ${this._selectedTab === 3 ? 'active' : ''}"
+            @click=${() => this._selectTab(3)}
+          >
+            Filters
+          </button>
+          <button
+            class="tab ${this._selectedTab === 4 ? 'active' : ''}"
+            @click=${() => this._selectTab(4)}
+          >
+            Sort & Group
+          </button>
+        </div>
 
         <div class="tab-content">
           ${this._selectedTab === 0 ? this._renderConfigTab() : ''}
@@ -95,8 +117,8 @@ export class ClickUpTodoCardEditor extends LitElement {
 
   // Tab Methods
 
-  private _handleTabChanged(ev: CustomEvent): void {
-    this._selectedTab = ev.detail.index;
+  private _selectTab(index: number): void {
+    this._selectedTab = index;
   }
 
   private _renderConfigTab(): TemplateResult {
@@ -1099,8 +1121,36 @@ export class ClickUpTodoCardEditor extends LitElement {
         height: 100%;
       }
 
-      mwc-tab-bar {
-        border-bottom: 1px solid var(--divider-color);
+      .tabs {
+        display: flex;
+        border-bottom: 2px solid var(--divider-color);
+        background: var(--card-background-color);
+        gap: 4px;
+        padding: 0 8px;
+      }
+
+      .tab {
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        color: var(--secondary-text-color);
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 12px 16px;
+        margin-bottom: -2px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+      }
+
+      .tab:hover {
+        color: var(--primary-text-color);
+        background: rgba(var(--rgb-primary-color), 0.05);
+      }
+
+      .tab.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
       }
 
       .tab-content {
