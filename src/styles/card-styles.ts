@@ -286,7 +286,7 @@ export const styles = css`
   .task-item {
     display: flex;
     gap: 8px;
-    padding: 5px 12px;
+    padding: 4px 12px;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--divider-color);
@@ -317,7 +317,7 @@ export const styles = css`
   }
 
   .compact .task-item {
-    padding: 3px 8px;
+    padding: 2px 8px;
     gap: 6px;
   }
 
@@ -357,7 +357,7 @@ export const styles = css`
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
     cursor: pointer;
   }
 
@@ -417,12 +417,12 @@ export const styles = css`
   .task-metadata {
     display: grid;
     /* grid-template-columns and gap are set dynamically via inline styles */
-    margin-top: 2px;
+    margin-top: 0;
     align-items: start;
   }
 
   .compact .task-metadata {
-    margin-top: 1px;
+    margin-top: 0;
   }
 
   /* Task Location */
@@ -469,12 +469,12 @@ export const styles = css`
   .task-dates {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 3px;
     align-items: center;
   }
 
   .compact .task-dates {
-    gap: 3px;
+    gap: 2px;
   }
 
   .date-item {
@@ -516,28 +516,28 @@ export const styles = css`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 8px;
+    font-size: 8px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 6px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     white-space: nowrap;
-    transition: all 0.2s ease;
+    transition: opacity 0.2s ease;
     line-height: 1;
   }
 
   .status-badge:hover {
-    opacity: 0.9;
+    opacity: 0.85;
   }
 
   .compact .status-badge {
-    font-size: 8px;
-    padding: 2px 6px;
-    border-radius: 6px;
-    letter-spacing: 0.2px;
+    font-size: 7px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    letter-spacing: 0.1px;
   }
 
   /* Tags */
@@ -609,7 +609,7 @@ export const styles = css`
   .custom-fields {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
     padding-top: 0;
   }
 
