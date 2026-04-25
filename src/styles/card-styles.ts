@@ -484,6 +484,10 @@ export const styles = css`
     align-items: center;
   }
 
+  .compact .task-dates {
+    gap: 6px;
+  }
+
   .date-item {
     display: inline-flex;
     align-items: center;

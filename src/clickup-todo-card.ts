@@ -457,30 +457,34 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           <div class="task-metadata">
             ${this._renderTaskLocation(task)}
 
-            ${this._config.show_start_date ? html`
-              <editable-date
-                class="task-start-date"
-                .value=${task.start_date ? new Date(task.start_date) : null}
-                .label=${'Start'}
-                .icon=${'mdi:calendar-start'}
-                .dateType=${'start'}
-                .compact=${this._config.compact_mode}
-                @value-changed=${(e: CustomEvent) => this._handleStartDateChange(task, e.detail.value)}
-                @click=${(e: Event) => e.stopPropagation()}
-              ></editable-date>
-            ` : ''}
+            ${this._config.show_start_date || this._config.show_due_date ? html`
+              <div class="task-dates">
+                ${this._config.show_start_date ? html`
+                  <editable-date
+                    class="task-start-date"
+                    .value=${task.start_date ? new Date(task.start_date) : null}
+                    .label=${'Start'}
+                    .icon=${'mdi:calendar-start'}
+                    .dateType=${'start'}
+                    .compact=${this._config.compact_mode}
+                    @value-changed=${(e: CustomEvent) => this._handleStartDateChange(task, e.detail.value)}
+                    @click=${(e: Event) => e.stopPropagation()}
+                  ></editable-date>
+                ` : ''}
 
-            ${this._config.show_due_date ? html`
-              <editable-date
-                class="task-due-date"
-                .value=${task.due || null}
-                .label=${'Due'}
-                .icon=${'mdi:calendar-end'}
-                .dateType=${'due'}
-                .compact=${this._config.compact_mode}
-                @value-changed=${(e: CustomEvent) => this._handleDueDateChange(task, e.detail.value)}
-                @click=${(e: Event) => e.stopPropagation()}
-              ></editable-date>
+                ${this._config.show_due_date ? html`
+                  <editable-date
+                    class="task-due-date"
+                    .value=${task.due || null}
+                    .label=${'Due'}
+                    .icon=${'mdi:calendar-end'}
+                    .dateType=${'due'}
+                    .compact=${this._config.compact_mode}
+                    @value-changed=${(e: CustomEvent) => this._handleDueDateChange(task, e.detail.value)}
+                    @click=${(e: Event) => e.stopPropagation()}
+                  ></editable-date>
+                ` : ''}
+              </div>
             ` : ''}
 
             ${this._config.show_tags ? html`
