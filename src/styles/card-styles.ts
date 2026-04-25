@@ -286,7 +286,7 @@ export const styles = css`
   .task-item {
     display: flex;
     gap: 8px;
-    padding: 4px 12px;
+    padding: 3px 10px;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--divider-color);
@@ -357,12 +357,12 @@ export const styles = css`
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
     cursor: pointer;
   }
 
   .compact .task-main {
-    gap: 2px;
+    gap: 1px;
   }
 
   /* Task Header */
@@ -469,7 +469,7 @@ export const styles = css`
   .task-dates {
     display: flex;
     flex-wrap: wrap;
-    gap: 3px;
+    gap: 2px;
     align-items: center;
   }
 
@@ -516,14 +516,14 @@ export const styles = css`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 8px;
+    font-size: 7px;
     font-weight: 500;
-    padding: 2px 6px;
-    border-radius: 6px;
+    padding: 1px 4px;
+    border-radius: 4px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.1px;
     white-space: nowrap;
     transition: opacity 0.2s ease;
     line-height: 1;
@@ -534,10 +534,10 @@ export const styles = css`
   }
 
   .compact .status-badge {
-    font-size: 7px;
-    padding: 2px 4px;
-    border-radius: 4px;
-    letter-spacing: 0.1px;
+    font-size: 6px;
+    padding: 1px 3px;
+    border-radius: 3px;
+    letter-spacing: 0;
   }
 
   /* Tags */
@@ -609,7 +609,7 @@ export const styles = css`
   .custom-fields {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 3px;
     padding-top: 0;
   }
 
