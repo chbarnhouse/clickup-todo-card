@@ -338,9 +338,9 @@ export const styles = css`
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border-radius: 12px;
+    gap: 2px;
+    padding: 2px 6px 2px 2px;
+    border-radius: 10px;
     width: var(--pill-width, 100px);
   }
 
@@ -350,9 +350,9 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 3px;
-    padding: 3px 6px;
-    border-radius: 10px;
+    gap: 1px;
+    padding: 1px 4px 1px 1px;
+    border-radius: 8px;
     width: var(--pill-width, 90px);
   }
 

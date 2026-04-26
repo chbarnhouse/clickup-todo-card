@@ -133,11 +133,11 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     // Add fixed widths:
     // - Checkbox: 18px (16px compact)
-    // - Gap: 4px (3px compact)
-    // - Padding: 4px + 8px = 12px (3px + 6px = 9px compact)
+    // - Gap: 2px (1px compact)
+    // - Padding: 2px + 6px = 8px (1px + 4px = 5px compact)
     const checkboxWidth = isCompact ? 16 : 18;
-    const gap = isCompact ? 3 : 4;
-    const padding = isCompact ? 9 : 12;
+    const gap = isCompact ? 1 : 2;
+    const padding = isCompact ? 5 : 8;
 
     const totalWidth = checkboxWidth + gap + textWidth + padding;
 
