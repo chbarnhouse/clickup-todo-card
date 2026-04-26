@@ -392,6 +392,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         @dragover=${(e: DragEvent) => this._handleDragOver(e, task)}
         @dragleave=${() => this._handleDragLeave()}
         @drop=${(e: DragEvent) => this._handleDrop(e, task)}
+        @click=${() => this._openEditDialog(task)}
       >
         ${this._selectionMode ? html`
           <div class="task-select">
@@ -425,29 +426,20 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           <div class="task-checkbox">
             <ha-checkbox
               .checked=${completed}
-              @change=${() => this._toggleTask(task)}
+              @change=${(e: Event) => {
+                e.stopPropagation();
+                this._toggleTask(task);
+              }}
+              @click=${(e: Event) => e.stopPropagation()}
             ></ha-checkbox>
           </div>
         `}
 
         <div class="task-main">
           <div class="task-header">
-            <editable-text
-              class="task-name-editor"
-              .value=${task.summary}
-              .required=${true}
-              @value-changed=${(e: CustomEvent) => this._handleTaskNameChange(task, e.detail.value)}
-              @click=${(e: Event) => e.stopPropagation()}
-            ></editable-text>
+            <span class="task-name">${task.summary}</span>
 
-            ${this._config.show_priority ? html`
-              <editable-priority
-                .value=${task.priority}
-                .compact=${this._config.compact_mode}
-                @value-changed=${(e: CustomEvent) => this._handlePriorityChange(task, e.detail.value)}
-                @click=${(e: Event) => e.stopPropagation()}
-              ></editable-priority>
-            ` : ''}
+            ${this._config.show_priority ? this._renderPriority(task) : ''}
           </div>
 
           ${task.description ? html`
@@ -750,42 +742,28 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderStartDateField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_start_date) {
+    if (!this._config.show_start_date || !task.start_date) {
       return html``;
     }
 
     return html`
-      <editable-date
-        class="task-start-date"
-        style="${spanStyle}"
-        .value=${task.start_date ? new Date(task.start_date) : null}
-        .label=${'Start'}
-        .icon=${'mdi:calendar-start'}
-        .dateType=${'start'}
-        .compact=${this._config.compact_mode}
-        @value-changed=${(e: CustomEvent) => this._handleStartDateChange(task, e.detail.value)}
-        @click=${(e: Event) => e.stopPropagation()}
-      ></editable-date>
+      <span class="date-item start-date" style="${spanStyle}">
+        <ha-icon icon="mdi:calendar-start"></ha-icon>
+        ${formatDate(task.start_date)}
+      </span>
     `;
   }
 
   private _renderDueDateField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_due_date) {
+    if (!this._config.show_due_date || !task.due) {
       return html``;
     }
 
     return html`
-      <editable-date
-        class="task-due-date"
-        style="${spanStyle}"
-        .value=${task.due || null}
-        .label=${'Due'}
-        .icon=${'mdi:calendar-end'}
-        .dateType=${'due'}
-        .compact=${this._config.compact_mode}
-        @value-changed=${(e: CustomEvent) => this._handleDueDateChange(task, e.detail.value)}
-        @click=${(e: Event) => e.stopPropagation()}
-      ></editable-date>
+      <span class="date-item due-date ${getDateClass(task.due)}" style="${spanStyle}">
+        <ha-icon icon="mdi:calendar-end"></ha-icon>
+        ${formatDate(task.due)}
+      </span>
     `;
   }
 
@@ -806,35 +784,47 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderTagsField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_tags) {
+    if (!this._config.show_tags || !task.tags || task.tags.length === 0) {
       return html``;
     }
 
     return html`
-      <editable-tags
-        style="${spanStyle}"
-        .value=${task.tags || []}
-        .compact=${this._config.compact_mode}
-        @value-changed=${(e: CustomEvent) => this._handleTagsChange(task, e.detail.value)}
-        @click=${(e: Event) => e.stopPropagation()}
-      ></editable-tags>
+      <div class="task-tags" style="${spanStyle}">
+        ${task.tags.map(tag => html`
+          <span
+            class="tag"
+            style="
+              ${tag.tag_bg ? `background-color: ${tag.tag_bg};` : ''}
+              ${tag.tag_fg ? `color: ${tag.tag_fg};` : ''}
+            "
+          >
+            ${tag.name}
+          </span>
+        `)}
+      </div>
     `;
   }
 
   private _renderAssigneesField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_assignees) {
+    if (!this._config.show_assignees || !task.assignees || task.assignees.length === 0) {
       return html``;
     }
 
     return html`
-      <editable-assignees
-        style="${spanStyle}"
-        .value=${task.assignees || []}
-        .available=${this._getAvailableAssignees()}
-        .compact=${this._config.compact_mode}
-        @value-changed=${(e: CustomEvent) => this._handleAssigneesChange(task, e.detail.value)}
-        @click=${(e: Event) => e.stopPropagation()}
-      ></editable-assignees>
+      <div class="task-assignees" style="${spanStyle}">
+        ${task.assignees.map(assignee => html`
+          <div
+            class="assignee-avatar"
+            style="${assignee.color ? `background-color: ${assignee.color}` : ''}"
+            title="${assignee.username}"
+          >
+            ${assignee.profilePicture
+              ? html`<img src="${assignee.profilePicture}" alt="${assignee.username}" />`
+              : html`<span>${getInitials(assignee.username)}</span>`
+            }
+          </div>
+        `)}
+      </div>
     `;
   }
 
@@ -852,34 +842,17 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderStatusField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_status) {
+    if (!this._config.show_status || !task.clickup_status) {
       return html``;
     }
 
-    const listStatuses = getTaskListStatuses(task);
-    const currentStatus = task.clickup_status || {
-      status: 'to do',
-      type: 'open' as const,
-      color: '#d3d3d3'
-    };
-
     return html`
-      <editable-status
-        style="${spanStyle}"
-        .value=${{
-          name: currentStatus.status,
-          color: currentStatus.color || '#d3d3d3',
-          type: currentStatus.type || 'open'
-        }}
-        .options=${listStatuses.map(s => ({
-          status: s.name,
-          color: s.color,
-          type: s.type
-        }))}
-        .compact=${this._config.compact_mode}
-        @value-changed=${(e: CustomEvent) => this._handleStatusChange(task, e.detail.value)}
-        @click=${(e: Event) => e.stopPropagation()}
-      ></editable-status>
+      <span
+        class="status-badge"
+        style="--status-color: ${task.clickup_status.color || '#d3d3d3'}; ${spanStyle}"
+      >
+        ${task.clickup_status.status}
+      </span>
     `;
   }
 
@@ -888,14 +861,16 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const priority = task.priority as keyof typeof PRIORITY_ICONS;
+    const icon = PRIORITY_ICONS[priority] || PRIORITY_ICONS[null as any];
+    const color = PRIORITY_COLORS[priority] || PRIORITY_COLORS[null as any];
+
     return html`
-      <editable-priority
-        style="${spanStyle}"
-        .value=${task.priority}
-        .compact=${this._config.compact_mode}
-        @value-changed=${(e: CustomEvent) => this._handlePriorityChange(task, e.detail.value)}
-        @click=${(e: Event) => e.stopPropagation()}
-      ></editable-priority>
+      <ha-icon
+        class="priority-icon"
+        icon="${icon}"
+        style="color: ${color}; ${spanStyle}"
+      ></ha-icon>
     `;
   }
 
