@@ -381,6 +381,7 @@ export const styles = css`
     height: 20px !important;
     min-width: 20px !important;
     max-width: 20px !important;
+    overflow: hidden !important;  /* Clip internal absolutely-positioned elements */
   }
 
   .compact .task-status-pill {
@@ -401,6 +402,7 @@ export const styles = css`
     height: 18px !important;
     min-width: 18px !important;
     max-width: 18px !important;
+    overflow: hidden !important;  /* Clip internal absolutely-positioned elements */
   }
 
   .task-status-pill editable-status {
