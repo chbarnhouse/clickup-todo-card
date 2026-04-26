@@ -338,34 +338,34 @@ export const styles = css`
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 2px;
-    padding: 1px 6px 1px 1px;
+    gap: 4px;
+    padding: 2px 6px 2px 2px;
     border-radius: 10px;
-    width: var(--pill-width, 90px);
-    min-height: 22px;
+    width: auto;
+    max-width: 95px;
   }
 
   .task-status-pill ha-checkbox {
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.8);
-    transform-origin: center;
+    transform: scale(0.55);
+    transform-origin: left center;
   }
 
   .compact .task-status-pill {
-    gap: 1px;
+    gap: 3px;
     padding: 1px 5px 1px 1px;
     border-radius: 8px;
-    width: var(--pill-width, 80px);
-    min-height: 18px;
+    width: auto;
+    max-width: 85px;
   }
 
   .compact .task-status-pill ha-checkbox {
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.65);
-    transform-origin: center;
+    transform: scale(0.5);
+    transform-origin: left center;
   }
 
   .task-status-pill editable-status {
