@@ -338,33 +338,33 @@ export const styles = css`
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px 4px 4px;  /* More balanced padding */
+    gap: 4px;
+    padding: 2px 8px 2px 2px;
     border-radius: 12px;
-    width: var(--pill-width, 110px);
-    min-height: 28px;
+    width: var(--pill-width, 100px);
+    min-height: 24px;
   }
 
   .task-status-pill ha-checkbox {
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.55);  /* Slightly smaller for better fit */
+    transform: scale(0.7);
     transform-origin: center;
   }
 
   .compact .task-status-pill {
-    gap: 4px;
-    padding: 2px 8px 2px 2px;  /* More balanced padding */
+    gap: 3px;
+    padding: 1px 6px 1px 1px;
     border-radius: 10px;
-    width: var(--pill-width, 95px);
-    min-height: 24px;
+    width: var(--pill-width, 90px);
+    min-height: 20px;
   }
 
   .compact .task-status-pill ha-checkbox {
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.45);  /* Slightly smaller for better fit */
+    transform: scale(0.6);
     transform-origin: center;
   }
 
