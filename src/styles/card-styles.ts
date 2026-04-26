@@ -339,10 +339,10 @@ export const styles = css`
     display: flex;
     align-items: center;
     align-self: center;
-    gap: 2px;
-    padding: 2px 4px 2px 2px;
+    gap: 4px;
+    padding: 3px 6px 3px 3px;
     margin: 0;
-    border-radius: 8px;
+    border-radius: 10px;
     position: relative;
     width: var(--pill-width, 100px);  /* Dynamic width based on longest status */
   }
@@ -364,10 +364,10 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 1px;
-    padding: 1px 3px 1px 1px;
+    gap: 3px;
+    padding: 2px 4px 2px 2px;
     margin: 0;
-    border-radius: 6px;
+    border-radius: 8px;
     width: var(--pill-width, 90px);  /* Explicitly use variable for compact mode */
   }
 
