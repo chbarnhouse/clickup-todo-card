@@ -340,7 +340,7 @@ export const styles = css`
     align-items: center;
     align-self: center;
     gap: 4px;
-    padding: 4px 8px 4px 6px;
+    padding: 6px 10px 6px 10px;
     margin: 0;
     border-radius: 12px;
     position: relative;
@@ -365,7 +365,7 @@ export const styles = css`
 
   .compact .task-status-pill {
     gap: 3px;
-    padding: 3px 6px 3px 4px;
+    padding: 5px 8px 5px 8px;
     margin: 0;
     border-radius: 10px;
     width: var(--pill-width, 90px);  /* Explicitly use variable for compact mode */
