@@ -348,7 +348,9 @@ export const styles = css`
 
   .task-status-pill ha-checkbox {
     --mdc-checkbox-size: 20px;
+    --mdc-checkbox-touch-target-display: none;
     flex-shrink: 0;
+    line-height: 0;
   }
 
   .compact .task-status-pill {
@@ -360,6 +362,7 @@ export const styles = css`
 
   .compact .task-status-pill ha-checkbox {
     --mdc-checkbox-size: 18px;
+    --mdc-checkbox-touch-target-display: none;
   }
 
   .task-status-pill editable-status {

@@ -22,7 +22,9 @@ export class EditableStatus extends LitElement {
 
   static styles = css`
     :host {
-      display: inline-block;
+      display: flex;
+      margin: 0;
+      padding: 0;
     }
 
     .status-display {
@@ -30,6 +32,8 @@ export class EditableStatus extends LitElement {
       align-items: center;
       cursor: pointer;
       user-select: none;
+      margin: 0;
+      padding: 0;
     }
 
     .status-display:hover .status-badge {
