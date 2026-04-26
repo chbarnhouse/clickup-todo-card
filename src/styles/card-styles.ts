@@ -340,7 +340,7 @@ export const styles = css`
     align-items: center;
     align-self: center;
     gap: 2px;
-    padding: 1px 3px 1px 1px;
+    padding: 0px 3px 0px 0px;
     border-radius: 12px;
     position: relative;
     width: var(--pill-width, 100px);  /* Dynamic width based on longest status */
@@ -353,7 +353,7 @@ export const styles = css`
 
   .compact .task-status-pill {
     gap: 1px;
-    padding: 1px 2px 1px 1px;
+    padding: 0px 2px 0px 0px;
     border-radius: 10px;
     width: var(--pill-width, 90px);  /* Explicitly use variable for compact mode */
   }
