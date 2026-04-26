@@ -339,31 +339,35 @@ export const styles = css`
     display: flex;
     align-items: center;
     align-self: center;
-    gap: 4px;
-    padding: 1px 3px 1px 1px;
-    border-radius: 4px;
+    gap: 3px;
+    padding: 0px;
+    border-radius: 3px;
     position: relative;
-    min-width: 85px;
+    width: 100px;
   }
 
   .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 18px;
+    --mdc-checkbox-size: 20px;
     flex-shrink: 0;
+    margin-left: 1px;
   }
 
   .compact .task-status-pill {
-    gap: 3px;
-    padding: 1px 2px 1px 1px;
-    border-radius: 3px;
-    min-width: 75px;
+    gap: 2px;
+    padding: 0px;
+    border-radius: 2px;
+    width: 90px;
   }
 
   .compact .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 16px;
+    --mdc-checkbox-size: 18px;
+    margin-left: 1px;
   }
 
   .task-status-pill editable-status {
-    flex: 0 1 auto;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
   }
 
   /* Task Main Content */
@@ -531,18 +535,21 @@ export const styles = css`
   .task-status-pill .status-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
-    font-size: 10px;
+    justify-content: center;
+    font-size: 9px;
     font-weight: 400;
-    padding: 3px 6px;
+    padding: 4px 8px;
     border-radius: 0;
     background: transparent;
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: opacity 0.15s ease;
     line-height: 1;
+    width: 100%;
   }
 
   .task-status-pill .status-badge:hover {
@@ -550,9 +557,9 @@ export const styles = css`
   }
 
   .compact .task-status-pill .status-badge {
-    font-size: 9px;
-    padding: 2px 5px;
-    letter-spacing: 0.2px;
+    font-size: 8px;
+    padding: 3px 6px;
+    letter-spacing: 0.4px;
     line-height: 1;
   }
 
