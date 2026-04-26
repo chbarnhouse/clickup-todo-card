@@ -340,10 +340,11 @@ export const styles = css`
     display: flex;
     align-items: center;
     align-self: flex-start;
-    gap: 4px;
-    padding: 0px 4px 0px 0px;
-    border-radius: 8px;
+    gap: 2px;
+    padding: 0;
+    border-radius: 6px;
     position: relative;
+    min-width: 90px;
   }
 
   .task-status-pill ha-checkbox {
@@ -352,9 +353,10 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 3px;
-    padding: 0px 3px 0px 0px;
-    border-radius: 6px;
+    gap: 2px;
+    padding: 0;
+    border-radius: 4px;
+    min-width: 80px;
   }
 
   .compact .task-status-pill ha-checkbox {
@@ -533,17 +535,17 @@ export const styles = css`
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 4px;
     border-radius: 0;
     background: transparent;
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     white-space: nowrap;
     transition: opacity 0.15s ease;
-    line-height: 1.3;
+    line-height: 1.4;
   }
 
   .task-status-pill .status-badge:hover {
@@ -551,10 +553,10 @@ export const styles = css`
   }
 
   .compact .task-status-pill .status-badge {
-    font-size: 9px;
-    padding: 1px 5px;
-    letter-spacing: 0.2px;
-    line-height: 1.2;
+    font-size: 10px;
+    padding: 1px 3px;
+    letter-spacing: 0.1px;
+    line-height: 1.3;
   }
 
   /* Standalone status badge (when not in pill) */
