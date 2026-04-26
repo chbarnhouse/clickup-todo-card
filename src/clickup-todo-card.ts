@@ -106,7 +106,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
    */
   private _calculatePillWidth(tasks: ClickUpTask[]): number {
     if (!this._config.show_status || !tasks || tasks.length === 0) {
-      return 115; // Default width
+      return 100; // Default width
     }
 
     // Find longest status text
@@ -121,28 +121,28 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
 
     if (!longestStatus) {
-      return 115; // Default width if no statuses
+      return 100; // Default width if no statuses
     }
 
     // Calculate width based on font metrics
-    // Font: 11px (10px compact), letter-spacing: 0.5px (0.4px compact)
-    // Approximate: 7px per character including letter-spacing
+    // Font: 11px (10px compact), letter-spacing: 0.5px (0.4px compact), uppercase text
+    // Account for letter-spacing adding to width: ~8px per character total
     const isCompact = this._config.compact_mode;
-    const charWidth = isCompact ? 6.5 : 7;
+    const charWidth = isCompact ? 7.5 : 8;
     const textWidth = Math.ceil(longestStatus.length * charWidth);
 
     // Add fixed widths:
     // - Checkbox: 20px (18px compact)
     // - Gap: 2px (1px compact)
-    // - Padding: 1px left + 5px right = 6px (1px + 4px = 5px compact)
+    // - Padding: 1px left + 3px right = 4px (1px + 2px = 3px compact)
     const checkboxWidth = isCompact ? 18 : 20;
     const gap = isCompact ? 1 : 2;
-    const padding = isCompact ? 5 : 6;
+    const padding = isCompact ? 3 : 4;
 
     const totalWidth = checkboxWidth + gap + textWidth + padding;
 
-    // Add 10px buffer for safety and round to nearest 5px for cleaner values
-    return Math.ceil((totalWidth + 10) / 5) * 5;
+    // Add 8px buffer for safety and round to nearest 5px for cleaner values
+    return Math.ceil((totalWidth + 8) / 5) * 5;
   }
 
   protected render(): TemplateResult {
