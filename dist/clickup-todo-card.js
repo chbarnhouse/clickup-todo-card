@@ -337,21 +337,21 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
     display: flex;
     align-items: flex-start;
     position: relative;
-    padding-top: 2px;
+    padding-top: 0;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 8px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 2;
-    --mdc-checkbox-size: 18px;
+    --mdc-checkbox-size: 20px;
   }
 
   .compact .task-status-wrapper ha-checkbox {
-    --mdc-checkbox-size: 16px;
-    left: 6px;
+    --mdc-checkbox-size: 18px;
+    left: 10px;
   }
 
   /* Task Main Content */
@@ -518,31 +518,30 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
   .status-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    font-size: 9px;
+    justify-content: flex-start;
+    font-size: 11px;
     font-weight: 700;
-    padding: 6px 30px 6px 12px;
-    border-radius: 16px;
+    padding: 14px 44px 14px 18px;
+    border-radius: 12px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
     white-space: nowrap;
-    transition: opacity 0.2s ease;
+    transition: filter 0.15s ease;
     line-height: 1.3;
-    min-height: 28px;
+    text-align: left;
   }
 
   .status-badge:hover {
-    opacity: 0.85;
+    filter: brightness(1.1);
   }
 
   .compact .status-badge {
-    font-size: 8px;
-    padding: 5px 26px 5px 10px;
-    border-radius: 14px;
-    letter-spacing: 0.5px;
-    min-height: 24px;
+    font-size: 10px;
+    padding: 12px 40px 12px 16px;
+    border-radius: 10px;
+    letter-spacing: 0.7px;
   }
 
   /* Tags */
@@ -687,8 +686,12 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
     }
 
     .task-item {
-      padding: 3px 10px;
+      padding: 8px 10px;
       gap: 8px;
+    }
+
+    .task-item:first-child {
+      padding-top: 8px;
     }
 
     .task-summary {
@@ -2050,28 +2053,27 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
     .status-badge {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 9px;
+      justify-content: flex-start;
+      font-size: 11px;
       font-weight: 700;
-      padding: 6px 30px 6px 12px;
-      border-radius: 16px;
+      padding: 14px 44px 14px 18px;
+      border-radius: 12px;
       background: var(--status-color, var(--primary-color));
       color: white;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.8px;
       white-space: nowrap;
-      transition: opacity 0.2s ease;
+      transition: filter 0.15s ease;
       line-height: 1.3;
-      min-height: 28px;
+      text-align: left;
       position: relative;
     }
 
     .compact .status-badge {
-      font-size: 8px;
-      padding: 5px 26px 5px 10px;
-      border-radius: 14px;
-      letter-spacing: 0.5px;
-      min-height: 24px;
+      font-size: 10px;
+      padding: 12px 40px 12px 16px;
+      border-radius: 10px;
+      letter-spacing: 0.7px;
     }
 
     /* Dialog styling */
@@ -2254,7 +2256,7 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
           ${e}
         </span>
       </div>
-    `}_openDialog(){this._isOpen=!0}_closeDialog(){this._isOpen=!1}_selectStatus(t){const e=this.value;(e?.name||e?.status||"")!==(t.name||t.status||"")&&(this.value=t,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:t,oldValue:e},bubbles:!0,composed:!0}))),this._isOpen=!1}};t([ht({type:Object})],Lt.prototype,"value",void 0),t([ht({type:Array})],Lt.prototype,"options",void 0),t([ht({type:Boolean})],Lt.prototype,"compact",void 0),t([ut()],Lt.prototype,"_isOpen",void 0),Lt=t([ct("editable-status")],Lt),console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 2.4.2  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class Vt extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...yt},this._tasks=[],this._displayedTasks=[],this._editingTask=null,this._showAddDialog=!1,this._selectedTasks=new Set,this._selectionMode=!1,this._draggedTask=null,this._dragOverTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Bt}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...yt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...yt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var a=e.get("hass");return!a||a.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return j`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return j`
+    `}_openDialog(){this._isOpen=!0}_closeDialog(){this._isOpen=!1}_selectStatus(t){const e=this.value;(e?.name||e?.status||"")!==(t.name||t.status||"")&&(this.value=t,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:t,oldValue:e},bubbles:!0,composed:!0}))),this._isOpen=!1}};t([ht({type:Object})],Lt.prototype,"value",void 0),t([ht({type:Array})],Lt.prototype,"options",void 0),t([ht({type:Boolean})],Lt.prototype,"compact",void 0),t([ut()],Lt.prototype,"_isOpen",void 0),Lt=t([ct("editable-status")],Lt),console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 2.4.3  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class Vt extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...yt},this._tasks=[],this._displayedTasks=[],this._editingTask=null,this._showAddDialog=!1,this._selectedTasks=new Set,this._selectionMode=!1,this._draggedTask=null,this._dragOverTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Bt}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...yt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...yt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var a=e.get("hass");return!a||a.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return j`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return j`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
