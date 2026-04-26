@@ -329,9 +329,8 @@ export const styles = css`
   .task-checkbox {
     flex-shrink: 0;
     display: flex;
-    align-items: flex-start;
-    align-self: flex-start;
-    padding-top: 2px;
+    align-items: center;
+    align-self: center;
   }
 
   /* Task Status Pill (checkbox integrated inside) */
@@ -339,12 +338,12 @@ export const styles = css`
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    align-self: flex-start;
-    gap: 2px;
-    padding: 0;
-    border-radius: 6px;
+    align-self: center;
+    gap: 4px;
+    padding: 1px 3px 1px 1px;
+    border-radius: 4px;
     position: relative;
-    min-width: 90px;
+    min-width: 85px;
   }
 
   .task-status-pill ha-checkbox {
@@ -353,10 +352,10 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 2px;
-    padding: 0;
-    border-radius: 4px;
-    min-width: 80px;
+    gap: 3px;
+    padding: 1px 2px 1px 1px;
+    border-radius: 3px;
+    min-width: 75px;
   }
 
   .compact .task-status-pill ha-checkbox {
@@ -375,13 +374,11 @@ export const styles = css`
     flex-direction: column;
     gap: 2px;
     cursor: pointer;
-    align-self: flex-start;
-    padding-top: 1px;
+    align-self: center;
   }
 
   .compact .task-main {
     gap: 1px;
-    padding-top: 0px;
   }
 
   /* Task Header */
@@ -535,17 +532,17 @@ export const styles = css`
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 4px;
+    font-size: 10px;
+    font-weight: 400;
+    padding: 3px 6px;
     border-radius: 0;
     background: transparent;
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
     white-space: nowrap;
     transition: opacity 0.15s ease;
-    line-height: 1.4;
+    line-height: 1;
   }
 
   .task-status-pill .status-badge:hover {
@@ -553,10 +550,10 @@ export const styles = css`
   }
 
   .compact .task-status-pill .status-badge {
-    font-size: 10px;
-    padding: 1px 3px;
-    letter-spacing: 0.1px;
-    line-height: 1.3;
+    font-size: 9px;
+    padding: 2px 5px;
+    letter-spacing: 0.2px;
+    line-height: 1;
   }
 
   /* Standalone status badge (when not in pill) */
