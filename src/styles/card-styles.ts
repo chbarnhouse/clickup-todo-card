@@ -340,7 +340,7 @@ export const styles = css`
     align-items: center;
     align-self: center;
     gap: 4px;
-    padding: 6px 10px 6px 15px;
+    padding: 6px 10px 6px 6px;  /* Reduced left padding back to reasonable amount */
     margin: 0;
     border-radius: 12px;
     position: relative;
@@ -358,6 +358,8 @@ export const styles = css`
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: translateZ(0);  /* Create new stacking context */
+    isolation: isolate;  /* Create new stacking context without transform */
   }
 
   .compact .task-status-pill .checkbox-wrapper {
@@ -386,7 +388,7 @@ export const styles = css`
 
   .compact .task-status-pill {
     gap: 3px;
-    padding: 5px 8px 5px 12px;
+    padding: 5px 8px 5px 5px;  /* Reduced left padding back to reasonable amount */
     margin: 0;
     border-radius: 10px;
     width: var(--pill-width, 90px);  /* Explicitly use variable for compact mode */
