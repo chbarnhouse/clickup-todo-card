@@ -352,11 +352,16 @@ export const styles = css`
     --mdc-checkbox-size: 20px;
     --mdc-checkbox-touch-target-display: none;
     --mdc-ripple-display: none;
+    --mdc-checkbox-state-layer-size: 20px;
+    --mdc-checkbox-ripple-size: 0px;
+    --ha-checkbox-margin: 0px;
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 0;
-    display: block;
+    line-height: 0 !important;
+    display: block !important;
+    width: 20px !important;
+    height: 20px !important;
   }
 
   .compact .task-status-pill {
@@ -371,6 +376,10 @@ export const styles = css`
     --mdc-checkbox-size: 18px;
     --mdc-checkbox-touch-target-display: none;
     --mdc-ripple-display: none;
+    --mdc-checkbox-state-layer-size: 18px;
+    --mdc-checkbox-ripple-size: 0px;
+    width: 18px !important;
+    height: 18px !important;
   }
 
   .task-status-pill editable-status {
