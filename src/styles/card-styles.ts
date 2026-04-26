@@ -480,10 +480,10 @@ export const styles = css`
   .date-item {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 8px;
+    gap: 3px;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 6px;
     background: rgba(0, 0, 0, 0.05);
     color: var(--secondary-text-color);
     transition: all 0.2s ease;
@@ -494,7 +494,7 @@ export const styles = css`
   }
 
   .date-item ha-icon {
-    --mdc-icon-size: 16px;
+    --mdc-icon-size: 14px;
   }
 
   .date-item.overdue {
@@ -503,12 +503,12 @@ export const styles = css`
   }
 
   .compact .date-item {
-    font-size: 11px;
-    padding: 3px 6px;
+    font-size: 10px;
+    padding: 2px 5px;
   }
 
   .compact .date-item ha-icon {
-    --mdc-icon-size: 14px;
+    --mdc-icon-size: 12px;
   }
 
   /* Status Badge */
@@ -516,17 +516,17 @@ export const styles = css`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 7px;
-    font-weight: 500;
-    padding: 1px 4px;
-    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 6px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.1px;
+    letter-spacing: 0.3px;
     white-space: nowrap;
     transition: opacity 0.2s ease;
-    line-height: 1;
+    line-height: 1.1;
   }
 
   .status-badge:hover {
@@ -534,26 +534,26 @@ export const styles = css`
   }
 
   .compact .status-badge {
-    font-size: 6px;
-    padding: 1px 3px;
-    border-radius: 3px;
-    letter-spacing: 0;
+    font-size: 8px;
+    padding: 1px 5px;
+    border-radius: 5px;
+    letter-spacing: 0.2px;
   }
 
   /* Tags */
   .task-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
   }
 
   .tag {
     display: inline-flex;
     align-items: center;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 12px;
+    padding: 2px 7px;
+    border-radius: 10px;
     background: rgba(0, 0, 0, 0.05);
     color: var(--primary-text-color);
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -562,11 +562,10 @@ export const styles = css`
 
   .tag:hover {
     background: rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
   }
 
   .compact .tag {
-    font-size: 10px;
+    font-size: 9px;
     padding: 2px 6px;
   }
 
