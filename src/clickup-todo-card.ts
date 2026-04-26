@@ -452,16 +452,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         ` : ''}
 
         ${showStatus ? html`
-          <div class="task-status-pill" style="background: ${task.clickup_status?.color || 'var(--disabled-text-color)'}">
-            <ha-checkbox
+          <div class="task-status-pill" style="background: ${task.clickup_status?.color || 'var(--disabled-text-color)'}"><ha-checkbox
               .checked=${completed}
               @change=${(e: Event) => {
                 e.stopPropagation();
                 this._toggleTask(task);
               }}
               @click=${(e: Event) => e.stopPropagation()}
-            ></ha-checkbox>
-            <editable-status
+            ></ha-checkbox><editable-status
               .value=${task.clickup_status}
               .options=${getTaskListStatuses(task)}
               .compact=${this._config.compact_mode}
