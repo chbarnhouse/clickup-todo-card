@@ -345,10 +345,11 @@ export const styles = css`
   }
 
   .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 18px;
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
+    transform: scale(0.6);  /* Scale down from 48px to ~29px */
+    transform-origin: left center;
   }
 
   .compact .task-status-pill {
@@ -359,9 +360,10 @@ export const styles = css`
   }
 
   .compact .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 16px;
     margin: 0 !important;
     padding: 0 !important;
+    transform: scale(0.5);  /* Scale down from 48px to 24px */
+    transform-origin: left center;
   }
 
   .task-status-pill editable-status {
