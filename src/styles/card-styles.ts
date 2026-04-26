@@ -339,9 +339,9 @@ export const styles = css`
     display: flex;
     align-items: center;
     align-self: center;
-    gap: 2px;
-    padding: 0px 3px 0px 0px;
-    border-radius: 12px;
+    gap: 1px;
+    padding: 0px 2px 0px 0px;
+    border-radius: 8px;
     position: relative;
     width: var(--pill-width, 100px);  /* Dynamic width based on longest status */
   }
@@ -352,9 +352,9 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 1px;
-    padding: 0px 2px 0px 0px;
-    border-radius: 10px;
+    gap: 0px;
+    padding: 0px 1px 0px 0px;
+    border-radius: 6px;
     width: var(--pill-width, 90px);  /* Explicitly use variable for compact mode */
   }
 
@@ -366,6 +366,8 @@ export const styles = css`
     flex: 1;
     min-width: 0;
     display: flex;
+    margin: 0;
+    padding: 0;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -378,6 +380,11 @@ export const styles = css`
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.4px;
+  }
+
+  .task-status-pill ha-checkbox {
+    margin: 0;
+    padding: 0;
   }
 
   /* Task Main Content */
