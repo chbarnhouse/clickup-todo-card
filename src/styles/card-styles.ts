@@ -339,13 +339,12 @@ export const styles = css`
     display: flex;
     align-items: center;
     align-self: center;
-    gap: 0;
-    padding: 0;
+    gap: 2px;
+    padding: 2px 4px 2px 2px;
     margin: 0;
     border-radius: 8px;
     position: relative;
     width: var(--pill-width, 100px);  /* Dynamic width based on longest status */
-    overflow: hidden;
   }
 
   .task-status-pill ha-checkbox {
@@ -365,8 +364,8 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 0;
-    padding: 0;
+    gap: 1px;
+    padding: 1px 3px 1px 1px;
     margin: 0;
     border-radius: 6px;
     width: var(--pill-width, 90px);  /* Explicitly use variable for compact mode */
