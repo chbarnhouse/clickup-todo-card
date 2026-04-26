@@ -351,20 +351,18 @@ export const styles = css`
   /* Checkbox wrapper to contain absolutely-positioned internal elements */
   .task-status-pill .checkbox-wrapper {
     flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    width: 24px;  /* Slightly larger than checkbox to contain background */
+    height: 24px;
     overflow: hidden;  /* Clip the absolutely-positioned .mdc-checkbox__background */
     position: relative;  /* Establish positioning context */
     display: flex;
     align-items: center;
     justify-content: center;
-    transform: translateZ(0);  /* Create new stacking context */
-    isolation: isolate;  /* Create new stacking context without transform */
   }
 
   .compact .task-status-pill .checkbox-wrapper {
-    width: 18px;
-    height: 18px;
+    width: 22px;  /* Slightly larger than 18px checkbox */
+    height: 22px;
   }
 
   .task-status-pill ha-checkbox {
