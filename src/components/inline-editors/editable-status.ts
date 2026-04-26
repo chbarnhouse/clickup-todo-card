@@ -40,25 +40,27 @@ export class EditableStatus extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 12px;
+      padding: 6px 30px 6px 12px;
+      border-radius: 16px;
       background: var(--status-color, var(--primary-color));
       color: white;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       white-space: nowrap;
       transition: opacity 0.2s ease;
-      line-height: 1.2;
+      line-height: 1.3;
+      min-height: 28px;
       position: relative;
     }
 
     .compact .status-badge {
-      font-size: 9px;
-      padding: 3px 8px;
-      border-radius: 10px;
-      letter-spacing: 0.4px;
+      font-size: 8px;
+      padding: 5px 26px 5px 10px;
+      border-radius: 14px;
+      letter-spacing: 0.5px;
+      min-height: 24px;
     }
 
     /* Dialog styling */

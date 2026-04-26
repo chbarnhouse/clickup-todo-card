@@ -294,6 +294,10 @@ export const styles = css`
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  .task-item:first-child {
+    padding-top: 8px;
+  }
+
   .task-item:last-child {
     border-bottom: none;
   }
@@ -333,22 +337,23 @@ export const styles = css`
   .task-status-wrapper {
     flex-shrink: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     position: relative;
+    padding-top: 2px;
   }
 
   .task-status-wrapper ha-checkbox {
     position: absolute;
-    left: 13px;
+    left: 8px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 2;
-    --mdc-checkbox-size: 16px;
+    --mdc-checkbox-size: 18px;
   }
 
   .compact .task-status-wrapper ha-checkbox {
-    --mdc-checkbox-size: 14px;
-    left: 11px;
+    --mdc-checkbox-size: 16px;
+    left: 6px;
   }
 
   /* Task Main Content */
@@ -516,17 +521,18 @@ export const styles = css`
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 12px;
+    padding: 6px 30px 6px 12px;
+    border-radius: 16px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
     white-space: nowrap;
     transition: opacity 0.2s ease;
-    line-height: 1.2;
+    line-height: 1.3;
+    min-height: 28px;
   }
 
   .status-badge:hover {
@@ -534,10 +540,11 @@ export const styles = css`
   }
 
   .compact .status-badge {
-    font-size: 9px;
-    padding: 3px 8px;
-    border-radius: 10px;
-    letter-spacing: 0.4px;
+    font-size: 8px;
+    padding: 5px 26px 5px 10px;
+    border-radius: 14px;
+    letter-spacing: 0.5px;
+    min-height: 24px;
   }
 
   /* Tags */
