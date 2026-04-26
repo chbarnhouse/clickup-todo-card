@@ -339,8 +339,8 @@ export const styles = css`
     display: flex;
     align-items: center;
     align-self: center;
-    gap: 3px;
-    padding: 1px 8px 1px 2px;
+    gap: 2px;
+    padding: 1px 5px 1px 1px;
     border-radius: 12px;
     position: relative;
     width: 115px;
@@ -352,8 +352,8 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 2px;
-    padding: 1px 6px 1px 2px;
+    gap: 1px;
+    padding: 1px 4px 1px 1px;
     border-radius: 10px;
     width: 105px;
   }
