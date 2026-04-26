@@ -1,4 +1,4 @@
-export const CARD_VERSION = '2.5.8';
+export const CARD_VERSION = '2.5.9';
 
 export const CARD_NAME = 'ClickUp Todo Card';
 

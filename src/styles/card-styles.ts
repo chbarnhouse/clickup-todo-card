@@ -366,6 +366,17 @@ export const styles = css`
     flex: 1;
     min-width: 0;
     display: flex;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .compact .task-status-pill editable-status {
+    font-size: 8px;
+    letter-spacing: 0.4px;
   }
 
   /* Task Main Content */
@@ -529,36 +540,10 @@ export const styles = css`
     --mdc-icon-size: 12px;
   }
 
-  /* Status Badge (inside pill) */
-  .task-status-pill .status-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-    font-weight: 600;
-    padding: 3px 2px;
-    border-radius: 0;
-    background: transparent;
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    transition: opacity 0.15s ease;
-    line-height: 1;
-    flex: 1;
-    text-align: center;
-  }
-
-  .task-status-pill .status-badge:hover {
-    opacity: 0.9;
-  }
-
-  .compact .task-status-pill .status-badge {
-    font-size: 8px;
-    padding: 2px 1px;
-    letter-spacing: 0.4px;
-    line-height: 1;
-  }
+  /* Status Badge (inside pill)
+   * Note: Badge styles are set on editable-status element above and inherited
+   * into the component's shadow DOM. Cannot style .status-badge directly.
+   */
 
   /* Standalone status badge (when not in pill) */
   .status-badge {
