@@ -345,6 +345,7 @@ export const styles = css`
     border-radius: 12px;
     position: relative;
     width: var(--pill-width, 100px);  /* Dynamic width based on longest status */
+    overflow: hidden;  /* Clip any overflowing checkbox internals */
   }
 
   .task-status-pill ha-checkbox {
@@ -361,6 +362,8 @@ export const styles = css`
     display: block !important;
     width: 20px !important;
     height: 20px !important;
+    min-width: 20px !important;
+    max-width: 20px !important;
   }
 
   .compact .task-status-pill {
@@ -379,6 +382,8 @@ export const styles = css`
     --mdc-checkbox-ripple-size: 0px;
     width: 18px !important;
     height: 18px !important;
+    min-width: 18px !important;
+    max-width: 18px !important;
   }
 
   .task-status-pill editable-status {
