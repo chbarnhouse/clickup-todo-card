@@ -132,12 +132,12 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const textWidth = Math.ceil(longestStatus.length * charWidth);
 
     // Add fixed widths:
-    // - Checkbox wrapper: 24px (22px compact) - larger to contain absolutely-positioned background
+    // - Checkbox: 18px (16px compact)
     // - Gap: 4px (3px compact)
-    // - Padding: 6px left + 10px right = 16px (5px + 8px = 13px compact)
-    const checkboxWidth = isCompact ? 22 : 24;  // Wrapper size, not checkbox size
+    // - Padding: 4px + 8px = 12px (3px + 6px = 9px compact)
+    const checkboxWidth = isCompact ? 16 : 18;
     const gap = isCompact ? 3 : 4;
-    const padding = isCompact ? 13 : 16;
+    const padding = isCompact ? 9 : 12;
 
     const totalWidth = checkboxWidth + gap + textWidth + padding;
 
@@ -452,14 +452,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         ` : ''}
 
         ${showStatus ? html`
-          <div class="task-status-pill" style="background: ${task.clickup_status?.color || 'var(--disabled-text-color)'}"><div class="checkbox-wrapper"><ha-checkbox
+          <div class="task-status-pill" style="background: ${task.clickup_status?.color || 'var(--disabled-text-color)'}"><ha-checkbox
               .checked=${completed}
               @change=${(e: Event) => {
                 e.stopPropagation();
                 this._toggleTask(task);
               }}
               @click=${(e: Event) => e.stopPropagation()}
-            ></ha-checkbox></div><editable-status
+            ></ha-checkbox><editable-status
               .value=${task.clickup_status}
               .options=${getTaskListStatuses(task)}
               .compact=${this._config.compact_mode}

@@ -336,93 +336,41 @@ export const styles = css`
   /* Task Status Pill (checkbox integrated inside) */
   .task-status-pill {
     flex-shrink: 0;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    align-self: center;
     gap: 4px;
-    padding: 6px 10px 6px 6px;  /* Reduced left padding back to reasonable amount */
-    margin: 0;
+    padding: 4px 8px;
     border-radius: 12px;
-    position: relative;
-    width: var(--pill-width, 100px);  /* Dynamic width based on longest status */
-    overflow: hidden;  /* Clip any overflowing checkbox internals */
-  }
-
-  /* Checkbox wrapper to contain absolutely-positioned internal elements */
-  .task-status-pill .checkbox-wrapper {
-    flex-shrink: 0;
-    width: 24px;  /* Slightly larger than checkbox to contain background */
-    height: 24px;
-    overflow: hidden;  /* Clip the absolutely-positioned .mdc-checkbox__background */
-    position: relative;  /* Establish positioning context */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .compact .task-status-pill .checkbox-wrapper {
-    width: 22px;  /* Slightly larger than 18px checkbox */
-    height: 22px;
+    width: var(--pill-width, 100px);
   }
 
   .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 20px;
-    --mdc-checkbox-touch-target-display: none;
-    --mdc-ripple-display: none;
-    --mdc-checkbox-state-layer-size: 20px;
-    --mdc-checkbox-ripple-size: 0px;
-    --ha-checkbox-margin: 0px;
+    --mdc-checkbox-size: 18px;
     flex-shrink: 0;
-    margin: 2px !important;  /* Center 20px checkbox in 24px wrapper: (24-20)/2 = 2px */
-    padding: 0 !important;
-    line-height: 0 !important;
-    display: block !important;
-    width: 20px !important;
-    height: 20px !important;
-    min-width: 20px !important;
-    max-width: 20px !important;
-    overflow: hidden !important;  /* Clip internal absolutely-positioned elements */
   }
 
   .compact .task-status-pill {
     gap: 3px;
-    padding: 5px 8px 5px 5px;  /* Reduced left padding back to reasonable amount */
-    margin: 0;
+    padding: 3px 6px;
     border-radius: 10px;
-    width: var(--pill-width, 90px);  /* Explicitly use variable for compact mode */
+    width: var(--pill-width, 90px);
   }
 
   .compact .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 18px;
-    --mdc-checkbox-touch-target-display: none;
-    --mdc-ripple-display: none;
-    --mdc-checkbox-state-layer-size: 18px;
-    --mdc-checkbox-ripple-size: 0px;
-    margin: 2px !important;  /* Center 18px checkbox in 22px wrapper: (22-18)/2 = 2px */
-    width: 18px !important;
-    height: 18px !important;
-    min-width: 18px !important;
-    max-width: 18px !important;
-    overflow: hidden !important;  /* Clip internal absolutely-positioned elements */
+    --mdc-checkbox-size: 16px;
   }
 
   .task-status-pill editable-status {
     flex: 1;
     min-width: 0;
-    display: flex !important;
-    margin: 0 !important;
-    padding: 0 !important;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    line-height: 1;
-    text-align: center;
-    justify-content: center;
+    line-height: 1.2;
   }
 
   .compact .task-status-pill editable-status {
     font-size: 10px;
-    font-weight: 700;
     letter-spacing: 0.4px;
   }
 
