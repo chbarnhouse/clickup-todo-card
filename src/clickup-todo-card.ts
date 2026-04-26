@@ -405,7 +405,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         ` : ''}
 
         ${showStatus ? html`
-          <div class="task-status-pill">
+          <div class="task-status-pill" style="background: ${task.clickup_status?.color || 'var(--disabled-text-color)'}">
             <ha-checkbox
               .checked=${completed}
               @change=${(e: Event) => {

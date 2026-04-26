@@ -330,6 +330,7 @@ export const styles = css`
     flex-shrink: 0;
     display: flex;
     align-items: flex-start;
+    align-self: flex-start;
     padding-top: 2px;
   }
 
@@ -338,30 +339,30 @@ export const styles = css`
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 12px 4px 4px;
-    background: var(--status-color, var(--primary-color));
-    border-radius: 16px;
+    align-self: flex-start;
+    gap: 6px;
+    padding: 2px 8px 2px 2px;
+    border-radius: 12px;
     position: relative;
   }
 
   .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 18px;
+    --mdc-checkbox-size: 16px;
     flex-shrink: 0;
   }
 
   .compact .task-status-pill {
-    gap: 6px;
-    padding: 3px 10px 3px 3px;
-    border-radius: 14px;
+    gap: 4px;
+    padding: 1px 6px 1px 1px;
+    border-radius: 10px;
   }
 
   .compact .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 16px;
+    --mdc-checkbox-size: 14px;
   }
 
   .task-status-pill editable-status {
-    flex: 1;
+    flex: 0 1 auto;
   }
 
   /* Task Main Content */
@@ -529,17 +530,17 @@ export const styles = css`
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 700;
     padding: 0;
     border-radius: 0;
     background: transparent;
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
     transition: opacity 0.15s ease;
-    line-height: 1.3;
+    line-height: 1.2;
   }
 
   .task-status-pill .status-badge:hover {
@@ -547,8 +548,9 @@ export const styles = css`
   }
 
   .compact .task-status-pill .status-badge {
-    font-size: 10px;
-    letter-spacing: 0.7px;
+    font-size: 8px;
+    letter-spacing: 0.4px;
+    line-height: 1.1;
   }
 
   /* Standalone status badge (when not in pill) */

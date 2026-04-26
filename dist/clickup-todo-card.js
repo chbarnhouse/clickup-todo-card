@@ -328,6 +328,7 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
     flex-shrink: 0;
     display: flex;
     align-items: flex-start;
+    align-self: flex-start;
     padding-top: 2px;
   }
 
@@ -336,30 +337,30 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 12px 4px 4px;
-    background: var(--status-color, var(--primary-color));
-    border-radius: 16px;
+    align-self: flex-start;
+    gap: 6px;
+    padding: 2px 8px 2px 2px;
+    border-radius: 12px;
     position: relative;
   }
 
   .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 18px;
+    --mdc-checkbox-size: 16px;
     flex-shrink: 0;
   }
 
   .compact .task-status-pill {
-    gap: 6px;
-    padding: 3px 10px 3px 3px;
-    border-radius: 14px;
+    gap: 4px;
+    padding: 1px 6px 1px 1px;
+    border-radius: 10px;
   }
 
   .compact .task-status-pill ha-checkbox {
-    --mdc-checkbox-size: 16px;
+    --mdc-checkbox-size: 14px;
   }
 
   .task-status-pill editable-status {
-    flex: 1;
+    flex: 0 1 auto;
   }
 
   /* Task Main Content */
@@ -527,17 +528,17 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    font-size: 11px;
+    font-size: 9px;
     font-weight: 700;
     padding: 0;
     border-radius: 0;
     background: transparent;
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
     transition: opacity 0.15s ease;
-    line-height: 1.3;
+    line-height: 1.2;
   }
 
   .task-status-pill .status-badge:hover {
@@ -545,8 +546,9 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
   }
 
   .compact .task-status-pill .status-badge {
-    font-size: 10px;
-    letter-spacing: 0.7px;
+    font-size: 8px;
+    letter-spacing: 0.4px;
+    line-height: 1.1;
   }
 
   /* Standalone status badge (when not in pill) */
@@ -2289,7 +2291,7 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
           ${e}
         </span>
       </div>
-    `}_openDialog(){this._isOpen=!0}_closeDialog(){this._isOpen=!1}_selectStatus(t){const e=this.value;(e?.name||e?.status||"")!==(t.name||t.status||"")&&(this.value=t,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:t,oldValue:e},bubbles:!0,composed:!0}))),this._isOpen=!1}};t([ht({type:Object})],Lt.prototype,"value",void 0),t([ht({type:Array})],Lt.prototype,"options",void 0),t([ht({type:Boolean})],Lt.prototype,"compact",void 0),t([ut()],Lt.prototype,"_isOpen",void 0),Lt=t([ct("editable-status")],Lt),console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 2.5.1  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class Vt extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...yt},this._tasks=[],this._displayedTasks=[],this._editingTask=null,this._showAddDialog=!1,this._selectedTasks=new Set,this._selectionMode=!1,this._draggedTask=null,this._dragOverTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Bt}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...yt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...yt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var a=e.get("hass");return!a||a.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return j`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return j`
+    `}_openDialog(){this._isOpen=!0}_closeDialog(){this._isOpen=!1}_selectStatus(t){const e=this.value;(e?.name||e?.status||"")!==(t.name||t.status||"")&&(this.value=t,this.dispatchEvent(new CustomEvent("value-changed",{detail:{value:t,oldValue:e},bubbles:!0,composed:!0}))),this._isOpen=!1}};t([ht({type:Object})],Lt.prototype,"value",void 0),t([ht({type:Array})],Lt.prototype,"options",void 0),t([ht({type:Boolean})],Lt.prototype,"compact",void 0),t([ut()],Lt.prototype,"_isOpen",void 0),Lt=t([ct("editable-status")],Lt),console.info("%c  CLICKUP-TODO-CARD  \n%c  Version 2.5.2  ","color: orange; font-weight: bold; background: black","color: white; font-weight: bold; background: dimgray");class Vt extends nt{constructor(){super(...arguments),this._config={type:"custom:clickup-todo-card",entity:"",...yt},this._tasks=[],this._displayedTasks=[],this._editingTask=null,this._showAddDialog=!1,this._selectedTasks=new Set,this._selectionMode=!1,this._draggedTask=null,this._dragOverTask=null}get config(){return this._config}static async getConfigElement(){return await Promise.resolve().then(function(){return Bt}),document.createElement("clickup-todo-card-editor")}static getStubConfig(){return{type:"custom:clickup-todo-card",entity:"",...yt}}setConfig(t){if(!t)throw new Error("Invalid configuration");this._config={...yt,...t}}getCardSize(){return 3+(this._tasks?.length||0)}shouldUpdate(t){if(!this._config||!this.hass)return!0;if(!this._config.entity)return!0;try{return function(t,e,i){if(e.has("config")||i)return!0;if(t.config.entity){var a=e.get("hass");return!a||a.states[t.config.entity]!==t.hass.states[t.config.entity]}return!1}(this,t,!1)}catch(t){return console.error("Error in shouldUpdate:",t),!0}}render(){try{if(!this._config||!this.hass)return j`<ha-card><div class="warning">Loading...</div></ha-card>`;if(!this._config.entity)return j`
           <ha-card>
             <div class="warning">Please configure an entity in the card editor</div>
           </ha-card>
@@ -2439,7 +2441,7 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
         `:""}
 
         ${a?j`
-          <div class="task-status-pill">
+          <div class="task-status-pill" style="background: ${t.clickup_status?.color||"var(--disabled-text-color)"}">
             <ha-checkbox
               .checked=${i}
               @change=${e=>{e.stopPropagation(),this._toggleTask(t)}}
