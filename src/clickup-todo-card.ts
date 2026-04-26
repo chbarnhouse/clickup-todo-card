@@ -404,26 +404,36 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           </div>
         ` : ''}
 
-        <div class="task-checkbox">
-          <ha-checkbox
-            .checked=${completed}
-            @change=${(e: Event) => {
-              e.stopPropagation();
-              this._toggleTask(task);
-            }}
-            @click=${(e: Event) => e.stopPropagation()}
-          ></ha-checkbox>
-        </div>
-
         ${showStatus ? html`
-          <editable-status
-            .value=${task.clickup_status}
-            .options=${getTaskListStatuses(task)}
-            .compact=${this._config.compact_mode}
-            @value-changed=${(e: CustomEvent) => this._handleStatusChange(task, e.detail.value)}
-            @click=${(e: Event) => e.stopPropagation()}
-          ></editable-status>
-        ` : ''}
+          <div class="task-status-pill">
+            <ha-checkbox
+              .checked=${completed}
+              @change=${(e: Event) => {
+                e.stopPropagation();
+                this._toggleTask(task);
+              }}
+              @click=${(e: Event) => e.stopPropagation()}
+            ></ha-checkbox>
+            <editable-status
+              .value=${task.clickup_status}
+              .options=${getTaskListStatuses(task)}
+              .compact=${this._config.compact_mode}
+              @value-changed=${(e: CustomEvent) => this._handleStatusChange(task, e.detail.value)}
+              @click=${(e: Event) => e.stopPropagation()}
+            ></editable-status>
+          </div>
+        ` : html`
+          <div class="task-checkbox">
+            <ha-checkbox
+              .checked=${completed}
+              @change=${(e: Event) => {
+                e.stopPropagation();
+                this._toggleTask(task);
+              }}
+              @click=${(e: Event) => e.stopPropagation()}
+            ></ha-checkbox>
+          </div>
+        `}
 
         <div class="task-main">
           <div class="task-header">
