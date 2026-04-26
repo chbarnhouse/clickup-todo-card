@@ -373,7 +373,7 @@ export const styles = css`
     --mdc-checkbox-ripple-size: 0px;
     --ha-checkbox-margin: 0px;
     flex-shrink: 0;
-    margin: 0 !important;
+    margin: 2px !important;  /* Center 20px checkbox in 24px wrapper: (24-20)/2 = 2px */
     padding: 0 !important;
     line-height: 0 !important;
     display: block !important;
@@ -398,6 +398,7 @@ export const styles = css`
     --mdc-ripple-display: none;
     --mdc-checkbox-state-layer-size: 18px;
     --mdc-checkbox-ripple-size: 0px;
+    margin: 2px !important;  /* Center 18px checkbox in 22px wrapper: (22-18)/2 = 2px */
     width: 18px !important;
     height: 18px !important;
     min-width: 18px !important;
