@@ -348,6 +348,23 @@ export const styles = css`
     overflow: hidden;  /* Clip any overflowing checkbox internals */
   }
 
+  /* Checkbox wrapper to contain absolutely-positioned internal elements */
+  .task-status-pill .checkbox-wrapper {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;  /* Clip the absolutely-positioned .mdc-checkbox__background */
+    position: relative;  /* Establish positioning context */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .compact .task-status-pill .checkbox-wrapper {
+    width: 18px;
+    height: 18px;
+  }
+
   .task-status-pill ha-checkbox {
     --mdc-checkbox-size: 20px;
     --mdc-checkbox-touch-target-display: none;
