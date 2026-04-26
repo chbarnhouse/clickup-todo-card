@@ -47,6 +47,7 @@ export class EditableStatus extends LitElement {
       font-size: inherit;
       font-weight: inherit;
       padding: 0;
+      margin: 0;
       border-radius: 0;
       background: transparent;
       color: inherit;

@@ -339,23 +339,30 @@ export const styles = css`
     display: flex;
     align-items: center;
     align-self: center;
-    gap: 1px;
-    padding: 0px 2px 0px 0px;
+    gap: 0;
+    padding: 0;
+    margin: 0;
     border-radius: 8px;
     position: relative;
     width: var(--pill-width, 100px);  /* Dynamic width based on longest status */
+    overflow: hidden;
   }
 
   .task-status-pill ha-checkbox {
     --mdc-checkbox-size: 20px;
     --mdc-checkbox-touch-target-display: none;
+    --mdc-ripple-display: none;
     flex-shrink: 0;
+    margin: 0 !important;
+    padding: 0 !important;
     line-height: 0;
+    display: block;
   }
 
   .compact .task-status-pill {
-    gap: 0px;
-    padding: 0px 1px 0px 0px;
+    gap: 0;
+    padding: 0;
+    margin: 0;
     border-radius: 6px;
     width: var(--pill-width, 90px);  /* Explicitly use variable for compact mode */
   }
@@ -363,14 +370,15 @@ export const styles = css`
   .compact .task-status-pill ha-checkbox {
     --mdc-checkbox-size: 18px;
     --mdc-checkbox-touch-target-display: none;
+    --mdc-ripple-display: none;
   }
 
   .task-status-pill editable-status {
     flex: 1;
     min-width: 0;
-    display: flex;
-    margin: 0;
-    padding: 0;
+    display: flex !important;
+    margin: 0 !important;
+    padding: 0 !important;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -383,11 +391,6 @@ export const styles = css`
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.4px;
-  }
-
-  .task-status-pill ha-checkbox {
-    margin: 0;
-    padding: 0;
   }
 
   /* Task Main Content */
