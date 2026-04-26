@@ -333,27 +333,11 @@ export const styles = css`
     padding-top: 2px;
   }
 
-  /* Task Status Wrapper (checkbox overlaid on status badge) */
-  .task-status-wrapper {
+  /* Editable Status (no checkbox overlay) */
+  editable-status {
     flex-shrink: 0;
     display: flex;
     align-items: flex-start;
-    position: relative;
-    padding-top: 0;
-  }
-
-  .task-status-wrapper ha-checkbox {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-    --mdc-checkbox-size: 20px;
-  }
-
-  .compact .task-status-wrapper ha-checkbox {
-    --mdc-checkbox-size: 18px;
-    left: 10px;
   }
 
   /* Task Main Content */
@@ -520,19 +504,18 @@ export const styles = css`
   .status-badge {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
-    font-size: 11px;
+    justify-content: center;
+    font-size: 10px;
     font-weight: 700;
-    padding: 14px 44px 14px 18px;
+    padding: 6px 12px;
     border-radius: 12px;
     background: var(--status-color, var(--primary-color));
     color: white;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.6px;
     white-space: nowrap;
     transition: filter 0.15s ease;
     line-height: 1.3;
-    text-align: left;
   }
 
   .status-badge:hover {
@@ -540,10 +523,10 @@ export const styles = css`
   }
 
   .compact .status-badge {
-    font-size: 10px;
-    padding: 12px 40px 12px 16px;
+    font-size: 9px;
+    padding: 5px 10px;
     border-radius: 10px;
-    letter-spacing: 0.7px;
+    letter-spacing: 0.5px;
   }
 
   /* Tags */
