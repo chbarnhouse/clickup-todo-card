@@ -333,13 +333,13 @@ export const styles = css`
     align-self: center;
   }
 
-  /* Task Status Pill (checkbox integrated inside) */
+  /* Task Status Pill (checkbox integrated inside) - v2.10.0 Clean Redesign */
   .task-status-pill {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 3px 6px 3px 3px;
+    gap: 6px;
+    padding: 4px;
     border-radius: 10px;
     width: var(--pill-width, auto);
   }
@@ -348,14 +348,14 @@ export const styles = css`
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
-    width: 28px;
-    height: 28px;
-    --mdc-checkbox-size: 28px;
+    width: 24px;
+    height: 24px;
+    --mdc-checkbox-size: 24px;
   }
 
   .compact .task-status-pill {
-    gap: 3px;
-    padding: 2px 5px 2px 2px;
+    gap: 4px;
+    padding: 3px;
     border-radius: 8px;
     width: var(--pill-width, auto);
   }
@@ -363,9 +363,9 @@ export const styles = css`
   .compact .task-status-pill ha-checkbox {
     margin: 0 !important;
     padding: 0 !important;
-    width: 22px;
-    height: 22px;
-    --mdc-checkbox-size: 22px;
+    width: 18px;
+    height: 18px;
+    --mdc-checkbox-size: 18px;
   }
 
   .task-status-pill editable-status {
@@ -373,13 +373,13 @@ export const styles = css`
     min-width: 0;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
     line-height: 1.2;
   }
 
   .compact .task-status-pill editable-status {
     font-size: 10px;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
   }
 
   /* Task Main Content */
