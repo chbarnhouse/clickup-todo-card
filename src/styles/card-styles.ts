@@ -333,14 +333,14 @@ export const styles = css`
     align-self: center;
   }
 
-  /* Task Status Pill - v2.13.4 Zero Text Padding */
+  /* Task Status Pill - v2.13.5 Reduced Pill Padding and Gap */
   .task-status-pill {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2px;
-    padding: 8px 4px;
+    gap: 1px;
+    padding: 8px 2px;
     border-radius: 6px;
     width: var(--pill-width, auto);
     height: 32px;
@@ -360,8 +360,8 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 2px;
-    padding: 6px 3px;
+    gap: 1px;
+    padding: 6px 2px;
     border-radius: 4px;
     width: var(--pill-width, auto);
     height: 26px;
