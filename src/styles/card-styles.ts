@@ -333,7 +333,7 @@ export const styles = css`
     align-self: center;
   }
 
-  /* Task Status Pill - v2.13.3 Reduced Text Horizontal Padding */
+  /* Task Status Pill - v2.13.4 Zero Text Padding */
   .task-status-pill {
     flex-shrink: 0;
     display: inline-flex;
@@ -383,7 +383,7 @@ export const styles = css`
     flex: 1;
     min-width: 0;
     margin: 0;
-    padding: 0 1px 0 2px;
+    padding: 0;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -397,7 +397,7 @@ export const styles = css`
 
   .compact .task-status-pill editable-status {
     margin: 0;
-    padding: 0 1px 0 2px;
+    padding: 0;
     font-size: 11px;
     letter-spacing: 0.4px;
     line-height: 1.0;
