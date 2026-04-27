@@ -338,8 +338,8 @@ export const styles = css`
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 3px 8px 3px 3px;
+    gap: 2px;
+    padding: 1px 5px 1px 1px;
     border-radius: 10px;
     width: auto;
   }
@@ -348,13 +348,13 @@ export const styles = css`
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.65);
+    transform: scale(0.75);
     transform-origin: left center;
   }
 
   .compact .task-status-pill {
-    gap: 3px;
-    padding: 2px 6px 2px 2px;
+    gap: 2px;
+    padding: 1px 4px 1px 1px;
     border-radius: 8px;
     width: auto;
   }
@@ -362,7 +362,7 @@ export const styles = css`
   .compact .task-status-pill ha-checkbox {
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.55);
+    transform: scale(0.65);
     transform-origin: left center;
   }
 
