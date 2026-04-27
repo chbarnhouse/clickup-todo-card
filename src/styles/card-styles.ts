@@ -333,17 +333,17 @@ export const styles = css`
     align-self: center;
   }
 
-  /* Task Status Pill - v2.12.12 Increased Vertical Spacing */
+  /* Task Status Pill - v2.12.13 More Vertical Padding */
   .task-status-pill {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     gap: 0px;
-    padding: 5px 4px 5px 0px;
+    padding: 7px 4px 7px 0px;
     border-radius: 6px;
     width: var(--pill-width, auto);
-    height: 26px;
-    max-height: 26px;
+    height: 30px;
+    max-height: 30px;
     line-height: 16px;
   }
 
@@ -360,11 +360,11 @@ export const styles = css`
 
   .compact .task-status-pill {
     gap: 0px;
-    padding: 4px 3px 4px 0px;
+    padding: 5px 3px 5px 0px;
     border-radius: 4px;
     width: var(--pill-width, auto);
-    height: 22px;
-    max-height: 22px;
+    height: 24px;
+    max-height: 24px;
     line-height: 14px;
   }
 
