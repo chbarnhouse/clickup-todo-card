@@ -337,32 +337,30 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 2px 6px 2px 2px;
+    padding: 3px 8px 3px 3px;
     border-radius: 10px;
     width: auto;
-    max-width: 95px;
   }
 
   .task-status-pill ha-checkbox {
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.55);
+    transform: scale(0.65);
     transform-origin: left center;
   }
 
   .compact .task-status-pill {
     gap: 3px;
-    padding: 1px 5px 1px 1px;
+    padding: 2px 6px 2px 2px;
     border-radius: 8px;
     width: auto;
-    max-width: 85px;
   }
 
   .compact .task-status-pill ha-checkbox {
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.5);
+    transform: scale(0.55);
     transform-origin: left center;
   }
 
