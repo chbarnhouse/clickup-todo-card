@@ -124,7 +124,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return 100; // Default width if no statuses
     }
 
-    // v2.12.11 Width calculation - zero gap, negative margin on checkbox
+    // v2.12.12 Width calculation - increased vertical padding (5px/4px compact)
     // Font: 12px (11px compact), letter-spacing: 0.5px (0.4px compact), bold uppercase
     // Character width: fontSize × 1.0 (realistic for bold uppercase with letter-spacing)
     const isCompact = this._config.compact_mode;
