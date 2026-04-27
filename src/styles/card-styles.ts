@@ -338,8 +338,8 @@ export const styles = css`
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 1px;
-    padding: 1px 4px 1px 0px;
+    gap: 3px;
+    padding: 2px 6px 2px 2px;
     border-radius: 10px;
     width: auto;
   }
@@ -348,13 +348,14 @@ export const styles = css`
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.85);
-    transform-origin: left center;
+    width: 28px;
+    height: 28px;
+    --mdc-checkbox-size: 28px;
   }
 
   .compact .task-status-pill {
-    gap: 1px;
-    padding: 1px 3px 1px 0px;
+    gap: 2px;
+    padding: 2px 5px 2px 2px;
     border-radius: 8px;
     width: auto;
   }
@@ -362,8 +363,9 @@ export const styles = css`
   .compact .task-status-pill ha-checkbox {
     margin: 0 !important;
     padding: 0 !important;
-    transform: scale(0.75);
-    transform-origin: left center;
+    width: 22px;
+    height: 22px;
+    --mdc-checkbox-size: 22px;
   }
 
   .task-status-pill editable-status {
