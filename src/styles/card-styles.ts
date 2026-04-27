@@ -333,23 +333,23 @@ export const styles = css`
     align-self: center;
   }
 
-  /* Task Status Pill - v2.12.13 More Vertical Padding */
+  /* Task Status Pill - v2.13.0 Center-Justified Text with Balanced Padding */
   .task-status-pill {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
     gap: 0px;
-    padding: 7px 4px 7px 0px;
+    padding: 4px;
     border-radius: 6px;
     width: var(--pill-width, auto);
-    height: 30px;
-    max-height: 30px;
+    height: 24px;
+    max-height: 24px;
     line-height: 16px;
   }
 
   .task-status-pill ha-checkbox {
     flex-shrink: 0;
-    margin: 0 -1px 0 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
     --mdc-checkbox-size: 16px;
     line-height: 0;
@@ -360,16 +360,16 @@ export const styles = css`
 
   .compact .task-status-pill {
     gap: 0px;
-    padding: 5px 3px 5px 0px;
+    padding: 3px;
     border-radius: 4px;
     width: var(--pill-width, auto);
-    height: 24px;
-    max-height: 24px;
+    height: 20px;
+    max-height: 20px;
     line-height: 14px;
   }
 
   .compact .task-status-pill ha-checkbox {
-    margin: 0 -1px 0 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
     --mdc-checkbox-size: 14px;
     line-height: 0;
@@ -389,6 +389,7 @@ export const styles = css`
     line-height: 1.0;
     display: flex;
     align-items: center;
+    justify-content: center;
     overflow: visible;
   }
 

@@ -23,6 +23,7 @@ export class EditableStatus extends LitElement {
   static styles = css`
     :host {
       display: flex;
+      justify-content: center;
       margin: 0;
       padding: 0;
     }
@@ -30,6 +31,7 @@ export class EditableStatus extends LitElement {
     .status-display {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       cursor: pointer;
       user-select: none;
       margin: 0;
@@ -43,7 +45,7 @@ export class EditableStatus extends LitElement {
     .status-badge {
       display: inline-flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       font-size: inherit;
       font-weight: inherit;
       padding: 0;
