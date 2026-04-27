@@ -333,17 +333,18 @@ export const styles = css`
     align-self: center;
   }
 
-  /* Task Status Pill - v2.13.0 Center-Justified Text with Balanced Padding */
+  /* Task Status Pill - v2.13.1 Increased Vertical Space, Proper Center Alignment */
   .task-status-pill {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 0px;
-    padding: 4px;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 6px;
     border-radius: 6px;
     width: var(--pill-width, auto);
-    height: 24px;
-    max-height: 24px;
+    height: 28px;
+    max-height: 28px;
     line-height: 16px;
   }
 
@@ -359,12 +360,12 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 0px;
-    padding: 3px;
+    gap: 3px;
+    padding: 5px;
     border-radius: 4px;
     width: var(--pill-width, auto);
-    height: 20px;
-    max-height: 20px;
+    height: 24px;
+    max-height: 24px;
     line-height: 14px;
   }
 
@@ -382,7 +383,7 @@ export const styles = css`
     flex: 1;
     min-width: 0;
     margin: 0;
-    padding: 0;
+    padding: 0 4px;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -390,12 +391,13 @@ export const styles = css`
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
     overflow: visible;
   }
 
   .compact .task-status-pill editable-status {
     margin: 0;
-    padding: 0;
+    padding: 0 3px;
     font-size: 11px;
     letter-spacing: 0.4px;
     line-height: 1.0;
