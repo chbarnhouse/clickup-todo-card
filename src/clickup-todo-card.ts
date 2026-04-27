@@ -124,21 +124,21 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return 100; // Default width if no statuses
     }
 
-    // v2.10.3 Width calculation with smaller checkbox
-    // Font: 11px (10px compact), letter-spacing: 0.5px (0.4px compact), bold uppercase
-    // Character width: fontSize × 0.7
+    // v2.11.0 Clean width calculation
+    // Font: 11px (10px compact), letter-spacing: 0.4px (0.3px compact), bold uppercase
+    // Character width: fontSize × 0.65 (realistic for condensed bold uppercase)
     const isCompact = this._config.compact_mode;
     const fontSize = isCompact ? 10 : 11;
-    const charWidth = fontSize * 0.7;
+    const charWidth = fontSize * 0.65;
     const textWidth = Math.ceil(longestStatus.length * charWidth);
 
     // Fixed component widths (matching CSS exactly):
-    // - Checkbox: 14px (12px compact)
-    // - Gap: 4px (3px compact)
-    // - Padding: 2px left + 4px right = 6px (1px + 3px = 4px compact)
-    const checkboxWidth = isCompact ? 12 : 14;
-    const gap = isCompact ? 3 : 4;
-    const padding = isCompact ? 4 : 6;
+    // - Checkbox: 12px (10px compact)
+    // - Gap: 3px (2px compact)
+    // - Padding: 1px left + 4px right = 5px (1px + 3px = 4px compact)
+    const checkboxWidth = isCompact ? 10 : 12;
+    const gap = isCompact ? 2 : 3;
+    const padding = isCompact ? 4 : 5;
 
     const totalWidth = checkboxWidth + gap + textWidth + padding;
     return totalWidth;

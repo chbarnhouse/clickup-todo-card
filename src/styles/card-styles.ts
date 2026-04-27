@@ -333,41 +333,48 @@ export const styles = css`
     align-self: center;
   }
 
-  /* Task Status Pill (checkbox integrated inside) - v2.10.3 Aggressive Height Reduction */
+  /* Task Status Pill - v2.11.0 Complete Rebuild - Clean Minimal Design */
   .task-status-pill {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    padding: 0px 4px 0px 2px;
-    border-radius: 8px;
+    gap: 3px;
+    padding: 1px 4px 1px 1px;
+    border-radius: 6px;
     width: var(--pill-width, auto);
+    height: 16px;
+    max-height: 16px;
+    overflow: hidden;
   }
 
   .task-status-pill ha-checkbox {
     flex-shrink: 0;
     margin: 0 !important;
     padding: 0 !important;
-    width: 14px;
-    height: 14px;
-    --mdc-checkbox-size: 14px;
-    align-self: center;
+    width: 12px;
+    height: 12px;
+    --mdc-checkbox-size: 12px;
+    --mdc-ripple-size: 0px;
+    --mdc-checkbox-touch-target-size: 12px;
   }
 
   .compact .task-status-pill {
-    gap: 3px;
-    padding: 0px 3px 0px 1px;
-    border-radius: 6px;
+    gap: 2px;
+    padding: 1px 3px 1px 1px;
+    border-radius: 4px;
     width: var(--pill-width, auto);
+    height: 14px;
+    max-height: 14px;
   }
 
   .compact .task-status-pill ha-checkbox {
     margin: 0 !important;
     padding: 0 !important;
-    width: 12px;
-    height: 12px;
-    --mdc-checkbox-size: 12px;
-    align-self: center;
+    width: 10px;
+    height: 10px;
+    --mdc-checkbox-size: 10px;
+    --mdc-ripple-size: 0px;
+    --mdc-checkbox-touch-target-size: 10px;
   }
 
   .task-status-pill editable-status {
@@ -375,15 +382,17 @@ export const styles = css`
     min-width: 0;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    line-height: 1.0;
-    align-self: center;
+    letter-spacing: 0.4px;
+    line-height: 1;
+    height: 11px;
+    display: flex;
+    align-items: center;
   }
 
   .compact .task-status-pill editable-status {
     font-size: 10px;
-    letter-spacing: 0.4px;
-    line-height: 1.0;
+    letter-spacing: 0.3px;
+    height: 10px;
   }
 
   /* Task Main Content */
