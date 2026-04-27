@@ -341,7 +341,7 @@ export const styles = css`
     gap: 3px;
     padding: 2px 6px 2px 2px;
     border-radius: 10px;
-    width: auto;
+    width: var(--pill-width, auto);
   }
 
   .task-status-pill ha-checkbox {
@@ -357,7 +357,7 @@ export const styles = css`
     gap: 2px;
     padding: 2px 5px 2px 2px;
     border-radius: 8px;
-    width: auto;
+    width: var(--pill-width, auto);
   }
 
   .compact .task-status-pill ha-checkbox {
