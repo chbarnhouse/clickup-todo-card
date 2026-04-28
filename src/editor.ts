@@ -92,12 +92,6 @@ export class ClickUpTodoCardEditor extends LitElement {
           >
             Sort & Group
           </button>
-          <button
-            class="tab ${this._selectedTab === 5 ? 'active' : ''}"
-            @click=${() => this._selectTab(5)}
-          >
-            Styling
-          </button>
         </div>
 
         <div class="tab-content">
@@ -106,7 +100,6 @@ export class ClickUpTodoCardEditor extends LitElement {
           ${this._selectedTab === 2 ? this._renderLayoutTab() : ''}
           ${this._selectedTab === 3 ? this._renderFiltersTab(statuses, tags, assignees) : ''}
           ${this._selectedTab === 4 ? this._renderSortGroupTab(customFields) : ''}
-          ${this._selectedTab === 5 ? this._renderStylingTab(customFields) : ''}
         </div>
       </div>
     `;
@@ -373,6 +366,13 @@ export class ClickUpTodoCardEditor extends LitElement {
               </div>
             ` : ''}
           `}
+
+          <div class="config-section">
+            <h3>Field Customization</h3>
+            <p class="hint">Customize icons and styles for each field type</p>
+
+            ${this._renderFieldCustomization()}
+          </div>
         </div>
       </div>
     `;
@@ -671,6 +671,46 @@ export class ClickUpTodoCardEditor extends LitElement {
             ></ha-selector>
           ` : ''}
         </div>
+      </div>
+    `;
+  }
+
+  private _renderFieldCustomization(): TemplateResult {
+    const fieldStyles = this._config.field_styles || {};
+    const fieldIcons = this._config.field_icons || {};
+
+    const fields = [
+      { key: 'priority', label: 'Priority' },
+      { key: 'status', label: 'Status' },
+      { key: 'start_date', label: 'Start Date' },
+      { key: 'due_date', label: 'Due Date' },
+      { key: 'tags', label: 'Tags' },
+      { key: 'assignees', label: 'Assignees' },
+      { key: 'location', label: 'Location' },
+    ];
+
+    return html`
+      <div class="field-customization-list">
+        ${fields.map(field => html`
+          <details class="field-custom-details">
+            <summary class="field-custom-summary">${field.label}</summary>
+            <div class="field-custom-content">
+              <ha-icon-picker
+                .hass=${this.hass}
+                .value=${(fieldIcons as any)[field.key] || ''}
+                .label=${'Icon'}
+                @value-changed=${(ev: any) => this._updateFieldIcon(field.key, ev.detail.value)}
+              ></ha-icon-picker>
+
+              <ha-textfield
+                label="Custom CSS"
+                .value=${(fieldStyles as any)[field.key] || ''}
+                @input=${(ev: any) => this._updateFieldStyle(field.key, ev.target.value)}
+                helper="e.g., color: red; font-weight: bold;"
+              ></ha-textfield>
+            </div>
+          </details>
+        `)}
       </div>
     `;
   }
@@ -1668,6 +1708,45 @@ export class ClickUpTodoCardEditor extends LitElement {
         font-size: 14px;
         font-weight: 500;
         color: var(--primary-text-color);
+      }
+
+      .field-customization-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field-custom-details {
+        border: 1px solid var(--divider-color);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .field-custom-summary {
+        padding: 12px 16px;
+        cursor: pointer;
+        list-style: none;
+        font-weight: 500;
+        color: var(--primary-text-color);
+        background: var(--card-background-color);
+        user-select: none;
+        transition: background 0.2s ease;
+      }
+
+      .field-custom-summary:hover {
+        background: var(--secondary-background-color);
+      }
+
+      .field-custom-summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .field-custom-content {
+        padding: 16px;
+        background: var(--secondary-background-color);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
       }
     `;
   }

@@ -147,6 +147,53 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     return totalWidth;
   }
 
+  /**
+   * Render dynamic CSS styles from field_styles configuration
+   * This allows live preview of CSS changes without full re-rendering
+   */
+  private _renderDynamicStyles(): TemplateResult {
+    if (!this._config.field_styles) {
+      return html``;
+    }
+
+    const styles = this._config.field_styles;
+    let css = '';
+
+    if (styles.status) {
+      css += `.status-badge { ${styles.status} }\n`;
+    }
+    if (styles.priority) {
+      css += `.priority-icon { ${styles.priority} }\n`;
+    }
+    if (styles.due_date) {
+      css += `.date-item.due-date { ${styles.due_date} }\n`;
+    }
+    if (styles.start_date) {
+      css += `.date-item.start-date { ${styles.start_date} }\n`;
+    }
+    if (styles.dates) {
+      css += `.task-dates { ${styles.dates} }\n`;
+    }
+    if (styles.tags) {
+      css += `.task-tags { ${styles.tags} }\n`;
+    }
+    if (styles.assignees) {
+      css += `.task-assignees { ${styles.assignees} }\n`;
+    }
+    if (styles.location) {
+      css += `.task-location { ${styles.location} }\n`;
+    }
+    if (styles.custom_fields) {
+      Object.entries(styles.custom_fields).forEach(([fieldName, style]) => {
+        // Escape field name for CSS selector
+        const safeFieldName = fieldName.replace(/[^a-zA-Z0-9]/g, '-');
+        css += `.custom-field[data-field="${safeFieldName}"] { ${style} }\n`;
+      });
+    }
+
+    return css ? html`<style>${css}</style>` : html``;
+  }
+
   protected render(): TemplateResult {
     try {
       if (!this._config || !this.hass) {
@@ -206,6 +253,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
       return html`
         <ha-card>
+          ${this._renderDynamicStyles()}
           ${this._renderHeader(stateObj)}
           ${this._selectionMode ? this._renderBulkActionsToolbar() : ''}
           ${(this._config.show_sort_controls || this._config.show_filter_controls) && !this._selectionMode ? this._renderControlsToolbar() : ''}
