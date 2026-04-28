@@ -351,65 +351,10 @@ export class ClickUpTodoCardEditor extends LitElement {
           `}
 
           <div class="config-section">
-            <h3>Visible Custom Fields</h3>
-            ${!this._config.show_custom_fields ? html`
-              <div class="info-box" style="background: var(--secondary-background-color); padding: 16px; border-radius: 8px; margin-top: 8px;">
-                <p style="margin: 0; color: var(--secondary-text-color);">
-                  <ha-icon icon="mdi:information" style="vertical-align: middle;"></ha-icon>
-                  Enable the "Custom Fields" toggle above to choose which custom fields to display
-                </p>
-              </div>
-            ` : customFields.length === 0 ? html`
-              <div class="info-box" style="background: var(--secondary-background-color); padding: 16px; border-radius: 8px; margin-top: 8px;">
-                <p style="margin: 0; color: var(--secondary-text-color);">
-                  <ha-icon icon="mdi:information" style="vertical-align: middle;"></ha-icon>
-                  No custom fields found in your tasks. Add custom fields to your ClickUp tasks to filter them here.
-                </p>
-              </div>
-            ` : html`
-              <p class="hint">Select which custom fields to display (leave all unchecked to show all)</p>
-
-              <div class="toggle-grid">
-                ${customFields.map(field => html`
-                  <ha-formfield .label=${field.label}>
-                    <ha-checkbox
-                      .checked=${this._isFieldVisible(field.value)}
-                      .value=${field.value}
-                      @change=${this._customFieldChanged}
-                    ></ha-checkbox>
-                  </ha-formfield>
-                `)}
-              </div>
-            `}
-          </div>
-
-          <div class="config-section">
             <h3>Field Customization</h3>
-            <p class="hint">Customize icons and styles for each field type</p>
+            <p class="hint">Customize icons and styles for visible fields</p>
 
             ${this._renderFieldCustomization()}
-          </div>
-
-          <div class="config-section">
-            <h3>Custom Field Styling</h3>
-            ${!this._config.show_custom_fields ? html`
-              <div class="info-box" style="background: var(--secondary-background-color); padding: 16px; border-radius: 8px; margin-top: 8px;">
-                <p style="margin: 0; color: var(--secondary-text-color);">
-                  <ha-icon icon="mdi:information" style="vertical-align: middle;"></ha-icon>
-                  Enable the "Custom Fields" toggle above to customize individual custom fields
-                </p>
-              </div>
-            ` : customFields.length === 0 ? html`
-              <div class="info-box" style="background: var(--secondary-background-color); padding: 16px; border-radius: 8px; margin-top: 8px;">
-                <p style="margin: 0; color: var(--secondary-text-color);">
-                  <ha-icon icon="mdi:information" style="vertical-align: middle;"></ha-icon>
-                  No custom fields found in your tasks. Add custom fields to your ClickUp tasks to customize them here.
-                </p>
-              </div>
-            ` : html`
-              <p class="hint">Customize icons and styles for individual custom fields</p>
-              ${this._renderCustomFieldCustomization(customFields)}
-            `}
           </div>
         </div>
       </div>
@@ -717,21 +662,76 @@ export class ClickUpTodoCardEditor extends LitElement {
     const fieldStyles = this._config.field_styles || {};
     const fieldIcons = this._config.field_icons || {};
 
-    const fields = [
+    // Get visible fields from metadata grid or quick toggles
+    const visibleFieldTypes = this._getVisibleFieldTypes();
+
+    if (visibleFieldTypes.length === 0) {
+      return html`
+        <div class="info-box" style="background: var(--secondary-background-color); padding: 16px; border-radius: 8px; margin-top: 8px;">
+          <p style="margin: 0; color: var(--secondary-text-color);">
+            <ha-icon icon="mdi:information" style="vertical-align: middle;"></ha-icon>
+            Add fields to your metadata grid above to customize their appearance
+          </p>
+        </div>
+      `;
+    }
+
+    const allFieldDefinitions = [
       { key: 'priority', label: 'Priority', defaultIcon: 'mdi:flag' },
       { key: 'status', label: 'Status', defaultIcon: 'mdi:circle' },
       { key: 'start_date', label: 'Start Date', defaultIcon: 'mdi:calendar-start' },
       { key: 'due_date', label: 'Due Date', defaultIcon: 'mdi:calendar-end' },
+      { key: 'dates', label: 'Dates (Start + Due)', defaultIcon: 'mdi:calendar-range' },
       { key: 'tags', label: 'Tags', defaultIcon: 'mdi:tag-multiple' },
       { key: 'assignees', label: 'Assignees', defaultIcon: 'mdi:account-multiple' },
       { key: 'location', label: 'Location', defaultIcon: 'mdi:folder-outline' },
     ];
 
+    // Get available custom fields
+    const customFields = this._tasks.length > 0 ? getAvailableCustomFields(this._tasks) : [];
+
+    // Build list of fields to customize
+    const fieldsToCustomize: Array<{ key: string; label: string; defaultIcon: string; isCustomField?: boolean }> = [];
+
+    visibleFieldTypes.forEach(fieldType => {
+      if (fieldType.startsWith('custom_field:')) {
+        // Individual custom field
+        const fieldName = fieldType.replace('custom_field:', '');
+        const customField = customFields.find(cf => cf.value === fieldName);
+        if (customField) {
+          fieldsToCustomize.push({
+            key: `custom_fields.${fieldName}`,
+            label: `Custom: ${customField.label}`,
+            defaultIcon: 'mdi:form-textbox',
+            isCustomField: true,
+          });
+        }
+      } else {
+        // Built-in field
+        const fieldDef = allFieldDefinitions.find(f => f.key === fieldType);
+        if (fieldDef) {
+          fieldsToCustomize.push(fieldDef);
+        }
+      }
+    });
+
     return html`
       <div class="field-customization-list">
-        ${fields.map(field => {
-          const currentIcon = (fieldIcons as any)[field.key] || field.defaultIcon;
-          const currentStyle = (fieldStyles as any)[field.key] || '';
+        ${fieldsToCustomize.map(field => {
+          let currentIcon: string;
+          let currentStyle: string;
+
+          if (field.isCustomField) {
+            // Custom field styling
+            const fieldName = field.key.replace('custom_fields.', '');
+            const customField = customFields.find(cf => cf.value === fieldName);
+            currentIcon = fieldIcons.custom_fields?.[customField?.label || ''] || field.defaultIcon;
+            currentStyle = fieldStyles.custom_fields?.[customField?.label || ''] || '';
+          } else {
+            // Built-in field styling
+            currentIcon = (fieldIcons as any)[field.key] || field.defaultIcon;
+            currentStyle = (fieldStyles as any)[field.key] || '';
+          }
 
           return html`
             <details class="field-custom-details">
@@ -744,13 +744,29 @@ export class ClickUpTodoCardEditor extends LitElement {
                   .hass=${this.hass}
                   .value=${currentIcon}
                   .label=${'Icon (default: ' + field.defaultIcon + ')'}
-                  @value-changed=${(ev: any) => this._updateFieldIcon(field.key, ev.detail.value)}
+                  @value-changed=${(ev: any) => {
+                    if (field.isCustomField) {
+                      const fieldName = field.key.replace('custom_fields.', '');
+                      const customField = customFields.find(cf => cf.value === fieldName);
+                      this._updateCustomFieldIcon(customField?.label || '', ev.detail.value);
+                    } else {
+                      this._updateFieldIcon(field.key, ev.detail.value);
+                    }
+                  }}
                 ></ha-icon-picker>
 
                 <ha-textfield
                   label="Custom CSS"
                   .value=${currentStyle}
-                  @input=${(ev: any) => this._updateFieldStyle(field.key, ev.target.value)}
+                  @input=${(ev: any) => {
+                    if (field.isCustomField) {
+                      const fieldName = field.key.replace('custom_fields.', '');
+                      const customField = customFields.find(cf => cf.value === fieldName);
+                      this._updateCustomFieldStyle(customField?.label || '', ev.target.value);
+                    } else {
+                      this._updateFieldStyle(field.key, ev.target.value);
+                    }
+                  }}
                   helper="Leave empty to use default styling"
                 ></ha-textfield>
               </div>
@@ -1166,6 +1182,25 @@ export class ClickUpTodoCardEditor extends LitElement {
     fireEvent(this, 'config-changed', { config: newConfig });
   }
 
+  private _getVisibleFieldTypes(): string[] {
+    // If using metadata grid, return field types from grid
+    if (this._config.metadata_grid && this._config.metadata_grid.fields) {
+      return this._config.metadata_grid.fields.map(f => f.type);
+    }
+
+    // Otherwise, return fields based on quick toggles
+    const visibleFields: string[] = [];
+    if (this._config.show_task_locations) visibleFields.push('location');
+    if (this._config.show_start_date) visibleFields.push('start_date');
+    if (this._config.show_due_date) visibleFields.push('due_date');
+    if (this._config.show_priority) visibleFields.push('priority');
+    if (this._config.show_status) visibleFields.push('status');
+    if (this._config.show_tags) visibleFields.push('tags');
+    if (this._config.show_assignees) visibleFields.push('assignees');
+
+    return visibleFields;
+  }
+
   private _isFieldVisible(fieldId: string): boolean {
     if (!this._config.visible_custom_fields || this._config.visible_custom_fields.length === 0) {
       return false;
@@ -1404,10 +1439,18 @@ export class ClickUpTodoCardEditor extends LitElement {
       { value: 'dates', label: 'Dates (Start + Due)' },
       { value: 'tags', label: 'Tags' },
       { value: 'assignees', label: 'Assignees' },
-      { value: 'custom_fields', label: 'Custom Fields' },
       { value: 'status', label: 'Status' },
       { value: 'priority', label: 'Priority' },
     ];
+
+    // Add individual custom fields to the dropdown
+    const customFields = this._tasks.length > 0 ? getAvailableCustomFields(this._tasks) : [];
+    customFields.forEach(cf => {
+      fieldTypeOptions.push({
+        value: `custom_field:${cf.value}`,
+        label: `Custom: ${cf.label}`,
+      });
+    });
 
     const spanOptions = [
       { value: '', label: 'Auto' },

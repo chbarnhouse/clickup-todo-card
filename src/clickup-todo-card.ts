@@ -796,6 +796,12 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   private _renderMetadataField(field: MetadataField, task: ClickUpTask): TemplateResult {
     const spanStyle = this._getFieldSpanStyle(field.span);
 
+    // Handle individual custom fields (format: custom_field:field_name)
+    if (field.type.startsWith('custom_field:')) {
+      const fieldName = field.type.replace('custom_field:', '');
+      return this._renderSingleCustomField(task, fieldName, spanStyle, field.label);
+    }
+
     switch (field.type) {
       case 'location':
         return this._renderLocationField(task, spanStyle);
@@ -1066,6 +1072,36 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         icon="${icon}"
         style="color: ${color}; ${spanStyle} ${customStyle}"
       ></ha-icon>
+    `;
+  }
+
+  private _renderSingleCustomField(
+    task: ClickUpTask,
+    fieldId: string,
+    spanStyle: string,
+    customLabel?: string
+  ): TemplateResult {
+    if (!task.custom_fields || task.custom_fields.length === 0) {
+      return html``;
+    }
+
+    // Find the custom field by ID
+    const field = task.custom_fields.find(f => f.id === fieldId);
+    if (!field) {
+      return html``;
+    }
+
+    const fieldStyle = this._config.field_styles?.custom_fields?.[field.name] || '';
+    const fieldIcon = this._config.field_icons?.custom_fields?.[field.name];
+    const safeFieldName = field.name.replace(/[^a-zA-Z0-9]/g, '-');
+    const displayLabel = customLabel || field.name;
+
+    return html`
+      <div class="custom-field" data-field="${safeFieldName}" style="${spanStyle} ${fieldStyle}">
+        ${fieldIcon ? html`<ha-icon icon="${fieldIcon}"></ha-icon>` : ''}
+        <span class="field-name">${displayLabel}:</span>
+        <span class="field-value">${formatCustomFieldValue(field)}</span>
+      </div>
     `;
   }
 

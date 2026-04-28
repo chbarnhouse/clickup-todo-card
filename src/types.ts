@@ -17,9 +17,10 @@ export type MetadataFieldType =
   | 'dates'
   | 'tags'
   | 'assignees'
-  | 'custom_fields'
+  | 'custom_fields'  // Legacy: shows all custom fields
   | 'status'
-  | 'priority';
+  | 'priority'
+  | string;  // Support dynamic custom field types like "custom_field:field_name"
 
 export interface MetadataField {
   type: MetadataFieldType;
