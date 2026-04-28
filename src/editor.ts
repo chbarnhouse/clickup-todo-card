@@ -300,6 +300,62 @@ export class ClickUpTodoCardEditor extends LitElement {
               </div>
             </div>
 
+            <div class="config-section">
+              <h3>Always Show Fields</h3>
+              <p class="hint">Show these fields even when tasks don't have data for them</p>
+
+              <div class="toggle-grid">
+                <ha-formfield .label=${'Start Date'}>
+                  <ha-switch
+                    .checked=${this._config.always_show_fields?.start_date === true}
+                    @change=${(ev: any) => this._updateAlwaysShowField('start_date', ev.target.checked)}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Due Date'}>
+                  <ha-switch
+                    .checked=${this._config.always_show_fields?.due_date === true}
+                    @change=${(ev: any) => this._updateAlwaysShowField('due_date', ev.target.checked)}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Priority'}>
+                  <ha-switch
+                    .checked=${this._config.always_show_fields?.priority === true}
+                    @change=${(ev: any) => this._updateAlwaysShowField('priority', ev.target.checked)}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'ClickUp Status'}>
+                  <ha-switch
+                    .checked=${this._config.always_show_fields?.status === true}
+                    @change=${(ev: any) => this._updateAlwaysShowField('status', ev.target.checked)}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Tags'}>
+                  <ha-switch
+                    .checked=${this._config.always_show_fields?.tags === true}
+                    @change=${(ev: any) => this._updateAlwaysShowField('tags', ev.target.checked)}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Assignees'}>
+                  <ha-switch
+                    .checked=${this._config.always_show_fields?.assignees === true}
+                    @change=${(ev: any) => this._updateAlwaysShowField('assignees', ev.target.checked)}
+                  ></ha-switch>
+                </ha-formfield>
+
+                <ha-formfield .label=${'Location'}>
+                  <ha-switch
+                    .checked=${this._config.always_show_fields?.location === true}
+                    @change=${(ev: any) => this._updateAlwaysShowField('location', ev.target.checked)}
+                  ></ha-switch>
+                </ha-formfield>
+              </div>
+            </div>
+
             ${this._config.show_custom_fields && customFields.length > 0 ? html`
               <div class="subsection">
                 <h4>Visible Custom Fields</h4>
@@ -717,49 +773,49 @@ export class ClickUpTodoCardEditor extends LitElement {
           <ha-textfield
             label="Status Style"
             .value=${fieldStyles.status || ''}
-            @input=${(ev: any) => this._updateFieldStyle('status', ev.target.value)}
+            @change=${(ev: any) => this._updateFieldStyle('status', ev.target.value)}
             helper="Custom CSS for status field"
           ></ha-textfield>
 
           <ha-textfield
             label="Priority Style"
             .value=${fieldStyles.priority || ''}
-            @input=${(ev: any) => this._updateFieldStyle('priority', ev.target.value)}
+            @change=${(ev: any) => this._updateFieldStyle('priority', ev.target.value)}
             helper="Custom CSS for priority field"
           ></ha-textfield>
 
           <ha-textfield
             label="Due Date Style"
             .value=${fieldStyles.due_date || ''}
-            @input=${(ev: any) => this._updateFieldStyle('due_date', ev.target.value)}
+            @change=${(ev: any) => this._updateFieldStyle('due_date', ev.target.value)}
             helper="Custom CSS for due date field"
           ></ha-textfield>
 
           <ha-textfield
             label="Start Date Style"
             .value=${fieldStyles.start_date || ''}
-            @input=${(ev: any) => this._updateFieldStyle('start_date', ev.target.value)}
+            @change=${(ev: any) => this._updateFieldStyle('start_date', ev.target.value)}
             helper="Custom CSS for start date field"
           ></ha-textfield>
 
           <ha-textfield
             label="Tags Style"
             .value=${fieldStyles.tags || ''}
-            @input=${(ev: any) => this._updateFieldStyle('tags', ev.target.value)}
+            @change=${(ev: any) => this._updateFieldStyle('tags', ev.target.value)}
             helper="Custom CSS for tags field"
           ></ha-textfield>
 
           <ha-textfield
             label="Assignees Style"
             .value=${fieldStyles.assignees || ''}
-            @input=${(ev: any) => this._updateFieldStyle('assignees', ev.target.value)}
+            @change=${(ev: any) => this._updateFieldStyle('assignees', ev.target.value)}
             helper="Custom CSS for assignees field"
           ></ha-textfield>
 
           <ha-textfield
             label="Location Style"
             .value=${fieldStyles.location || ''}
-            @input=${(ev: any) => this._updateFieldStyle('location', ev.target.value)}
+            @change=${(ev: any) => this._updateFieldStyle('location', ev.target.value)}
             helper="Custom CSS for location field"
           ></ha-textfield>
         </div>
@@ -791,6 +847,19 @@ export class ClickUpTodoCardEditor extends LitElement {
     }
 
     this._updateConfig('field_icons', Object.keys(fieldIcons).length > 0 ? fieldIcons : {});
+  }
+
+  private _updateAlwaysShowField(fieldType: string, value: boolean): void {
+    if (!this._config) return;
+
+    const alwaysShowFields = { ...(this._config.always_show_fields || {}) };
+    if (value) {
+      (alwaysShowFields as any)[fieldType] = true;
+    } else {
+      delete (alwaysShowFields as any)[fieldType];
+    }
+
+    this._updateConfig('always_show_fields', Object.keys(alwaysShowFields).length > 0 ? alwaysShowFields : undefined);
   }
 
   private _valueChanged(ev: any): void {

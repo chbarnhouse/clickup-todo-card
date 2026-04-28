@@ -500,11 +500,17 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderPriority(task: ClickUpTask): TemplateResult {
-    if (!this._config.show_priority || task.priority === null || task.priority === undefined) {
+    if (!this._config.show_priority) {
       return html``;
     }
 
-    const priority = task.priority as keyof typeof PRIORITY_ICONS;
+    // Don't show if no data and not set to always show
+    const hasPriority = task.priority !== null && task.priority !== undefined;
+    if (!hasPriority && !this._config.always_show_fields?.priority) {
+      return html``;
+    }
+
+    const priority = (task.priority ?? null) as keyof typeof PRIORITY_ICONS;
     const customIcon = this._config.field_icons?.priority;
     const icon = customIcon || PRIORITY_ICONS[priority] || PRIORITY_ICONS[null as any];
     const color = PRIORITY_COLORS[priority] || PRIORITY_COLORS[null as any];
@@ -520,10 +526,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderDates(task: ClickUpTask): TemplateResult {
-    const showStart = this._config.show_start_date && task.start_date;
-    const showDue = this._config.show_due_date && task.due;
+    const shouldShowStart = this._config.show_start_date && (task.start_date || this._config.always_show_fields?.start_date);
+    const shouldShowDue = this._config.show_due_date && (task.due || this._config.always_show_fields?.due_date);
 
-    if (!showStart && !showDue) {
+    if (!shouldShowStart && !shouldShowDue) {
       return html``;
     }
 
@@ -539,17 +545,17 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="task-dates" style="${customDatesStyle}">
-        ${showStart ? html`
+        ${shouldShowStart ? html`
           <span class="date-item start-date" style="${customStartStyle}">
             <ha-icon icon="${startIcon}"></ha-icon>
-            ${formatDate(task.start_date)}
+            ${task.start_date ? formatDate(task.start_date) : '—'}
           </span>
         ` : ''}
 
-        ${showDue ? html`
-          <span class="date-item due-date ${getDateClass(task.due)}" style="${customDueStyle}">
+        ${shouldShowDue ? html`
+          <span class="date-item due-date ${task.due ? getDateClass(task.due) : ''}" style="${customDueStyle}">
             <ha-icon icon="${dueIcon}"></ha-icon>
-            ${formatDate(task.due)}
+            ${task.due ? formatDate(task.due) : '—'}
           </span>
         ` : ''}
       </div>
@@ -557,7 +563,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderTags(task: ClickUpTask): TemplateResult {
-    if (!this._config.show_tags || !task.tags || task.tags.length === 0) {
+    if (!this._config.show_tags) {
+      return html``;
+    }
+
+    // Don't show if no data and not set to always show
+    const hasTags = task.tags && task.tags.length > 0;
+    if (!hasTags && !this._config.always_show_fields?.tags) {
       return html``;
     }
 
@@ -565,7 +577,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="task-tags" style="${customStyle}">
-        ${task.tags.map(tag => html`
+        ${hasTags ? task.tags!.map(tag => html`
           <span
             class="tag"
             style="
@@ -575,13 +587,19 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           >
             ${tag.name}
           </span>
-        `)}
+        `) : html`<span class="no-data">—</span>`}
       </div>
     `;
   }
 
   private _renderAssignees(task: ClickUpTask): TemplateResult {
-    if (!this._config.show_assignees || !task.assignees || task.assignees.length === 0) {
+    if (!this._config.show_assignees) {
+      return html``;
+    }
+
+    // Don't show if no data and not set to always show
+    const hasAssignees = task.assignees && task.assignees.length > 0;
+    if (!hasAssignees && !this._config.always_show_fields?.assignees) {
       return html``;
     }
 
@@ -589,7 +607,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="task-assignees" style="${customStyle}">
-        ${task.assignees.map(assignee => html`
+        ${hasAssignees ? task.assignees!.map(assignee => html`
           <div
             class="assignee-avatar"
             style="${assignee.color ? `background-color: ${assignee.color}` : ''}"
@@ -600,7 +618,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
               : html`<span>${getInitials(assignee.username)}</span>`
             }
           </div>
-        `)}
+        `) : html`<span class="no-data">—</span>`}
       </div>
     `;
   }
@@ -798,24 +816,31 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       parts.push(task.list_info?.name || task.list.name);
     }
 
-    if (parts.length === 0) {
+    // Don't show if no data and not set to always show
+    if (parts.length === 0 && !this._config.always_show_fields?.location) {
       return html``;
     }
 
     const customIcon = this._config.field_icons?.location;
     const icon = customIcon || 'mdi:folder-outline';
     const customStyle = this._config.field_styles?.location || '';
+    const locationText = parts.length > 0 ? parts.join(' / ') : '—';
 
     return html`
       <div class="task-location" style="${spanStyle} ${customStyle}">
         <ha-icon icon="${icon}"></ha-icon>
-        <span>${parts.join(' / ')}</span>
+        <span>${locationText}</span>
       </div>
     `;
   }
 
   private _renderStartDateField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_start_date || !task.start_date) {
+    if (!this._config.show_start_date) {
+      return html``;
+    }
+
+    // Don't show if no data and not set to always show
+    if (!task.start_date && !this._config.always_show_fields?.start_date) {
       return html``;
     }
 
@@ -826,13 +851,18 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     return html`
       <span class="date-item start-date" style="${spanStyle} ${customStyle}">
         <ha-icon icon="${icon}"></ha-icon>
-        ${formatDate(task.start_date)}
+        ${task.start_date ? formatDate(task.start_date) : '—'}
       </span>
     `;
   }
 
   private _renderDueDateField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_due_date || !task.due) {
+    if (!this._config.show_due_date) {
+      return html``;
+    }
+
+    // Don't show if no data and not set to always show
+    if (!task.due && !this._config.always_show_fields?.due_date) {
       return html``;
     }
 
@@ -841,9 +871,9 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const customStyle = this._config.field_styles?.due_date || '';
 
     return html`
-      <span class="date-item due-date ${getDateClass(task.due)}" style="${spanStyle} ${customStyle}">
+      <span class="date-item due-date ${task.due ? getDateClass(task.due) : ''}" style="${spanStyle} ${customStyle}">
         <ha-icon icon="${icon}"></ha-icon>
-        ${formatDate(task.due)}
+        ${task.due ? formatDate(task.due) : '—'}
       </span>
     `;
   }
@@ -867,7 +897,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderTagsField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_tags || !task.tags || task.tags.length === 0) {
+    if (!this._config.show_tags) {
+      return html``;
+    }
+
+    // Don't show if no data and not set to always show
+    const hasTags = task.tags && task.tags.length > 0;
+    if (!hasTags && !this._config.always_show_fields?.tags) {
       return html``;
     }
 
@@ -875,7 +911,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="task-tags" style="${spanStyle} ${customStyle}">
-        ${task.tags.map(tag => html`
+        ${hasTags ? task.tags!.map(tag => html`
           <span
             class="tag"
             style="
@@ -885,13 +921,19 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
           >
             ${tag.name}
           </span>
-        `)}
+        `) : html`<span class="no-data">—</span>`}
       </div>
     `;
   }
 
   private _renderAssigneesField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_assignees || !task.assignees || task.assignees.length === 0) {
+    if (!this._config.show_assignees) {
+      return html``;
+    }
+
+    // Don't show if no data and not set to always show
+    const hasAssignees = task.assignees && task.assignees.length > 0;
+    if (!hasAssignees && !this._config.always_show_fields?.assignees) {
       return html``;
     }
 
@@ -899,7 +941,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="task-assignees" style="${spanStyle} ${customStyle}">
-        ${task.assignees.map(assignee => html`
+        ${hasAssignees ? task.assignees!.map(assignee => html`
           <div
             class="assignee-avatar"
             style="${assignee.color ? `background-color: ${assignee.color}` : ''}"
@@ -910,7 +952,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
               : html`<span>${getInitials(assignee.username)}</span>`
             }
           </div>
-        `)}
+        `) : html`<span class="no-data">—</span>`}
       </div>
     `;
   }
@@ -929,28 +971,41 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   }
 
   private _renderStatusField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_status || !task.clickup_status) {
+    if (!this._config.show_status) {
+      return html``;
+    }
+
+    // Don't show if no data and not set to always show
+    if (!task.clickup_status && !this._config.always_show_fields?.status) {
       return html``;
     }
 
     const customStyle = this._config.field_styles?.status || '';
+    const statusColor = task.clickup_status?.color || '#d3d3d3';
+    const statusText = task.clickup_status?.status || '—';
 
     return html`
       <span
         class="status-badge"
-        style="--status-color: ${task.clickup_status.color || '#d3d3d3'}; ${spanStyle} ${customStyle}"
+        style="--status-color: ${statusColor}; ${spanStyle} ${customStyle}"
       >
-        ${task.clickup_status.status}
+        ${statusText}
       </span>
     `;
   }
 
   private _renderPriorityField(task: ClickUpTask, spanStyle: string): TemplateResult {
-    if (!this._config.show_priority || task.priority === null || task.priority === undefined) {
+    if (!this._config.show_priority) {
       return html``;
     }
 
-    const priority = task.priority as keyof typeof PRIORITY_ICONS;
+    // Don't show if no data and not set to always show
+    const hasPriority = task.priority !== null && task.priority !== undefined;
+    if (!hasPriority && !this._config.always_show_fields?.priority) {
+      return html``;
+    }
+
+    const priority = (task.priority ?? null) as keyof typeof PRIORITY_ICONS;
     const customIcon = this._config.field_icons?.priority;
     const icon = customIcon || PRIORITY_ICONS[priority] || PRIORITY_ICONS[null as any];
     const color = PRIORITY_COLORS[priority] || PRIORITY_COLORS[null as any];
@@ -988,18 +1043,20 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       parts.push(task.list_info?.name || task.list.name);
     }
 
-    if (parts.length === 0) {
+    // Don't show if no data and not set to always show
+    if (parts.length === 0 && !this._config.always_show_fields?.location) {
       return html``;
     }
 
     const customIcon = this._config.field_icons?.location;
     const icon = customIcon || 'mdi:folder-outline';
     const customStyle = this._config.field_styles?.location || '';
+    const locationText = parts.length > 0 ? parts.join(' / ') : '—';
 
     return html`
       <div class="task-location" style="${customStyle}">
         <ha-icon icon="${icon}"></ha-icon>
-        <span>${parts.join(' / ')}</span>
+        <span>${locationText}</span>
       </div>
     `;
   }

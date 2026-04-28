@@ -57,6 +57,16 @@ export interface FieldIcons {
   custom_fields?: Record<string, string>;  // field_name -> icon name
 }
 
+export interface AlwaysShowFields {
+  start_date?: boolean;
+  due_date?: boolean;
+  priority?: boolean;
+  status?: boolean;
+  tags?: boolean;
+  assignees?: boolean;
+  location?: boolean;
+}
+
 export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   type: string;
   entity: string;
@@ -77,6 +87,9 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   show_task_locations?: boolean;
   compact_mode?: boolean;
   fixed_height?: number;  // Card height in pixels (enables scrolling)
+
+  // Always show fields even when empty (v2.14.1+)
+  always_show_fields?: AlwaysShowFields;
 
   // Add button options
   add_button_text?: string;
