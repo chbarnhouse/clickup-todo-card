@@ -92,6 +92,12 @@ export class ClickUpTodoCardEditor extends LitElement {
           >
             Sort & Group
           </button>
+          <button
+            class="tab ${this._selectedTab === 5 ? 'active' : ''}"
+            @click=${() => this._selectTab(5)}
+          >
+            Styling
+          </button>
         </div>
 
         <div class="tab-content">
@@ -100,6 +106,7 @@ export class ClickUpTodoCardEditor extends LitElement {
           ${this._selectedTab === 2 ? this._renderLayoutTab() : ''}
           ${this._selectedTab === 3 ? this._renderFiltersTab(statuses, tags, assignees) : ''}
           ${this._selectedTab === 4 ? this._renderSortGroupTab(customFields) : ''}
+          ${this._selectedTab === 5 ? this._renderStylingTab(customFields) : ''}
         </div>
       </div>
     `;
@@ -610,6 +617,180 @@ export class ClickUpTodoCardEditor extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  private _renderStylingTab(customFields: Array<{value: string; label: string}>): TemplateResult {
+    const fieldStyles = this._config.field_styles || {};
+    const fieldIcons = this._config.field_icons || {};
+
+    return html`
+      <div class="tab-panel">
+        <div class="info-box">
+          <ha-icon icon="mdi:palette"></ha-icon>
+          <div>
+            <strong>Field Customization</strong>
+            <p>Customize the appearance of each field type with custom CSS styles and icons.</p>
+          </div>
+        </div>
+
+        <div class="config-section">
+          <h3>Custom Icons</h3>
+          <p class="hint">Set custom Material Design Icons for each field type</p>
+
+          <div class="field-customization-grid">
+            <div class="field-custom-item">
+              <label>Status Icon</label>
+              <ha-icon-picker
+                .hass=${this.hass}
+                .value=${fieldIcons.status || ''}
+                .label=${'Icon'}
+                @value-changed=${(ev: any) => this._updateFieldIcon('status', ev.detail.value)}
+              ></ha-icon-picker>
+            </div>
+
+            <div class="field-custom-item">
+              <label>Priority Icon</label>
+              <ha-icon-picker
+                .hass=${this.hass}
+                .value=${fieldIcons.priority || ''}
+                .label=${'Icon'}
+                @value-changed=${(ev: any) => this._updateFieldIcon('priority', ev.detail.value)}
+              ></ha-icon-picker>
+            </div>
+
+            <div class="field-custom-item">
+              <label>Due Date Icon</label>
+              <ha-icon-picker
+                .hass=${this.hass}
+                .value=${fieldIcons.due_date || ''}
+                .label=${'Icon'}
+                @value-changed=${(ev: any) => this._updateFieldIcon('due_date', ev.detail.value)}
+              ></ha-icon-picker>
+            </div>
+
+            <div class="field-custom-item">
+              <label>Start Date Icon</label>
+              <ha-icon-picker
+                .hass=${this.hass}
+                .value=${fieldIcons.start_date || ''}
+                .label=${'Icon'}
+                @value-changed=${(ev: any) => this._updateFieldIcon('start_date', ev.detail.value)}
+              ></ha-icon-picker>
+            </div>
+
+            <div class="field-custom-item">
+              <label>Tags Icon</label>
+              <ha-icon-picker
+                .hass=${this.hass}
+                .value=${fieldIcons.tags || ''}
+                .label=${'Icon'}
+                @value-changed=${(ev: any) => this._updateFieldIcon('tags', ev.detail.value)}
+              ></ha-icon-picker>
+            </div>
+
+            <div class="field-custom-item">
+              <label>Assignees Icon</label>
+              <ha-icon-picker
+                .hass=${this.hass}
+                .value=${fieldIcons.assignees || ''}
+                .label=${'Icon'}
+                @value-changed=${(ev: any) => this._updateFieldIcon('assignees', ev.detail.value)}
+              ></ha-icon-picker>
+            </div>
+
+            <div class="field-custom-item">
+              <label>Location Icon</label>
+              <ha-icon-picker
+                .hass=${this.hass}
+                .value=${fieldIcons.location || ''}
+                .label=${'Icon'}
+                @value-changed=${(ev: any) => this._updateFieldIcon('location', ev.detail.value)}
+              ></ha-icon-picker>
+            </div>
+          </div>
+        </div>
+
+        <div class="config-section">
+          <h3>Custom Styles (CSS)</h3>
+          <p class="hint">Enter custom CSS to style each field type (e.g., "color: red; font-weight: bold;")</p>
+
+          <ha-textfield
+            label="Status Style"
+            .value=${fieldStyles.status || ''}
+            @input=${(ev: any) => this._updateFieldStyle('status', ev.target.value)}
+            helper="Custom CSS for status field"
+          ></ha-textfield>
+
+          <ha-textfield
+            label="Priority Style"
+            .value=${fieldStyles.priority || ''}
+            @input=${(ev: any) => this._updateFieldStyle('priority', ev.target.value)}
+            helper="Custom CSS for priority field"
+          ></ha-textfield>
+
+          <ha-textfield
+            label="Due Date Style"
+            .value=${fieldStyles.due_date || ''}
+            @input=${(ev: any) => this._updateFieldStyle('due_date', ev.target.value)}
+            helper="Custom CSS for due date field"
+          ></ha-textfield>
+
+          <ha-textfield
+            label="Start Date Style"
+            .value=${fieldStyles.start_date || ''}
+            @input=${(ev: any) => this._updateFieldStyle('start_date', ev.target.value)}
+            helper="Custom CSS for start date field"
+          ></ha-textfield>
+
+          <ha-textfield
+            label="Tags Style"
+            .value=${fieldStyles.tags || ''}
+            @input=${(ev: any) => this._updateFieldStyle('tags', ev.target.value)}
+            helper="Custom CSS for tags field"
+          ></ha-textfield>
+
+          <ha-textfield
+            label="Assignees Style"
+            .value=${fieldStyles.assignees || ''}
+            @input=${(ev: any) => this._updateFieldStyle('assignees', ev.target.value)}
+            helper="Custom CSS for assignees field"
+          ></ha-textfield>
+
+          <ha-textfield
+            label="Location Style"
+            .value=${fieldStyles.location || ''}
+            @input=${(ev: any) => this._updateFieldStyle('location', ev.target.value)}
+            helper="Custom CSS for location field"
+          ></ha-textfield>
+        </div>
+      </div>
+    `;
+  }
+
+  private _updateFieldStyle(fieldType: string, value: string): void {
+    if (!this._config) return;
+
+    const fieldStyles = { ...(this._config.field_styles || {}) };
+    if (value) {
+      (fieldStyles as any)[fieldType] = value;
+    } else {
+      delete (fieldStyles as any)[fieldType];
+    }
+
+    this._updateConfig('field_styles', Object.keys(fieldStyles).length > 0 ? fieldStyles : {});
+  }
+
+  private _updateFieldIcon(fieldType: string, value: string): void {
+    if (!this._config) return;
+
+    const fieldIcons = { ...(this._config.field_icons || {}) };
+    if (value) {
+      (fieldIcons as any)[fieldType] = value;
+    } else {
+      delete (fieldIcons as any)[fieldType];
+    }
+
+    this._updateConfig('field_icons', Object.keys(fieldIcons).length > 0 ? fieldIcons : {});
   }
 
   private _valueChanged(ev: any): void {

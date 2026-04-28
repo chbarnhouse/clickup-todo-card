@@ -333,11 +333,12 @@ export const styles = css`
     align-self: center;
   }
 
-  /* Task Status Pill - v2.13.6 Zero Gap Between Checkbox and Text */
+  /* Task Status Pill - v2.14.0 Center-Aligned with Task Content */
   .task-status-pill {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
+    align-self: center;
     justify-content: space-between;
     gap: 0px;
     padding: 8px 2px;

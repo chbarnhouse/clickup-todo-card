@@ -505,14 +505,16 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
 
     const priority = task.priority as keyof typeof PRIORITY_ICONS;
-    const icon = PRIORITY_ICONS[priority] || PRIORITY_ICONS[null as any];
+    const customIcon = this._config.field_icons?.priority;
+    const icon = customIcon || PRIORITY_ICONS[priority] || PRIORITY_ICONS[null as any];
     const color = PRIORITY_COLORS[priority] || PRIORITY_COLORS[null as any];
+    const customStyle = this._config.field_styles?.priority || '';
 
     return html`
       <ha-icon
         class="priority-icon"
         icon="${icon}"
-        style="color: ${color}"
+        style="color: ${color}; ${customStyle}"
       ></ha-icon>
     `;
   }
@@ -525,18 +527,28 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customStartIcon = this._config.field_icons?.start_date;
+    const startIcon = customStartIcon || 'mdi:calendar-start';
+    const customStartStyle = this._config.field_styles?.start_date || '';
+
+    const customDueIcon = this._config.field_icons?.due_date;
+    const dueIcon = customDueIcon || 'mdi:calendar-end';
+    const customDueStyle = this._config.field_styles?.due_date || '';
+
+    const customDatesStyle = this._config.field_styles?.dates || '';
+
     return html`
-      <div class="task-dates">
+      <div class="task-dates" style="${customDatesStyle}">
         ${showStart ? html`
-          <span class="date-item start-date">
-            <ha-icon icon="mdi:calendar-start"></ha-icon>
+          <span class="date-item start-date" style="${customStartStyle}">
+            <ha-icon icon="${startIcon}"></ha-icon>
             ${formatDate(task.start_date)}
           </span>
         ` : ''}
 
         ${showDue ? html`
-          <span class="date-item due-date ${getDateClass(task.due)}">
-            <ha-icon icon="mdi:calendar-end"></ha-icon>
+          <span class="date-item due-date ${getDateClass(task.due)}" style="${customDueStyle}">
+            <ha-icon icon="${dueIcon}"></ha-icon>
             ${formatDate(task.due)}
           </span>
         ` : ''}
@@ -549,8 +561,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customStyle = this._config.field_styles?.tags || '';
+
     return html`
-      <div class="task-tags">
+      <div class="task-tags" style="${customStyle}">
         ${task.tags.map(tag => html`
           <span
             class="tag"
@@ -571,8 +585,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customStyle = this._config.field_styles?.assignees || '';
+
     return html`
-      <div class="task-assignees">
+      <div class="task-assignees" style="${customStyle}">
         ${task.assignees.map(assignee => html`
           <div
             class="assignee-avatar"
@@ -606,12 +622,18 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="custom-fields">
-        ${fields.map(field => html`
-          <div class="custom-field">
-            <span class="field-name">${field.name}:</span>
-            <span class="field-value">${formatCustomFieldValue(field)}</span>
-          </div>
-        `)}
+        ${fields.map(field => {
+          const fieldStyle = this._config.field_styles?.custom_fields?.[field.name] || '';
+          const fieldIcon = this._config.field_icons?.custom_fields?.[field.name];
+
+          return html`
+            <div class="custom-field" style="${fieldStyle}">
+              ${fieldIcon ? html`<ha-icon icon="${fieldIcon}"></ha-icon>` : ''}
+              <span class="field-name">${field.name}:</span>
+              <span class="field-value">${formatCustomFieldValue(field)}</span>
+            </div>
+          `;
+        })}
       </div>
     `;
   }
@@ -780,9 +802,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customIcon = this._config.field_icons?.location;
+    const icon = customIcon || 'mdi:folder-outline';
+    const customStyle = this._config.field_styles?.location || '';
+
     return html`
-      <div class="task-location" style="${spanStyle}">
-        <ha-icon icon="mdi:folder-outline"></ha-icon>
+      <div class="task-location" style="${spanStyle} ${customStyle}">
+        <ha-icon icon="${icon}"></ha-icon>
         <span>${parts.join(' / ')}</span>
       </div>
     `;
@@ -793,9 +819,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customIcon = this._config.field_icons?.start_date;
+    const icon = customIcon || 'mdi:calendar-start';
+    const customStyle = this._config.field_styles?.start_date || '';
+
     return html`
-      <span class="date-item start-date" style="${spanStyle}">
-        <ha-icon icon="mdi:calendar-start"></ha-icon>
+      <span class="date-item start-date" style="${spanStyle} ${customStyle}">
+        <ha-icon icon="${icon}"></ha-icon>
         ${formatDate(task.start_date)}
       </span>
     `;
@@ -806,9 +836,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customIcon = this._config.field_icons?.due_date;
+    const icon = customIcon || 'mdi:calendar-end';
+    const customStyle = this._config.field_styles?.due_date || '';
+
     return html`
-      <span class="date-item due-date ${getDateClass(task.due)}" style="${spanStyle}">
-        <ha-icon icon="mdi:calendar-end"></ha-icon>
+      <span class="date-item due-date ${getDateClass(task.due)}" style="${spanStyle} ${customStyle}">
+        <ha-icon icon="${icon}"></ha-icon>
         ${formatDate(task.due)}
       </span>
     `;
@@ -822,8 +856,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customStyle = this._config.field_styles?.dates || '';
+
     return html`
-      <div class="task-dates" style="${spanStyle}">
+      <div class="task-dates" style="${spanStyle} ${customStyle}">
         ${showStart ? this._renderStartDateField(task, '') : ''}
         ${showDue ? this._renderDueDateField(task, '') : ''}
       </div>
@@ -835,8 +871,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customStyle = this._config.field_styles?.tags || '';
+
     return html`
-      <div class="task-tags" style="${spanStyle}">
+      <div class="task-tags" style="${spanStyle} ${customStyle}">
         ${task.tags.map(tag => html`
           <span
             class="tag"
@@ -857,8 +895,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customStyle = this._config.field_styles?.assignees || '';
+
     return html`
-      <div class="task-assignees" style="${spanStyle}">
+      <div class="task-assignees" style="${spanStyle} ${customStyle}">
         ${task.assignees.map(assignee => html`
           <div
             class="assignee-avatar"
@@ -893,10 +933,12 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customStyle = this._config.field_styles?.status || '';
+
     return html`
       <span
         class="status-badge"
-        style="--status-color: ${task.clickup_status.color || '#d3d3d3'}; ${spanStyle}"
+        style="--status-color: ${task.clickup_status.color || '#d3d3d3'}; ${spanStyle} ${customStyle}"
       >
         ${task.clickup_status.status}
       </span>
@@ -909,14 +951,16 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
 
     const priority = task.priority as keyof typeof PRIORITY_ICONS;
-    const icon = PRIORITY_ICONS[priority] || PRIORITY_ICONS[null as any];
+    const customIcon = this._config.field_icons?.priority;
+    const icon = customIcon || PRIORITY_ICONS[priority] || PRIORITY_ICONS[null as any];
     const color = PRIORITY_COLORS[priority] || PRIORITY_COLORS[null as any];
+    const customStyle = this._config.field_styles?.priority || '';
 
     return html`
       <ha-icon
         class="priority-icon"
         icon="${icon}"
-        style="color: ${color}; ${spanStyle}"
+        style="color: ${color}; ${spanStyle} ${customStyle}"
       ></ha-icon>
     `;
   }
@@ -948,9 +992,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
       return html``;
     }
 
+    const customIcon = this._config.field_icons?.location;
+    const icon = customIcon || 'mdi:folder-outline';
+    const customStyle = this._config.field_styles?.location || '';
+
     return html`
-      <div class="task-location">
-        <ha-icon icon="mdi:folder-outline"></ha-icon>
+      <div class="task-location" style="${customStyle}">
+        <ha-icon icon="${icon}"></ha-icon>
         <span>${parts.join(' / ')}</span>
       </div>
     `;

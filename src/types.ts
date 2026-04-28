@@ -33,6 +33,30 @@ export interface MetadataGridConfig {
   fields: MetadataField[];
 }
 
+export interface FieldStyles {
+  status?: string;
+  priority?: string;
+  due_date?: string;
+  start_date?: string;
+  dates?: string;
+  tags?: string;
+  assignees?: string;
+  location?: string;
+  custom_fields?: Record<string, string>;  // field_name -> CSS string
+}
+
+export interface FieldIcons {
+  status?: string;
+  priority?: string;
+  due_date?: string;
+  start_date?: string;
+  dates?: string;
+  tags?: string;
+  assignees?: string;
+  location?: string;
+  custom_fields?: Record<string, string>;  // field_name -> icon name
+}
+
 export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   type: string;
   entity: string;
@@ -85,6 +109,10 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
 
   // Metadata Grid Layout (v2.1.0+)
   metadata_grid?: MetadataGridConfig;
+
+  // Field Customization (v2.14.0+)
+  field_styles?: FieldStyles;
+  field_icons?: FieldIcons;
 }
 
 export interface ClickUpTask extends TodoItem {

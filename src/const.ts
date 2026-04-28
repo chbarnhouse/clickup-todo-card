@@ -1,4 +1,4 @@
-export const CARD_VERSION = '2.13.6';
+export const CARD_VERSION = '2.14.0';
 
 export const CARD_NAME = 'ClickUp Todo Card';
 
@@ -53,6 +53,8 @@ export const DEFAULT_CONFIG = {
   group_by: 'none' as const,
   show_sort_controls: false,
   show_filter_controls: false,
+  field_styles: {},
+  field_icons: {},
 };
 
 // Default metadata grid configuration
