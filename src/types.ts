@@ -89,6 +89,7 @@ export interface ClickUpTodoCardConfig extends LovelaceCardConfig {
   show_task_locations?: boolean;
   compact_mode?: boolean;
   fixed_height?: number;  // Card height in pixels (enables scrolling)
+  hide_completed_after?: number;  // Hide completed tasks after X hours (0 = never hide)
 
   // Always show fields even when empty (v2.14.1+)
   always_show_fields?: AlwaysShowFields;
@@ -141,6 +142,7 @@ export interface ClickUpTask extends TodoItem {
   // ClickUp-specific fields
   clickup_id: string;
   start_date?: number | string;  // Milliseconds timestamp or ISO string
+  date_closed?: number | string;  // Milliseconds timestamp when task was completed
   clickup_status?: {
     status: string;
     type: string;

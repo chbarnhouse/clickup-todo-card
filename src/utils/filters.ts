@@ -69,6 +69,32 @@ export function filterTasks(tasks: ClickUpTask[], config: ClickUpTodoCardConfig)
     });
   }
 
+  // Filter completed tasks by age (hide_completed_after)
+  if (config.hide_completed_after !== undefined && config.hide_completed_after > 0) {
+    const hoursAgo = config.hide_completed_after;
+    const cutoffTime = Date.now() - (hoursAgo * 60 * 60 * 1000); // Convert hours to milliseconds
+
+    filtered = filtered.filter(task => {
+      // Keep all non-completed tasks
+      if (task.status !== 'completed') {
+        return true;
+      }
+
+      // If task is completed but has no date_closed, keep it (we don't know when it was completed)
+      if (!task.date_closed) {
+        return true;
+      }
+
+      // Parse date_closed to timestamp
+      const closedTime = typeof task.date_closed === 'number'
+        ? task.date_closed
+        : parseInt(task.date_closed);
+
+      // Keep task if it was completed recently (within the cutoff time)
+      return closedTime >= cutoffTime;
+    });
+  }
+
   return filtered;
 }
 

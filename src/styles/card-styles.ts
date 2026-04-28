@@ -295,7 +295,7 @@ export const styles = css`
   }
 
   .task-item:first-child {
-    padding-top: 8px;
+    padding-top: 12px;
   }
 
   .task-item:last-child {
@@ -311,7 +311,7 @@ export const styles = css`
     opacity: 0.6;
   }
 
-  .task-item.completed .task-summary {
+  .task-item.completed .task-name {
     text-decoration: line-through;
     color: var(--secondary-text-color);
   }
@@ -487,7 +487,7 @@ export const styles = css`
     gap: 4px;
     font-size: 12px;
     color: var(--secondary-text-color);
-    padding: 4px 8px;
+    padding: 4px 8px 4px 0;
     border-radius: 8px;
     background: rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease;
@@ -513,7 +513,7 @@ export const styles = css`
 
   .compact .task-location {
     font-size: 11px;
-    padding: 3px 6px;
+    padding: 3px 6px 3px 0;
   }
 
   .compact .task-location ha-icon {
@@ -537,7 +537,7 @@ export const styles = css`
     align-items: center;
     gap: 3px;
     font-size: 11px;
-    padding: 2px 6px;
+    padding: 2px 6px 2px 0;
     border-radius: 6px;
     background: rgba(0, 0, 0, 0.05);
     color: var(--secondary-text-color);
@@ -559,7 +559,7 @@ export const styles = css`
 
   .compact .date-item {
     font-size: 10px;
-    padding: 2px 5px;
+    padding: 2px 5px 2px 0;
   }
 
   .compact .date-item ha-icon {

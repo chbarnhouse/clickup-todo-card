@@ -167,6 +167,16 @@ export class ClickUpTodoCardEditor extends LitElement {
             @input=${this._valueChanged}
             helper="Set a fixed height to enable scrolling (leave empty for auto-height)"
           ></ha-textfield>
+
+          <ha-textfield
+            label="Hide Completed After (hours)"
+            type="number"
+            min="0"
+            .configValue=${'hide_completed_after'}
+            .value=${this._config.hide_completed_after !== undefined ? this._config.hide_completed_after : ''}
+            @input=${this._valueChanged}
+            helper="Hide completed tasks after X hours (0 = never hide, leave empty = show all completed)"
+          ></ha-textfield>
         </div>
       </div>
     `;

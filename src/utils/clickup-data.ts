@@ -31,6 +31,15 @@ export function parseClickUpTasks(entity: ExtendedHassEntity): ClickUpTask[] {
       }
     }
 
+    // Parse date closed if present
+    let dateClosed: number | undefined;
+    if (task.date_closed) {
+      const timestamp = parseInt(task.date_closed);
+      if (!isNaN(timestamp)) {
+        dateClosed = timestamp;
+      }
+    }
+
     const clickupTask: ClickUpTask = {
       uid: task.id,
       summary: task.name,
@@ -39,6 +48,7 @@ export function parseClickUpTasks(entity: ExtendedHassEntity): ClickUpTask[] {
       due: due,
       clickup_id: task.id,
       start_date: startDate,
+      date_closed: dateClosed,
       clickup_status: task.status,
       priority: task.priority,
       tags: task.tags || [],
