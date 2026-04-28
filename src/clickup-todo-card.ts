@@ -799,36 +799,36 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     // Handle individual custom fields (format: custom_field:field_name)
     if (field.type.startsWith('custom_field:')) {
       const fieldName = field.type.replace('custom_field:', '');
-      return this._renderSingleCustomField(task, fieldName, spanStyle, field.label);
+      return this._renderSingleCustomField(task, fieldName, spanStyle, field.label, field.always_show);
     }
 
     switch (field.type) {
       case 'location':
-        return this._renderLocationField(task, spanStyle);
+        return this._renderLocationField(task, spanStyle, field.always_show);
 
       case 'start_date':
-        return this._renderStartDateField(task, spanStyle);
+        return this._renderStartDateField(task, spanStyle, field.always_show);
 
       case 'due_date':
-        return this._renderDueDateField(task, spanStyle);
+        return this._renderDueDateField(task, spanStyle, field.always_show);
 
       case 'dates':
-        return this._renderDatesField(task, spanStyle);
+        return this._renderDatesField(task, spanStyle, field.always_show);
 
       case 'tags':
-        return this._renderTagsField(task, spanStyle);
+        return this._renderTagsField(task, spanStyle, field.always_show);
 
       case 'assignees':
-        return this._renderAssigneesField(task, spanStyle);
+        return this._renderAssigneesField(task, spanStyle, field.always_show);
 
       case 'custom_fields':
         return this._renderCustomFieldsField(task, spanStyle);
 
       case 'status':
-        return this._renderStatusField(task, spanStyle);
+        return this._renderStatusField(task, spanStyle, field.always_show);
 
       case 'priority':
-        return this._renderPriorityField(task, spanStyle);
+        return this._renderPriorityField(task, spanStyle, field.always_show);
 
       default:
         return html``;
@@ -848,7 +848,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
   /**
    * Render individual field types
    */
-  private _renderLocationField(task: ClickUpTask, spanStyle: string): TemplateResult {
+  private _renderLocationField(task: ClickUpTask, spanStyle: string, alwaysShow?: boolean): TemplateResult {
     if (!this._config.show_task_locations) {
       return html``;
     }
@@ -872,7 +872,8 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     }
 
     // Don't show if no data and not set to always show
-    if (parts.length === 0 && !this._config.always_show_fields?.location) {
+    const shouldAlwaysShow = alwaysShow ?? this._config.always_show_fields?.location ?? false;
+    if (parts.length === 0 && !shouldAlwaysShow) {
       return html``;
     }
 
@@ -889,13 +890,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     `;
   }
 
-  private _renderStartDateField(task: ClickUpTask, spanStyle: string): TemplateResult {
+  private _renderStartDateField(task: ClickUpTask, spanStyle: string, alwaysShow?: boolean): TemplateResult {
     if (!this._config.show_start_date) {
       return html``;
     }
 
     // Don't show if no data and not set to always show
-    if (!task.start_date && !this._config.always_show_fields?.start_date) {
+    const shouldAlwaysShow = alwaysShow ?? this._config.always_show_fields?.start_date ?? false;
+    if (!task.start_date && !shouldAlwaysShow) {
       return html``;
     }
 
@@ -911,13 +913,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     `;
   }
 
-  private _renderDueDateField(task: ClickUpTask, spanStyle: string): TemplateResult {
+  private _renderDueDateField(task: ClickUpTask, spanStyle: string, alwaysShow?: boolean): TemplateResult {
     if (!this._config.show_due_date) {
       return html``;
     }
 
     // Don't show if no data and not set to always show
-    if (!task.due && !this._config.always_show_fields?.due_date) {
+    const shouldAlwaysShow = alwaysShow ?? this._config.always_show_fields?.due_date ?? false;
+    if (!task.due && !shouldAlwaysShow) {
       return html``;
     }
 
@@ -933,7 +936,7 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     `;
   }
 
-  private _renderDatesField(task: ClickUpTask, spanStyle: string): TemplateResult {
+  private _renderDatesField(task: ClickUpTask, spanStyle: string, alwaysShow?: boolean): TemplateResult {
     const showStart = this._config.show_start_date;
     const showDue = this._config.show_due_date;
 
@@ -945,20 +948,21 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
 
     return html`
       <div class="task-dates" style="${spanStyle} ${customStyle}">
-        ${showStart ? this._renderStartDateField(task, '') : ''}
-        ${showDue ? this._renderDueDateField(task, '') : ''}
+        ${showStart ? this._renderStartDateField(task, '', alwaysShow) : ''}
+        ${showDue ? this._renderDueDateField(task, '', alwaysShow) : ''}
       </div>
     `;
   }
 
-  private _renderTagsField(task: ClickUpTask, spanStyle: string): TemplateResult {
+  private _renderTagsField(task: ClickUpTask, spanStyle: string, alwaysShow?: boolean): TemplateResult {
     if (!this._config.show_tags) {
       return html``;
     }
 
     // Don't show if no data and not set to always show
     const hasTags = task.tags && task.tags.length > 0;
-    if (!hasTags && !this._config.always_show_fields?.tags) {
+    const shouldAlwaysShow = alwaysShow ?? this._config.always_show_fields?.tags ?? false;
+    if (!hasTags && !shouldAlwaysShow) {
       return html``;
     }
 
@@ -981,14 +985,15 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     `;
   }
 
-  private _renderAssigneesField(task: ClickUpTask, spanStyle: string): TemplateResult {
+  private _renderAssigneesField(task: ClickUpTask, spanStyle: string, alwaysShow?: boolean): TemplateResult {
     if (!this._config.show_assignees) {
       return html``;
     }
 
     // Don't show if no data and not set to always show
     const hasAssignees = task.assignees && task.assignees.length > 0;
-    if (!hasAssignees && !this._config.always_show_fields?.assignees) {
+    const shouldAlwaysShow = alwaysShow ?? this._config.always_show_fields?.assignees ?? false;
+    if (!hasAssignees && !shouldAlwaysShow) {
       return html``;
     }
 
@@ -1025,13 +1030,14 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     return html`<div style="${spanStyle}">${customFieldsHtml}</div>`;
   }
 
-  private _renderStatusField(task: ClickUpTask, spanStyle: string): TemplateResult {
+  private _renderStatusField(task: ClickUpTask, spanStyle: string, alwaysShow?: boolean): TemplateResult {
     if (!this._config.show_status) {
       return html``;
     }
 
     // Don't show if no data and not set to always show
-    if (!task.clickup_status && !this._config.always_show_fields?.status) {
+    const shouldAlwaysShow = alwaysShow ?? this._config.always_show_fields?.status ?? false;
+    if (!task.clickup_status && !shouldAlwaysShow) {
       return html``;
     }
 
@@ -1049,14 +1055,15 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     `;
   }
 
-  private _renderPriorityField(task: ClickUpTask, spanStyle: string): TemplateResult {
+  private _renderPriorityField(task: ClickUpTask, spanStyle: string, alwaysShow?: boolean): TemplateResult {
     if (!this._config.show_priority) {
       return html``;
     }
 
     // Don't show if no data and not set to always show
     const hasPriority = task.priority !== null && task.priority !== undefined;
-    if (!hasPriority && !this._config.always_show_fields?.priority) {
+    const shouldAlwaysShow = alwaysShow ?? this._config.always_show_fields?.priority ?? false;
+    if (!hasPriority && !shouldAlwaysShow) {
       return html``;
     }
 
@@ -1079,28 +1086,27 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     task: ClickUpTask,
     fieldId: string,
     spanStyle: string,
-    customLabel?: string
+    customLabel?: string,
+    alwaysShow?: boolean
   ): TemplateResult {
-    if (!task.custom_fields || task.custom_fields.length === 0) {
-      return html``;
-    }
-
     // Find the custom field by ID
-    const field = task.custom_fields.find(f => f.id === fieldId);
-    if (!field) {
+    const field = task.custom_fields?.find(f => f.id === fieldId);
+    const shouldAlwaysShow = alwaysShow ?? false;
+
+    if (!field && !shouldAlwaysShow) {
       return html``;
     }
 
-    const fieldStyle = this._config.field_styles?.custom_fields?.[field.name] || '';
-    const fieldIcon = this._config.field_icons?.custom_fields?.[field.name];
-    const safeFieldName = field.name.replace(/[^a-zA-Z0-9]/g, '-');
-    const displayLabel = customLabel || field.name;
+    const fieldStyle = this._config.field_styles?.custom_fields?.[field?.name || ''] || '';
+    const fieldIcon = this._config.field_icons?.custom_fields?.[field?.name || ''];
+    const safeFieldName = (field?.name || fieldId).replace(/[^a-zA-Z0-9]/g, '-');
+    const displayLabel = customLabel || field?.name || fieldId;
 
     return html`
       <div class="custom-field" data-field="${safeFieldName}" style="${spanStyle} ${fieldStyle}">
         ${fieldIcon ? html`<ha-icon icon="${fieldIcon}"></ha-icon>` : ''}
         <span class="field-name">${displayLabel}:</span>
-        <span class="field-value">${formatCustomFieldValue(field)}</span>
+        <span class="field-value">${field ? formatCustomFieldValue(field) : '—'}</span>
       </div>
     `;
   }

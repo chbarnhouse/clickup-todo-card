@@ -1485,6 +1485,14 @@ export class ClickUpTodoCardEditor extends LitElement {
           @value-changed=${(ev: any) => this._metadataFieldPropertyChanged(index, 'span', ev.detail.value)}
         ></ha-selector>
 
+        <mwc-icon-button
+          @click=${() => this._toggleFieldAlwaysShow(index)}
+          title="${field.always_show ? 'Always show (even when empty)' : 'Hide when empty'}"
+          style="color: ${field.always_show ? 'var(--primary-color)' : 'var(--disabled-text-color)'}"
+        >
+          <ha-icon icon="${field.always_show ? 'mdi:eye' : 'mdi:eye-off'}"></ha-icon>
+        </mwc-icon-button>
+
         <mwc-icon-button @click=${() => this._moveMetadataField(index, -1)}>
           <ha-icon icon="mdi:arrow-up"></ha-icon>
         </mwc-icon-button>
@@ -1545,6 +1553,26 @@ export class ClickUpTodoCardEditor extends LitElement {
 
     // Swap fields
     [fields[index], fields[newIndex]] = [fields[newIndex], fields[index]];
+
+    const newConfig = {
+      ...this._config,
+      metadata_grid: {
+        ...this._config.metadata_grid,
+        fields,
+      },
+    };
+
+    fireEvent(this, 'config-changed', { config: newConfig });
+  }
+
+  private _toggleFieldAlwaysShow(index: number): void {
+    if (!this._config.metadata_grid) return;
+
+    const fields = [...(this._config.metadata_grid.fields || [])];
+    fields[index] = {
+      ...fields[index],
+      always_show: !fields[index].always_show,
+    };
 
     const newConfig = {
       ...this._config,

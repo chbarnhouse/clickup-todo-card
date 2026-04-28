@@ -26,6 +26,7 @@ export interface MetadataField {
   type: MetadataFieldType;
   span?: 'full' | number | string;  // 'full' = 1 / -1, number = span X columns, string = custom grid-column
   label?: string;  // Optional custom label override
+  always_show?: boolean;  // Show field even when empty/undefined
 }
 
 export interface MetadataGridConfig {
