@@ -373,6 +373,15 @@ export class ClickUpTodoCardEditor extends LitElement {
 
             ${this._renderFieldCustomization()}
           </div>
+
+          ${this._config.show_custom_fields && customFields.length > 0 ? html`
+            <div class="config-section">
+              <h3>Custom Field Styling</h3>
+              <p class="hint">Customize icons and styles for individual custom fields</p>
+
+              ${this._renderCustomFieldCustomization(customFields)}
+            </div>
+          ` : ''}
         </div>
       </div>
     `;
@@ -680,37 +689,83 @@ export class ClickUpTodoCardEditor extends LitElement {
     const fieldIcons = this._config.field_icons || {};
 
     const fields = [
-      { key: 'priority', label: 'Priority' },
-      { key: 'status', label: 'Status' },
-      { key: 'start_date', label: 'Start Date' },
-      { key: 'due_date', label: 'Due Date' },
-      { key: 'tags', label: 'Tags' },
-      { key: 'assignees', label: 'Assignees' },
-      { key: 'location', label: 'Location' },
+      { key: 'priority', label: 'Priority', defaultIcon: 'mdi:flag' },
+      { key: 'status', label: 'Status', defaultIcon: 'mdi:circle' },
+      { key: 'start_date', label: 'Start Date', defaultIcon: 'mdi:calendar-start' },
+      { key: 'due_date', label: 'Due Date', defaultIcon: 'mdi:calendar-end' },
+      { key: 'tags', label: 'Tags', defaultIcon: 'mdi:tag-multiple' },
+      { key: 'assignees', label: 'Assignees', defaultIcon: 'mdi:account-multiple' },
+      { key: 'location', label: 'Location', defaultIcon: 'mdi:folder-outline' },
     ];
 
     return html`
       <div class="field-customization-list">
-        ${fields.map(field => html`
-          <details class="field-custom-details">
-            <summary class="field-custom-summary">${field.label}</summary>
-            <div class="field-custom-content">
-              <ha-icon-picker
-                .hass=${this.hass}
-                .value=${(fieldIcons as any)[field.key] || ''}
-                .label=${'Icon'}
-                @value-changed=${(ev: any) => this._updateFieldIcon(field.key, ev.detail.value)}
-              ></ha-icon-picker>
+        ${fields.map(field => {
+          const currentIcon = (fieldIcons as any)[field.key] || field.defaultIcon;
+          const currentStyle = (fieldStyles as any)[field.key] || '';
 
-              <ha-textfield
-                label="Custom CSS"
-                .value=${(fieldStyles as any)[field.key] || ''}
-                @input=${(ev: any) => this._updateFieldStyle(field.key, ev.target.value)}
-                helper="e.g., color: red; font-weight: bold;"
-              ></ha-textfield>
-            </div>
-          </details>
-        `)}
+          return html`
+            <details class="field-custom-details">
+              <summary class="field-custom-summary">
+                ${field.label}
+                ${currentIcon !== field.defaultIcon || currentStyle ? html`<span class="customized-indicator">●</span>` : ''}
+              </summary>
+              <div class="field-custom-content">
+                <ha-icon-picker
+                  .hass=${this.hass}
+                  .value=${currentIcon}
+                  .label=${'Icon (default: ' + field.defaultIcon + ')'}
+                  @value-changed=${(ev: any) => this._updateFieldIcon(field.key, ev.detail.value)}
+                ></ha-icon-picker>
+
+                <ha-textfield
+                  label="Custom CSS"
+                  .value=${currentStyle}
+                  @input=${(ev: any) => this._updateFieldStyle(field.key, ev.target.value)}
+                  helper="Leave empty to use default styling"
+                ></ha-textfield>
+              </div>
+            </details>
+          `;
+        })}
+      </div>
+    `;
+  }
+
+  private _renderCustomFieldCustomization(customFields: Array<{value: string; label: string}>): TemplateResult {
+    const fieldStyles = this._config.field_styles?.custom_fields || {};
+    const fieldIcons = this._config.field_icons?.custom_fields || {};
+
+    return html`
+      <div class="field-customization-list">
+        ${customFields.map(field => {
+          const currentIcon = fieldIcons[field.label] || '';
+          const currentStyle = fieldStyles[field.label] || '';
+
+          return html`
+            <details class="field-custom-details">
+              <summary class="field-custom-summary">
+                ${field.label}
+                ${currentIcon || currentStyle ? html`<span class="customized-indicator">●</span>` : ''}
+              </summary>
+              <div class="field-custom-content">
+                <ha-icon-picker
+                  .hass=${this.hass}
+                  .value=${currentIcon}
+                  .label=${'Icon'}
+                  @value-changed=${(ev: any) => this._updateCustomFieldIcon(field.label, ev.detail.value)}
+                ></ha-icon-picker>
+
+                <ha-textfield
+                  label="Custom CSS"
+                  .value=${currentStyle}
+                  @input=${(ev: any) => this._updateCustomFieldStyle(field.label, ev.target.value)}
+                  helper="Leave empty to use default styling"
+                ></ha-textfield>
+              </div>
+            </details>
+          `;
+        })}
       </div>
     `;
   }
@@ -900,6 +955,48 @@ export class ClickUpTodoCardEditor extends LitElement {
     }
 
     this._updateConfig('always_show_fields', Object.keys(alwaysShowFields).length > 0 ? alwaysShowFields : undefined);
+  }
+
+  private _updateCustomFieldStyle(fieldName: string, value: string): void {
+    if (!this._config) return;
+
+    const fieldStyles = { ...(this._config.field_styles || {}) };
+    const customFieldStyles = { ...(fieldStyles.custom_fields || {}) };
+
+    if (value) {
+      customFieldStyles[fieldName] = value;
+    } else {
+      delete customFieldStyles[fieldName];
+    }
+
+    if (Object.keys(customFieldStyles).length > 0) {
+      fieldStyles.custom_fields = customFieldStyles;
+    } else {
+      delete fieldStyles.custom_fields;
+    }
+
+    this._updateConfig('field_styles', Object.keys(fieldStyles).length > 0 ? fieldStyles : {});
+  }
+
+  private _updateCustomFieldIcon(fieldName: string, value: string): void {
+    if (!this._config) return;
+
+    const fieldIcons = { ...(this._config.field_icons || {}) };
+    const customFieldIcons = { ...(fieldIcons.custom_fields || {}) };
+
+    if (value) {
+      customFieldIcons[fieldName] = value;
+    } else {
+      delete customFieldIcons[fieldName];
+    }
+
+    if (Object.keys(customFieldIcons).length > 0) {
+      fieldIcons.custom_fields = customFieldIcons;
+    } else {
+      delete fieldIcons.custom_fields;
+    }
+
+    this._updateConfig('field_icons', Object.keys(fieldIcons).length > 0 ? fieldIcons : {});
   }
 
   private _valueChanged(ev: any): void {
@@ -1731,10 +1828,19 @@ export class ClickUpTodoCardEditor extends LitElement {
         background: var(--card-background-color);
         user-select: none;
         transition: background 0.2s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       .field-custom-summary:hover {
         background: var(--secondary-background-color);
+      }
+
+      .customized-indicator {
+        color: var(--primary-color);
+        font-size: 8px;
+        margin-left: 8px;
       }
 
       .field-custom-summary::-webkit-details-marker {

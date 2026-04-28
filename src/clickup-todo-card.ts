@@ -691,9 +691,10 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
         ${fields.map(field => {
           const fieldStyle = this._config.field_styles?.custom_fields?.[field.name] || '';
           const fieldIcon = this._config.field_icons?.custom_fields?.[field.name];
+          const safeFieldName = field.name.replace(/[^a-zA-Z0-9]/g, '-');
 
           return html`
-            <div class="custom-field" style="${fieldStyle}">
+            <div class="custom-field" data-field="${safeFieldName}" style="${fieldStyle}">
               ${fieldIcon ? html`<ha-icon icon="${fieldIcon}"></ha-icon>` : ''}
               <span class="field-name">${field.name}:</span>
               <span class="field-value">${formatCustomFieldValue(field)}</span>
