@@ -348,30 +348,40 @@ export class ClickUpTodoCardEditor extends LitElement {
                 </ha-formfield>
               </div>
             </div>
-
-            ${this._config.show_custom_fields ? html`
-              <div class="subsection">
-                <h4>Visible Custom Fields</h4>
-                ${customFields.length === 0 ? html`
-                  <p class="hint" style="color: var(--secondary-text-color); font-style: italic;">
-                    No custom fields found in your tasks. Add custom fields to your ClickUp tasks to filter them here.
-                  </p>
-                ` : html`
-                  <p class="hint">Select which custom fields to display (leave all unchecked to show all)</p>
-
-                  ${customFields.map(field => html`
-                    <ha-formfield .label=${field.label}>
-                      <ha-checkbox
-                        .checked=${this._isFieldVisible(field.value)}
-                        .value=${field.value}
-                        @change=${this._customFieldChanged}
-                      ></ha-checkbox>
-                    </ha-formfield>
-                  `)}
-                `}
-              </div>
-            ` : ''}
           `}
+
+          <div class="config-section">
+            <h3>Visible Custom Fields</h3>
+            ${!this._config.show_custom_fields ? html`
+              <div class="info-box" style="background: var(--secondary-background-color); padding: 16px; border-radius: 8px; margin-top: 8px;">
+                <p style="margin: 0; color: var(--secondary-text-color);">
+                  <ha-icon icon="mdi:information" style="vertical-align: middle;"></ha-icon>
+                  Enable the "Custom Fields" toggle above to choose which custom fields to display
+                </p>
+              </div>
+            ` : customFields.length === 0 ? html`
+              <div class="info-box" style="background: var(--secondary-background-color); padding: 16px; border-radius: 8px; margin-top: 8px;">
+                <p style="margin: 0; color: var(--secondary-text-color);">
+                  <ha-icon icon="mdi:information" style="vertical-align: middle;"></ha-icon>
+                  No custom fields found in your tasks. Add custom fields to your ClickUp tasks to filter them here.
+                </p>
+              </div>
+            ` : html`
+              <p class="hint">Select which custom fields to display (leave all unchecked to show all)</p>
+
+              <div class="toggle-grid">
+                ${customFields.map(field => html`
+                  <ha-formfield .label=${field.label}>
+                    <ha-checkbox
+                      .checked=${this._isFieldVisible(field.value)}
+                      .value=${field.value}
+                      @change=${this._customFieldChanged}
+                    ></ha-checkbox>
+                  </ha-formfield>
+                `)}
+              </div>
+            `}
+          </div>
 
           <div class="config-section">
             <h3>Field Customization</h3>
