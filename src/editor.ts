@@ -675,17 +675,6 @@ export class ClickUpTodoCardEditor extends LitElement {
     // Get visible fields from metadata grid or quick toggles
     const visibleFieldTypes = this._getVisibleFieldTypes();
 
-    if (visibleFieldTypes.length === 0) {
-      return html`
-        <div class="info-box" style="background: var(--secondary-background-color); padding: 16px; border-radius: 8px; margin-top: 8px;">
-          <p style="margin: 0; color: var(--secondary-text-color);">
-            <ha-icon icon="mdi:information" style="vertical-align: middle;"></ha-icon>
-            Add fields to your metadata grid above to customize their appearance
-          </p>
-        </div>
-      `;
-    }
-
     const allFieldDefinitions = [
       { key: 'priority', label: 'Priority', defaultIcon: 'mdi:flag' },
       { key: 'status', label: 'Status', defaultIcon: 'mdi:circle' },
@@ -701,7 +690,25 @@ export class ClickUpTodoCardEditor extends LitElement {
     const customFields = this._tasks.length > 0 ? getAvailableCustomFields(this._tasks) : [];
 
     // Build list of fields to customize
-    const fieldsToCustomize: Array<{ key: string; label: string; defaultIcon: string; isCustomField?: boolean }> = [];
+    const fieldsToCustomize: Array<{ key: string; label: string; defaultIcon: string; isCustomField?: boolean; noIcon?: boolean }> = [];
+
+    // Always add task name (no icon)
+    fieldsToCustomize.push({
+      key: 'task_name',
+      label: 'Task Name',
+      defaultIcon: '',
+      noIcon: true,
+    });
+
+    // Always add status pill if show_status is enabled
+    if (this._config.show_status) {
+      fieldsToCustomize.push({
+        key: 'status_pill',
+        label: 'Status Pill',
+        defaultIcon: '',
+        noIcon: true,
+      });
+    }
 
     visibleFieldTypes.forEach(fieldType => {
       if (fieldType.startsWith('custom_field:')) {
@@ -750,20 +757,22 @@ export class ClickUpTodoCardEditor extends LitElement {
                 ${currentIcon !== field.defaultIcon || currentStyle ? html`<span class="customized-indicator">●</span>` : ''}
               </summary>
               <div class="field-custom-content">
-                <ha-icon-picker
-                  .hass=${this.hass}
-                  .value=${currentIcon}
-                  .label=${'Icon (default: ' + field.defaultIcon + ')'}
-                  @value-changed=${(ev: any) => {
-                    if (field.isCustomField) {
-                      const fieldName = field.key.replace('custom_fields.', '');
-                      const customField = customFields.find(cf => cf.value === fieldName);
-                      this._updateCustomFieldIcon(customField?.label || '', ev.detail.value);
-                    } else {
-                      this._updateFieldIcon(field.key, ev.detail.value);
-                    }
-                  }}
-                ></ha-icon-picker>
+                ${!field.noIcon ? html`
+                  <ha-icon-picker
+                    .hass=${this.hass}
+                    .value=${currentIcon}
+                    .label=${'Icon (default: ' + field.defaultIcon + ')'}
+                    @value-changed=${(ev: any) => {
+                      if (field.isCustomField) {
+                        const fieldName = field.key.replace('custom_fields.', '');
+                        const customField = customFields.find(cf => cf.value === fieldName);
+                        this._updateCustomFieldIcon(customField?.label || '', ev.detail.value);
+                      } else {
+                        this._updateFieldIcon(field.key, ev.detail.value);
+                      }
+                    }}
+                  ></ha-icon-picker>
+                ` : ''}
 
                 <ha-textfield
                   label="Custom CSS"

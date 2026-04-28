@@ -36,6 +36,8 @@ export interface MetadataGridConfig {
 }
 
 export interface FieldStyles {
+  task_name?: string;
+  status_pill?: string;
   status?: string;
   priority?: string;
   due_date?: string;
