@@ -934,6 +934,7 @@ export const styles = css`
     display: flex;
     align-items: center;
     padding: 10px 16px;
+    margin-bottom: 4px;
     background: transparent;
     border-bottom: 1px solid var(--divider-color);
     gap: 16px;
