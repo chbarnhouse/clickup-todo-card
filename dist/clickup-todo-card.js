@@ -293,7 +293,8 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
   }
 
   .task-item:first-child {
-    padding-top: 12px;
+    padding-top: 8px;
+    margin-top: 0;
   }
 
   .task-item:last-child {
@@ -746,6 +747,7 @@ function t(t,e,i,a){var s,o=arguments.length,r=o<3?e:null===a?a=Object.getOwnPro
 
     .task-item:first-child {
       padding-top: 8px;
+      margin-top: 0;
     }
 
     .task-summary {

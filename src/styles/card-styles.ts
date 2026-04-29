@@ -295,7 +295,8 @@ export const styles = css`
   }
 
   .task-item:first-child {
-    padding-top: 12px;
+    padding-top: 8px;
+    margin-top: 0;
   }
 
   .task-item:last-child {
@@ -748,6 +749,7 @@ export const styles = css`
 
     .task-item:first-child {
       padding-top: 8px;
+      margin-top: 0;
     }
 
     .task-summary {
