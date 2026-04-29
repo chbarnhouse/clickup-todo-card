@@ -341,8 +341,8 @@ export const styles = css`
     align-items: center;
     align-self: center;
     justify-content: flex-start;
-    gap: 4px;
-    padding: 8px 6px;
+    gap: 8px;
+    padding: 8px;
     border-radius: 6px;
     width: var(--pill-width, auto);
     height: 32px;
@@ -362,8 +362,8 @@ export const styles = css`
   }
 
   .compact .task-status-pill {
-    gap: 3px;
-    padding: 6px 5px;
+    gap: 6px;
+    padding: 6px;
     border-radius: 4px;
     width: var(--pill-width, auto);
     height: 26px;
@@ -382,7 +382,7 @@ export const styles = css`
   }
 
   .task-status-pill editable-status {
-    flex: 1;
+    flex: 0 0 auto;
     min-width: 0;
     margin: 0;
     padding: 0;
@@ -934,7 +934,7 @@ export const styles = css`
     display: flex;
     align-items: center;
     padding: 10px 16px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     background: transparent;
     border-bottom: 1px solid var(--divider-color);
     gap: 16px;
