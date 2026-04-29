@@ -342,7 +342,7 @@ export const styles = css`
     align-self: center;
     justify-content: flex-start;
     gap: 8px;
-    padding: 8px;
+    padding: 8px 8px 8px 6px;
     border-radius: 6px;
     width: var(--pill-width, auto);
     height: 32px;
@@ -363,7 +363,7 @@ export const styles = css`
 
   .compact .task-status-pill {
     gap: 6px;
-    padding: 6px;
+    padding: 6px 6px 6px 5px;
     border-radius: 4px;
     width: var(--pill-width, auto);
     height: 26px;

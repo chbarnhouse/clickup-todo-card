@@ -135,13 +135,13 @@ export class ClickUpTodoCard extends LitElement implements LovelaceCard {
     const textWidth = Math.ceil(longestStatus.length * charWidth + longestStatus.length * letterSpacing + 8);
 
     // Fixed component widths (matching CSS exactly):
-    // - Pill padding: 8px left + 8px right = 16px (6px + 6px = 12px compact)
+    // - Pill padding: 6px left + 8px right = 14px (5px + 6px = 11px compact)
     // - Checkbox: 16px (14px compact)
     // - Gap: 8px (6px compact)
     // - Text: auto width (no additional padding)
     const checkboxWidth = isCompact ? 14 : 16;
     const gap = isCompact ? 6 : 8;
-    const pillPadding = isCompact ? 12 : 16; // left + right
+    const pillPadding = isCompact ? 11 : 14; // left + right
 
     const totalWidth = pillPadding + checkboxWidth + gap + textWidth;
     return totalWidth;
